@@ -345,23 +345,23 @@ function speakWord(w){if(mt||!("speechSynthesis"in window)||!w||w==="READY")retu
 function speakCurrent(){speakWord($("wd").textContent)}
 </script>
 <script>
-function se(k){if(mt)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);if(k==="ok"){o.type="sine";o.frequency.setValueAtTime(660,t);o.frequency.setValueAtTime(880,t+.09);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.28);o.start(t);o.stop(t+.28)}else if(k==="ng"){o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.setValueAtTime(120,t+.12);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(k==="st"){o.type="triangle";o.frequency.setValueAtTime(520,t);o.frequency.setValueAtTime(780,t+.06);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.01,t+.15);o.start(t);o.stop(t+.15)}else if(k==="tk"){o.type="sine";o.frequency.setValueAtTime(900,t);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.01,t+.06);o.start(t);o.stop(t+.06)}else if(k==="wn"){o.type="triangle";[523,659,784,1046].forEach(function(f,i){o.frequency.setValueAtTime(f,t+i*.09)});g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5)}}catch(e){}}
+function se(k){if(mt)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);if(k==="ok"){o.type="sine";o.frequency.setValueAtTime(660,t);o.frequency.setValueAtTime(880,t+.09);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.28);o.start(t);o.stop(t+.28)}else if(k==="ng"){o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.setValueAtTime(120,t+.12);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(k==="st"){o.type="triangle";o.frequency.setValueAtTime(520,t);o.frequency.setValueAtTime(780,t+.06);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.01,t+.15);o.start(t);o.stop(t+.15)}else if(k==="tk"){o.type="sine";o.frequency.setValueAtTime(900,t);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.01,t+.06);o.start(t);o.stop(t+.06)}else if(k==="wn"){o.type="triangle";new Array(523,659,784,1046).forEach(function(f,i){o.frequency.setValueAtTime(f,t+i*.09)});g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5)}}catch(e){}}
 function lg(t,e){$("lg").textContent=t;$("lg").style.color=e?"#f43f5e":"#4ade80"}
 function tx(t,x){if(solo||com)return;var d={s:id,t:t};if(x)for(var k in x)d[k]=x[k];fetch(SV+"/"+tp,{method:"POST",body:JSON.stringify(d)}).catch(function(){lg("送信エラー",1)})}
 function st(t){se("st");pp(myTag()+": "+t,"#38bdf8");tx("S",{x:t})}
 function pp(t,c){$("sp").textContent=t;$("sp").style.color=c;clearTimeout(sI);sI=setTimeout(function(){$("sp").textContent=""},2000)}
-function oppWin(pts){if(lk)return;lk=1;clearInterval(tI);clearTimeout(cI);se("ng");oS+=pts;$("s2").textContent=oS;$("gl").textContent=oppName+"が正解！(+"+pts+") 正解:"+qs[ix].j;$("gl").style.color="#f43f5e";aw(qs[ix]);ds(1);setTimeout(function(){ix++;sh()},1500)}
-function oppMiss(){cMs=1;oS-=5;$("s2").textContent=oS;if(!ms){$("gl").textContent=oppName+"がお手つき！チャンス！";$("gl").style.color="#4ade80"}else if(com){lk=1;clearInterval(tI);clearTimeout(cI);aw(qs[ix]);$("gl").textContent="両方お手つき！正解:"+qs[ix].j;setTimeout(function(){ix++;sh()},1500)}}
+function oppWin(pts){if(lk)return;lk=1;clearInterval(tI);clearTimeout(cI);se("ng");oS+=pts;$("s2").textContent=oS;$("gl").textContent=oppName+"が正解！(+"+pts+") 正解:"+qs.at(ix).j;$("gl").style.color="#f43f5e";aw(qs.at(ix));ds(1);setTimeout(function(){ix++;sh()},1500)}
+function oppMiss(){cMs=1;oS-=5;$("s2").textContent=oS;if(!ms){$("gl").textContent=oppName+"がお手つき！チャンス！";$("gl").style.color="#4ade80"}else if(com){lk=1;clearInterval(tI);clearTimeout(cI);aw(qs.at(ix));$("gl").textContent="両方お手つき！正解:"+qs.at(ix).j;setTimeout(function(){ix++;sh()},1500)}}
 function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!hs){lg("接続完了！開始待ち...");tx("J",{nm:myTag()})}};es.onmessage=function(e){try{var m=JSON.parse(JSON.parse(e.data).message);if(m.s===id)return;if(m.t==="J"&&hs){oppName=m.nm||"相手";nw()}else if(m.t==="B"){oppName=m.nm||"相手";qs=m.q;LM=m.l;lv=m.v;go()}else if(m.t==="W"&&m.i===ix&&!lk)oppWin(m.p);else if(m.t==="M"&&m.i===ix)oppMiss();else if(m.t==="S"){se("st");pp(oppName+": "+m.x,"#f472b6")}else if(m.t==="R"&&hs)nw()}catch(z){}}}
 function mk(){se("st");hs=1;solo=com=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=solo=com=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("接続中...");ls()}
-function shf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-function mapQ(arr){var isM=lv.startsWith("m"),isH=(lv==="h1"||lv==="h2"||lv==="ha");return arr.map(function(l){var p=l.split("|"),qTxt=(p.at(0)||"").trim(),ans=(p.at(1)||"").trim(),pool=isM?MA:isH?HA:D,opts=[ans],guard=0;while(opts.length<4&&guard<200){guard++;var r=(pool.at(Math.floor(Math.random()*pool.length)).split("|").at(1)||"").trim();if(r&&opts.indexOf(r)<0)opts.push(r)}return{e:qTxt,j:ans,o:shf(opts),raw:l}})}
+function shf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a.at(i);a[i]=a.at(j);a[j]=t}return a}
+function mapQ(arr){var isM=lv.startsWith("m"),isH=(lv==="h1"||lv==="h2"||lv==="ha");return arr.map(function(l){var p=l.split("|"),qTxt=(p.at(0)||"").trim(),ans=(p.at(1)||"").trim(),pool=isM?MA:isH?HA:D,opts=new Array(ans),guard=0;while(opts.length<4&&guard<200){guard++;var r=(pool.at(Math.floor(Math.random()*pool.length)).split("|").at(1)||"").trim();if(r&&opts.indexOf(r)<0)opts.push(r)}return{e:qTxt,j:ans,o:shf(opts),raw:l}})}
 function nw(){var pl=lv==="e"?W1:lv==="h"?W2:lv==="m1"?M1:lv==="m2"?M2:lv==="m3"?M3:lv==="ma"?MA:lv==="h1"?H1:lv==="h2"?H2:lv==="ha"?HA:WM;LM=lv.startsWith("m")?10000:lv==="h"?4000:lv==="n"?6000:8000;qs=mapQ(shf(pl.slice()).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
 function startCom(){se("st");com=1;hs=solo=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var nmMap={e:"初級",n:"中級",h:"上級",m1:"数ⅠA",m2:"数ⅡB",m3:"数ⅢC",ma:"数学全",h1:"古代中世",h2:"近世近代",ha:"日本史全"};oppName="🤖COM("+(nmMap[lv]||"中級")+")";nw()}
-function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs=com=0;LM=8000;qs=mapQ(sv.slice().sort(function(){return Math.random()-.5}));go()}
-function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("bTop").classList.add("hd");$("rv").classList.add("hd");$("mLb").textContent=myTag();$("oLb").textContent=oppName;$("oppWrap").style.visibility=solo?"hidden":"visible";$("sBar").style.display=(solo||com)?"none":"flex";ix=mS=oS=0;wr=[];$("s1").textContent=$("s2").textContent=0;sh()}
-function aw(q){for(var i=0;i<wr.length;i++)if(wr[i].e===q.e)return;wr.push(q);var sv=getSaved(),raw=q.raw||ALL_D.find(function(x){return x.indexOf(q.e+"|")===0});if(raw&&sv.indexOf(raw)<0){sv.push(raw);setSaved(sv)}}
+function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs=com=0;LM=8000;qs=mapQ(shf(sv.slice()));go()}
+function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("bTop").classList.add("hd");$("rv").classList.add("hd");$("mLb").textContent=myTag();$("oLb").textContent=oppName;$("oppWrap").style.visibility=solo?"hidden":"visible";$("sBar").style.display=(solo||com)?"none":"flex";ix=mS=oS=0;wr=new Array();$("s1").textContent=$("s2").textContent=0;sh()}
+function aw(q){for(var i=0;i<wr.length;i++)if(wr.at(i).e===q.e)return;wr.push(q);var sv=getSaved(),raw=q.raw||ALL_D.find(function(x){return x.indexOf(q.e+"|")===0});if(raw&&sv.indexOf(raw)<0){sv.push(raw);setSaved(sv)}}
 function rmSaved(en){setSaved(getSaved().filter(function(x){return x.indexOf(en+"|")!==0}))}
 function delResItem(en,btn){rmSaved(en);btn.textContent="消去済";btn.disabled=true;btn.style.background="#475569";se("st")}
 function sh(){
@@ -497,113 +497,9 @@ function sh(){
     }
   }, 50);
 }
-
-
-  lk = ms = cMs = 0;
-  lB = 4;
-  if(solo) $("bDrop").classList.remove("hd"); else $("bDrop").classList.add("hd");
-
-  var q = qs[ix];
-  var lbMap = {e:"初級", n:"中級", h:"上級", m1:"数ⅠA", m2:"数ⅡB", m3:"数ⅢC", ma:"数学全"};
-  var ln = solo ? "1人復習" : (lbMap[lv] || "中級");
-  var isMath = q.e.length > 14 || /[^a-zA-Z\-]/.test(q.e);
-
-  $("bSpeak").classList.toggle("hd", isMath);
-  $("wd").style.fontSize = isMath ? "21px" : "32px";
-  $("pg").textContent = "[" + ln + "] " + (ix + 1) + "/" + qs.length;
-  $("wd").textContent = q.e;
-  if(!isMath) speakWord(q.e);
-
-  $("gl").textContent = solo ? "意味・公式を選べ！（不要なら上の消去ボタン）" : "早押しで正解を選べ！";
-  $("gl").style.color = "#94a3b8";
-  $("op").innerHTML = "";
-
-  shf(q.o).forEach(function(o){
-    var b = document.createElement("button");
-    b.className = "ch";
-    b.textContent = o;
-    b.onclick = function(){
-      if(lk || ms) return;
-      if(o === q.j){
-        lk = 1;
-        clearInterval(tI);
-        clearTimeout(cI);
-        se("ok");
-        var bn = Math.max(0, Math.round(((LM - (Date.now() - qT)) / LM) * 10));
-        var pt = 10 + bn;
-        mS += pt;
-        $("s1").textContent = mS;
-        $("gl").textContent = "正解！(+" + pt + "点/速度+" + bn + ")";
-        $("gl").style.color = "#38bdf8";
-        ds(1);
-        tx("W", {i:ix, p:pt});
-        setTimeout(function(){ ix++; sh(); }, 1300);
-      } else {
-        ms = 1;
-        se("ng");
-        mS -= 5;
-        $("s1").textContent = mS;
-        $("gl").textContent = solo ? ("不正解！正解:" + q.j) : ("お手つき！（-5点）");
-        $("gl").style.color = "#facc15";
-        aw(q);
-        ds(1);
-        tx("M", {i:ix});
-        if(solo){
-          lk = 1;
-          clearInterval(tI);
-          setTimeout(function(){ ix++; sh(); }, 1500);
-        } else if(com && cMs){
-          lk = 1;
-          clearInterval(tI);
-          clearTimeout(cI);
-          $("gl").textContent = "両方お手つき！正解:" + q.j;
-          setTimeout(function(){ ix++; sh(); }, 1500);
-        }
-      }
-    };
-    $("op").appendChild(b);
-  });
-
-  qT = Date.now();
-  $("tb").style.width = "100%";
-  $("tb").style.backgroundColor = "#4ade80";
-
-  if(com){
-    var dl = lv === "e" ? (3200 + Math.random() * 2800) : lv === "h" ? (1100 + Math.random() * 1300) : (2000 + Math.random() * 2000);
-    cI = setTimeout(function(){
-      if(lk) return;
-      if(Math.random() < (lv === "h" ? 0.1 : 0.22)){
-        oppMiss();
-      } else {
-        var bn = Math.max(0, Math.round(((LM - (Date.now() - qT)) / LM) * 10));
-        oppWin(10 + bn);
-      }
-    }, dl);
-  }
-
-  tI = setInterval(function(){
-    var r = Math.max(0, LM - (Date.now() - qT));
-    var pc = (r / LM) * 100;
-    var sec = Math.ceil(r / 1000);
-    $("tb").style.width = pc + "%";
-    $("tb").style.backgroundColor = pc < 30 ? "#f43f5e" : pc < 60 ? "#facc15" : "#4ade80";
-    if(sec <= 3 && sec < lB && sec > 0){ lB = sec; se("tk"); }
-    if(r <= 0 && !lk){
-      lk = 1;
-      clearInterval(tI);
-      clearTimeout(cI);
-      se("ng");
-      ds(1);
-      aw(q);
-      $("gl").textContent = "時間切れ！正解:" + q.j;
-      setTimeout(function(){ ix++; sh(); }, 1500);
-    }
-  }, 50);
-}
-
-function re(){if(com)nw();else if(hs)nw();else{tx("R");$("gl").textContent="再戦リクエスト送信中..."}}
 function ds(f){document.querySelectorAll(".ch").forEach(function(b){b.disabled=f})}
 function re(){if(com)nw();else if(hs)nw();else{tx("R");$("gl").textContent="再戦リクエスト送信中..."}}
 </script>
 </body>
 </html>
+
