@@ -308,10 +308,11 @@ var W1=D.filter(function(w){return EZ_SET.has(w.split("|")[0].toLowerCase())});
 var W2=D.filter(function(w){return HD_SET.has(w.split("|")[0].toLowerCase())});
 if(W1.length<20)W1=D.slice(0,Math.floor(D.length/2));
 if(W2.length<20)W2=D.slice(Math.floor(D.length/2));
-var W1=D.filter(function(w){return EZ_RE.test(w)});
-var W2=D.filter(function(w){return HD_RE.test(w)});
-if(W1.length<20)W1=D.slice(0,Math.floor(D.length/2));
-if(W2.length<20)W2=D.slice(Math.floor(D.length/2));
+var W2=D.filter(function(w){return HD_SET.has(w.split("|")[0].toLowerCase())});
+var W1=D.filter(function(w){var k=w.split("|")[0].toLowerCase();return EZ_SET.has(k)&&!HD_SET.has(k)});
+var WM=D.filter(function(w){var k=w.split("|")[0].toLowerCase();return !EZ_SET.has(k)||HD_SET.has(k)});
+if(W1.length<20)W1=D.slice(0,600);
+if(W2.length<20)W2=D.slice(1200);
 var SV="https://ntfy.sh",tp="",hs=0,solo=0,com=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,cMs=0,qT=0,tI,sI,cI,wr=[],LM=6000,lv="n",qNum=10,ac=null,mt=0,lB=4,oppName="相手";
 function $(i){return document.getElementById(i)}
 $("wTot").textContent="現在収録単語数："+D.length+"語";
@@ -349,7 +350,7 @@ function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!
 function mk(){se("st");hs=1;solo=com=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=solo=com=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("接続中...");ls()}
 function mapQ(arr){return arr.map(function(l){var p=l.split("|"),ans=p[1],opts=[ans];while(opts.length<4){var r=D[Math.floor(Math.random()*D.length)].split("|")[1];if(opts.indexOf(r)<0)opts.push(r)}return{e:p[0],j:ans,o:opts.sort(function(){return Math.random()-.5}),raw:l}})}
-function nw(){var pl=lv==="e"?W1:lv==="h"?W2:D;LM=lv==="e"?8000:lv==="h"?4000:6000;qs=mapQ(pl.slice().sort(function(){return Math.random()-.5}).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
+function nw(){var pl=lv==="e"?W1:lv==="h"?W2:WM;LM=lv==="e"?8000:lv==="h"?4000:6000;qs=mapQ(pl.slice().sort(function(){return Math.random()-.5}).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
 function startCom(){se("st");com=1;hs=solo=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;oppName=lv==="e"?"🤖COM(初級)":lv==="h"?"🤖COM(上級)":"🤖COM(中級)";nw()}
 function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs=com=0;LM=8000;qs=mapQ(sv.slice().sort(function(){return Math.random()-.5}));go()}
 function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("bTop").classList.add("hd");$("rv").classList.add("hd");$("mLb").textContent=myTag();$("oLb").textContent=oppName;$("oppWrap").style.visibility=solo?"hidden":"visible";$("sBar").style.display=(solo||com)?"none":"flex";ix=mS=oS=0;wr=[];$("s1").textContent=$("s2").textContent=0;sh()}
