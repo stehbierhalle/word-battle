@@ -5,184 +5,311 @@
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ターゲット1800 オンライン対戦</title>
+  <script src="https://jsdelivr.net"></script>
   <style>
-    body { background: #0f172a; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
-    .box { max-width: 600px; margin: 20px auto; background: #1e293b; padding: 24px; border-radius: 14px; }
-    button { padding: 12px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; margin: 6px; background: #facc15; color: #000; }
-    button:active { transform: scale(0.98); }
-    textarea { width: 100%; height: 65px; margin-top: 8px; background: #0f172a; color: #38bdf8; border: 1px solid #334155; border-radius: 6px; padding: 8px; box-sizing: border-box; font-size: 12px; }
-    .hidden { display: none; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-    .choice { background: #334155; color: #fff; width: 100%; margin: 0; padding: 16px; }
-    .choice:disabled { opacity: 0.4; cursor: not-allowed; }
-    .copy { background: #38bdf8; font-size: 13px; padding: 8px 14px; }
+    body {
+      margin: 0;
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: 'Segoe UI', Meiryo, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      max-width: 680px;
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+    h1 { font-size: 22px; margin-top: 0; color: #facc15; }
+    .lobby-box {
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    input[type="text"] {
+      padding: 12px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: 2px solid #38bdf8;
+      background: #1e293b;
+      color: #fff;
+      width: 220px;
+      text-align: center;
+    }
+    button {
+      background: #facc15;
+      color: #0f172a;
+      border: none;
+      padding: 12px 22px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 8px 4px;
+      transition: 0.15s;
+    }
+    button:hover { background: #fde047; }
+    .guest-btn { background: #38bdf8; }
+    .guest-btn:hover { background: #7dd3fc; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #334155;
+    }
+    .score-box {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px 16px;
+      border-radius: 10px;
+      width: 35%;
+    }
+    .me-box { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 2px solid #38bdf8; }
+    .opp-box { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 2px solid #f43f5e; }
+    .word-area {
+      margin: 20px 0;
+      padding: 24px;
+      background: #0f172a;
+      border-radius: 12px;
+    }
+    .english-word { font-size: 42px; font-weight: bold; letter-spacing: 2px; margin: 8px 0; color: #facc15; }
+    .choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .choice-btn {
+      background: #334155;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      border: 2px solid transparent;
+      cursor: pointer;
+      width: 100%;
+      margin: 0;
+    }
+    .choice-btn:hover:not(:disabled) { background: #475569; border-color: #38bdf8; }
+    .choice-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .status-msg {
+      min-height: 26px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 12px;
+      color: #4ade80;
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 600px) {
+      .choices { grid-template-columns: 1fr; }
+      .english-word { font-size: 32px; }
+    }
   </style>
 </head>
 <body>
-<div class="box">
-  <h2>ターゲット1800 オンライン対戦</h2>
-  <div id="lobby">
-    <button id="b-host">部屋を作る（ホスト）</button>
-    <button id="b-guest" style="background:#38bdf8;">部屋に入る（ゲスト）</button>
 
-    <div id="p-host" class="hidden">
-      <p>① 下の招待コードをコピーして相手に送る</p>
-      <textarea id="t-offer" readonly></textarea>
-      <button id="c-offer" class="copy">招待コードをコピー</button>
-      <p>② 相手の参加コードを貼って接続</p>
-      <textarea id="t-ans-in" placeholder="ここに貼り付け"></textarea>
-      <button id="b-conn">接続して開始</button>
+<div class="container">
+  <h1>ターゲット1800 オンライン対戦</h1>
+
+  <!-- ロビー画面 -->
+  <div id="lobby-screen">
+    <div class="lobby-box">
+      <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">
+        対戦相手と同じ「合言葉（好きな英数字）」を入力してください
+      </div>
+      <input type="text" id="room-input" placeholder="例: 1234" maxlength="12">
+      <div style="margin-top: 12px;">
+        <button id="btn-create">部屋を作って待つ（ホスト）</button>
+        <button id="btn-join" class="guest-btn">部屋に入る（ゲスト）</button>
+      </div>
     </div>
-
-    <div id="p-guest" class="hidden">
-      <p>① 相手の招待コードを貼って生成</p>
-      <textarea id="t-off-in" placeholder="ここに貼り付け"></textarea>
-      <button id="b-make">参加コード生成</button>
-      <p>② 下の参加コードを相手に送り返す</p>
-      <textarea id="t-ans" readonly></textarea>
-      <button id="c-ans" class="copy">参加コードをコピー</button>
-    </div>
-
-    <p id="msg" style="color:#4ade80; font-weight:bold;">役割を選んでください</p>
+    <div class="status-msg" id="lobby-status" style="color: #94a3b8;">合言葉を入れてボタンを押してください</div>
   </div>
 
-  <div id="game" class="hidden">
-    <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:bold;">
-      <span style="color:#38bdf8;">自分: <span id="s1">0</span></span>
-      <span id="qnum">1/10</span>
-      <span style="color:#f43f5e;">相手: <span id="s2">0</span></span>
+  <!-- ゲーム画面 -->
+  <div id="game-screen" class="hidden">
+    <div class="header">
+      <div class="score-box me-box">自分: <span id="my-score">0</span> 点</div>
+      <div style="font-size: 14px; color: #cbd5e1;" id="q-progress">準備中</div>
+      <div class="score-box opp-box">相手: <span id="opp-score">0</span> 点</div>
     </div>
-    <h1 id="word" style="font-size:40px;color:#facc15;margin:20px 0;">READY</h1>
-    <div id="opts" class="grid"></div>
-    <p id="gmsg" style="font-weight:bold; min-height:24px;"></p>
-    <button id="b-re" class="hidden">もう一度対戦する</button>
+
+    <div class="word-area">
+      <div class="english-word" id="word-display">READY</div>
+    </div>
+
+    <div class="choices" id="choices-container"></div>
+
+    <div class="status-msg" id="game-status">対戦中...</div>
+    <button id="rematch-btn" class="hidden">もう一度対戦する</button>
   </div>
 </div>
 
 <script>
-const words = [
-  {en:"abandon", ja:"〜を捨てる", d:["〜を吸収する","〜を称賛する","〜を加速させる"]},
-  {en:"absorb", ja:"〜を吸収する", d:["〜を廃止する","〜を適応させる","〜を避難させる"]},
-  {en:"accomplish", ja:"〜を成し遂げる", d:["〜を伴う","〜を蓄積する","〜を非難する"]},
-  {en:"accurate", ja:"正確な", d:["急性の","十分な","人工の"]},
-  {en:"acquire", ja:"〜を習得する", d:["〜を要求する","〜を調査する","〜を賞賛する"]},
-  {en:"adapt", ja:"適応する", d:["〜を採用する","〜を崇拝する","〜を前進させる"]},
-  {en:"adequate", ja:"十分な", d:["隣接した","進歩した","熱心な"]},
-  {en:"affection", ja:"愛情", d:["影響","苦痛","親和性"]},
-  {en:"alter", ja:"〜を変える", d:["〜を交互にする","〜を警告する","〜を割り当てる"]},
-  {en:"ambitious", ja:"野心的な", d:["曖昧な","熱心な","匿名の"]}
-];
+  const wordBank = [
+    { en: "abandon", ja: "〜を捨てる、断念する", d: ["〜を吸収する", "〜を称賛する", "〜を加速させる"] },
+    { en: "absorb", ja: "〜を吸収する、夢中にさせる", d: ["〜を廃止する", "〜を適応させる", "〜を避難させる"] },
+    { en: "accomplish", ja: "〜を成し遂げる", d: ["〜を伴う", "〜を蓄積する", "〜を非難する"] },
+    { en: "accurate", ja: "正確な、的確な", d: ["急性の、激しい", "十分な", "人工の"] },
+    { en: "acquire", ja: "〜を習得する、得る", d: ["〜を要求する", "〜を調査する", "〜に賞賛を与える"] },
+    { en: "adapt", ja: "適応する、〜を適合させる", d: ["〜を採用する", "〜を崇拝する", "〜を前進させる"] },
+    { en: "adequate", ja: "十分な、適切な", d: ["隣接した", "進歩した", "熱心な"] },
+    { en: "affection", ja: "愛情、好意", d: ["影響、作用", "苦痛、悩み", "親和性"] },
+    { en: "alter", ja: "〜を変える、変わる", d: ["〜を交互に行う", "〜を警告する", "〜を割り当てる"] },
+    { en: "ambitious", ja: "野心的な、大志を抱いた", d: ["曖昧な", "熱心な", "匿名（とくめい）の"] },
+    { en: "analyze", ja: "〜を分析する", d: ["〜に麻酔をかける", "〜を公表する", "〜を予期する"] },
+    { en: "ancient", ja: "古代の、昔からの", d: ["不安な", "年間（毎年）の", "明らかな"] },
+    { en: "anticipate", ja: "〜を予期する、楽しみに待つ", d: ["〜に参加する", "〜に謝罪する", "〜を適用する"] },
+    { en: "apparent", ja: "明らかな、外見上の", d: ["適切な", "熱心な", "横柄な"] },
+    { en: "appreciate", ja: "〜に感謝する、真価を認める", d: ["〜に近づく", "〜を承認する", "〜を逮捕する"] }
+  ];
 
-let pc, dc, host=false, qs=[], idx=0, s1=0, s2=0, lock=false, miss=false;
-const $ = id => document.getElementById(id);
+  // 複数の公開リレーサーバーに接続（HTTPS通信なのでブロックされにくい）
+  const gun = Gun([
+    "https://herokuapp.com",
+    "https://wallie.io",
+    "https://ondigitalocean.app"
+  ]);
 
-$("b-host").onclick = async () => {
-  host = true;
-  $("p-host").classList.remove("hidden");
-  $("p-guest").classList.add("hidden");
-  $("msg").textContent = "招待コードを生成中...";
-  pc = new RTCPeerConnection({iceServers:[{urls:"stun:://google.com"}]});
-  dc = pc.createDataChannel("g");
-  setupDC();
-  let done = false;
-  const finish = () => {
-    if(done || !pc.localDescription) return;
-    done = true;
-    $("t-offer").value = btoa(encodeURIComponent(JSON.stringify(pc.localDescription)));
-    $("msg").textContent = "招待コードをコピーして相手に送ってください";
-  };
-  pc.onicecandidate = e => { if(!e.candidate) finish(); };
-  await pc.setLocalDescription(await pc.createOffer());
-  setTimeout(finish, 2000);
-};
+  let room = null;
+  let isHost = false;
+  let myId = Math.random().toString(36).substring(2, 9);
+  let matchId = "";
+  let questions = [];
+  let currentIdx = 0;
+  let myScore = 0;
+  let oppScore = 0;
+  let myMissed = false;
+  let oppMissed = false;
+  let roundLocked = false;
+  let handledEvents = new Set();
 
-$("b-guest").onclick = () => {
-  host = false;
-  $("p-guest").classList.remove("hidden");
-  $("p-host").classList.add("hidden");
-  $("msg").textContent = "招待コードを貼り付けてください";
-  pc = new RTCPeerConnection({iceServers:[{urls:"stun:://google.com"}]});
-  pc.ondatachannel = e => { dc = e.channel; setupDC(); };
-};
+  function enterRoom(asHost) {
+    const code = document.getElementById("room-input").value.trim();
+    if (!code) {
+      alert("合言葉（例：1234）を入力してください");
+      return;
+    }
 
-$("b-make").onclick = async () => {
-  try {
-    $("msg").textContent = "参加コードを生成中...";
-    await pc.setRemoteDescription(JSON.parse(decodeURIComponent(atob($("t-off-in").value.trim()))));
-    let done = false;
-    const finish = () => {
-      if(done || !pc.localDescription) return;
-      done = true;
-      $("t-ans").value = btoa(encodeURIComponent(JSON.stringify(pc.localDescription)));
-      $("msg").textContent = "参加コードをコピーして相手に送り返してください";
-    };
-    pc.onicecandidate = e => { if(!e.candidate) finish(); };
-    await pc.setLocalDescription(await pc.createAnswer());
-    setTimeout(finish, 2000);
-  } catch(e) { alert("招待コードが正しくありません"); }
-};
+    isHost = asHost;
+    room = gun.get("t1800-battle-room-" + code);
 
-$("b-conn").onclick = async () => {
-  try {
-    $("msg").textContent = "接続中...";
-    await pc.setRemoteDescription(JSON.parse(decodeURIComponent(atob($("t-ans-in").value.trim()))));
-  } catch(e) { alert("参加コードが正しくありません"); }
-};
+    document.getElementById("btn-create").disabled = true;
+    document.getElementById("btn-join").disabled = true;
 
-$("c-offer").onclick = () => { navigator.clipboard.writeText($("t-offer").value); $("msg").textContent = "招待コードをコピーしました！"; };
-$("c-ans").onclick = () => { navigator.clipboard.writeText($("t-ans").value); $("msg").textContent = "参加コードをコピーしました！"; };
+    if (isHost) {
+      document.getElementById("lobby-status").textContent = `合言葉「${code}」で待機中... 相手の入室を待っています`;
+      document.getElementById("lobby-status").style.color = "#facc15";
 
-function setupDC() {
-  dc.onopen = () => {
-    $("lobby").classList.add("hidden");
-    $("game").classList.remove("hidden");
-    if(host) startMatch();
-  };
-  dc.onmessage = e => {
-    const d = JSON.parse(e.data);
-    if(d.t==="S") { qs=d.qs; idx=0; s1=0; s2=0; $("s1").textContent=0; $("s2").textContent=0; $("b-re").classList.add("hidden"); showQ(); }
-    if(d.t==="W" && !lock) { lock=true; s2+=10; $("s2").textContent=s2; $("gmsg").textContent="相手が正解！"; setBtns(true); next(); }
-    if(d.t==="M") { s2-=5; $("s2").textContent=s2; $("gmsg").textContent="相手がお手つき！"; }
-    if(d.t==="R" && host) { startMatch(); }
-  };
-}
+      // ゲストの参加合図を監視
+      room.get("join").on((data) => {
+        if (data && data.guestId && data.guestId !== myId && !matchId) {
+          startNewMatch();
+        }
+      });
+    } else {
+      document.getElementById("lobby-status").textContent = `合言葉「${code}」の部屋に入室中...`;
+      document.getElementById("lobby-status").style.color = "#38bdf8";
 
-function startMatch() {
-  qs = [...words].sort(()=>Math.random()-0.5).map(w => ({en:w.en, ja:w.ja, o:[w.ja,...w.d].sort(()=>Math.random()-0.5)}));
-  idx=0; s1=0; s2=0; $("s1").textContent=0; $("s2").textContent=0; $("b-re").classList.add("hidden");
-  dc.send(JSON.stringify({t:"S", qs}));
-  showQ();
-}
+      // ホストに自分の参加を通知
+      room.get("join").put({ guestId: myId, ts: Date.now() });
 
-function showQ() {
-  if(idx>=qs.length) {
-    $("word").textContent = s1>s2?"🏆 勝利！":s1<s2?"😢 敗北...":"引き分け";
-    $("opts").innerHTML="";
-    $("b-re").classList.remove("hidden");
-    return;
+      // ホストからの試合開始データを監視
+      room.get("match").on((data) => {
+        if (data && data.id && data.id !== matchId && data.qJson) {
+          matchId = data.id;
+          initMatch(JSON.parse(data.qJson));
+        }
+      });
+    }
+
+    // ゲーム中のイベント（正解・お手つき・再戦）を監視
+    room.get("event").on((ev) => {
+      if (!ev || !ev.evId || handledEvents.has(ev.evId)) return;
+      handledEvents.add(ev.evId);
+      if (ev.sender === myId) return; // 自分の送信は無視
+
+      if (ev.type === "WIN" && ev.qIdx === currentIdx && !roundLocked) {
+        roundLocked = true;
+        oppScore += 10;
+        updateScoreUI();
+        disableAllButtons(true);
+        document.getElementById("game-status").textContent = `相手が先に正解！ 正解は「${questions[currentIdx].ja}」`;
+        document.getElementById("game-status").style.color = "#f43f5e";
+        scheduleNextQuestion();
+      } else if (ev.type === "MISS" && ev.qIdx === currentIdx) {
+        oppMissed = true;
+        oppScore -= 5;
+        updateScoreUI();
+        if (!myMissed) {
+          document.getElementById("game-status").textContent = "相手がお手つき！（-5点）チャンス！";
+          document.getElementById("game-status").style.color = "#4ade80";
+        }
+        checkBothMissed();
+      } else if (ev.type === "REMATCH" && isHost) {
+        startNewMatch();
+      }
+    });
   }
-  lock=false; miss=false;
-  const q = qs[idx];
-  $("qnum").textContent = (idx+1)+"/"+qs.length;
-  $("word").textContent = q.en;
-  $("gmsg").textContent = "";
-  $("opts").innerHTML = "";
-  q.o.forEach(txt => {
-    const b = document.createElement("button");
-    b.className = "choice";
-    b.textContent = txt;
-    b.onclick = () => {
-      if(lock || miss) return;
-      if(txt===q.ja) { lock=true; s1+=10; $("s1").textContent=s1; $("gmsg").textContent="正解！"; setBtns(true); dc.send(JSON.stringify({t:"W"})); next(); }
-      else { miss=true; s1-=5; $("s1").textContent=s1; $("gmsg").textContent="お手つき！"; setBtns(true); dc.send(JSON.stringify({t:"M"})); }
-    };
-    $("opts").appendChild(b);
-  });
-}
 
-function setBtns(dis) { document.querySelectorAll(".choice").forEach(b => b.disabled = dis); }
-function next() { setTimeout(()=>{ idx++; showQ(); }, 1200); }
-$("b-re").onclick = () => { if(host) startMatch(); else { dc.send(JSON.stringify({t:"R"})); $("gmsg").textContent="再戦リクエスト送信中..."; } };
-</script>
-</body>
-</html>
+  function sendEvent(type, qIdx = -1) {
+    const evId = myId + "-" + Date.now() + "-" + Math.random();
+    handledEvents.add(evId);
+    room.get("event").put({ evId, sender: myId, type, qIdx });
+  }
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  function startNewMatch() {
+    const selected = shuffle([...wordBank]).slice(0, 10).map(q => ({
+      en: q.en,
+      ja: q.ja,
+      options: shuffle([q.ja, ...q.d])
+    }));
+    matchId = "m-" + Date.now();
+    room.get("match").put({ id: matchId, qJson: JSON.stringify(selected) });
+    initMatch(selected);
+  }
+
+  function initMatch(qList) {
+    questions = qList;
+    currentIdx = 0;
+    myScore = 0;
+    oppScore = 0;
+    updateScoreUI();
+    document.getElementById("lobby-screen").classList.add("hidden");
+    document.getElementById("game-screen").classList.remove("hidden");
+    document.getElementById("rematch-btn").classList.add("hidden");
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    if (currentIdx >= questions.length) {
+      endGame();
+      return;
+    }
+
+    myMissed = false;
+    oppMissed = false;
+    roundLocked = false;
+
+    const q = questions[currentIdx];
+    document.getElementById("q-progress").textContent = `第 ${currentIdx + 1} 問 / 全 ${questions.length} 問`;
+    document.getElementById("word-display").textContent = q.en;
+    document.getElementById("game-status").textContent = "早押しで正しい意味をタップ！";
