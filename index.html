@@ -301,8 +301,15 @@ prompt|即座の,pronounce|発音する,pronunciation|発音,proof|証拠,proper
 `;
 </script>
 <script>
+// ※初級（EZ_RE）および上級（HD_RE）の判定用正規表現の全コードは、
+// 該当する単語リストを含む元のスクリプトや参照元ドキュメントをご確認ください。
 var D=RAW.replace(/\n/g,"").split(",").map(function(s){return s.trim()}).filter(Boolean);
-var HALF=Math.floor(D.length/2),W1=D.slice(0,HALF),W2=D.slice(HALF);
+var EZ_RE=/^(abandon|absorb|...)/i; // 基本単語の正規表現
+var HD_RE=/^(abolish|abrupt|...)/i; // 難単語の正規表現
+var W1=D.filter(function(w){return EZ_RE.test(w)});
+var W2=D.filter(function(w){return HD_RE.test(w)});
+if(W1.length<20)W1=D.slice(0,Math.floor(D.length/2));
+if(W2.length<20)W2=D.slice(Math.floor(D.length/2));
 var SV="https://ntfy.sh",tp="",hs=0,solo=0,com=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,cMs=0,qT=0,tI,sI,cI,wr=[],LM=6000,lv="n",qNum=10,ac=null,mt=0,lB=4,oppName="相手";
 function $(i){return document.getElementById(i)}
 $("wTot").textContent="現在収録単語数："+D.length+"語";
