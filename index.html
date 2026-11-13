@@ -46,7 +46,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 <div class="p">
 <div>
-<select id="lv"><option value="e">英語：初級(8秒)</option><option value="n" selected>英語：中級(6秒)</option><option value="h">英語：上級(4秒)</option><option value="m1">📐 数学ⅠA(8秒)</option><option value="m2">📐 数学ⅡB(8秒)</option><option value="m3">📐 数学ⅢC(8秒)</option><option value="ma">📐 数学ⅠA〜ⅢC全範囲(7秒)</option></select>
+<select id="lv"><option value="e">英語：初級(8秒)</option><option value="n" selected>英語：中級(6秒)</option><option value="h">英語：上級(4秒)</option><option value="m1">📐 数学ⅠA(10秒)</option><option value="m2">📐 数学ⅡB(10秒)</option><option value="m3">📐 数学ⅢC(10秒)</option><option value="ma">📐 数学ⅠA〜ⅢC全範囲(10秒)</option><option value="h1">🏯 日本史：古代〜中世(8秒)</option><option value="h2">🏯 日本史：近世〜近代(8秒)</option><option value="ha">🏯 日本史：全時代(8秒)</option></select>
 <select id="qCnt"><option value="10" selected>10問</option><option value="20">20問</option></select>
 </div>
 <div id="wTot" style="font-size:11px;color:#38bdf8;margin:4px 0"></div>
@@ -316,8 +316,9 @@ if(W2.length<20)W2=D.slice(1200);
 var M1="展開：(a+b)³|a³+3a²b+3ab²+b³;;展開：(a-b)³|a³-3a²b+3ab²-b³;;因数分解：a³+b³|(a+b)(a²-ab+b²);;因数分解：a³-b³|(a-b)(a²+ab+b²);;2次方程式の解の公式|(-b±√(b²-4ac))/2a;;判別式 D (ax²+bx+c=0)|b²-4ac;;頂点の座標：y=a(x-p)²+q|(p, q);;2次関数 y=ax²+bx+c の軸|x = -b/2a;;正弦定理：a/sinA = b/sinB =|2R;;余弦定理：a² =|b²+c²-2bc cosA;;三角形の面積 S (2辺と夾角)|(1/2)bc sinA;;ヘロンの公式の s|(a+b+c)/2;;内接円の半径 r と面積 S の関係|S = (1/2)r(a+b+c);;sin(90°-θ)|cosθ;;cos(90°-θ)|sinθ;;tan(90°-θ)|1/tanθ;;sin(180°-θ)|sinθ;;cos(180°-θ)|-cosθ;;三角比の相互関係：1+tan²θ|1/cos²θ;;順列の総数 nPr|n!/(n-r)!;;組合せの総数 nCr|n!/r!(n-r)!;;重複組合せ nHr|(n+r-1)Cr;;条件付き確率 PA(B)|P(A∩B)/P(A);;反復試行の確率(n回中r回)|nCr p^r (1-p)^(n-r);;期待値 E(aX+b)|aE(X)+b;;分散 V(X) と平均 E(X) の関係|E(X²)-{E(X)}²;;分散 V(aX+b)|a²V(X);;相関係数 r|sxy / (sx・sy);;チェバの定理の積の値|1;;メネラウスの定理の積の値|1;;方べきの定理：PA・PB =|PC・PD (または PT²);;ユークリッドの互除法：a=bq+r のとき|gcd(a,b)=gcd(b,r);;n進法：2進数 1011₂ を10進法に|11;;n進法：2進数 1101₂ を10進法に|13".split(";;");
 var M2="二項定理 (a+b)^n の一般項|nCr a^(n-r) b^r;;剰余の定理：P(x)を(x-α)で割った余り|P(α);;解と係数の関係：2次方程式 α+β|-b/a;;解と係数の関係：2次方程式 αβ|c/a;;3次方程式の解と係数の関係 α+β+γ|-b/a;;3次方程式の解と係数の関係 αβγ|-d/a;;相加平均と相乗平均 (a>0,b>0)|(a+b)/2 ≧ √(ab);;コーシー・シュワルツの不等式|(a²+b²)(x²+y²)≧(ax+by)²;;点(x1,y1)と直線ax+by+c=0の距離|｜ax1+by1+c｜/√(a²+b²);;円の方程式：中心(a,b),半径r|(x-a)²+(y-b)²=r²;;2直線の垂直条件 (傾き m1, m2)|m1・m2 = -1;;加法定理：sin(α+β)|sinα cosβ + cosα sinβ;;加法定理：cos(α+β)|cosα cosβ - sinα sinβ;;加法定理：tan(α+β)|(tanα+tanβ)/(1-tanα tanβ);;2倍角の公式：sin2α|2sinα cosα;;2倍角の公式：cos2α|cos²α - sin²α;;半角の公式：sin²(α/2)|(1-cosα)/2;;半角の公式：cos²(α/2)|(1+cosα)/2;;三角関数の合成：a sinθ + b cosθ|√(a²+b²) sin(θ+α);;対数の性質：log_a(MN)|log_a M + log_a N;;底の変換公式：log_a b|log_c b / log_c a;;導関数の定義：f'(x) = lim(h→0)|{f(x+h)-f(x)}/h;;放物線と直線で囲まれた面積(1/6公式)|(｜a｜/6)(β-α)³;;等差数列の一般項 an|a + (n-1)d;;等差数列の和 Sn (初項a,末項l)|n(a+l)/2;;等比数列の一般項 an|a r^(n-1);;等比数列の和 Sn (r≠1)|a(r^n - 1)/(r - 1);;Σk (k=1からnまでの和)|n(n+1)/2;;Σk² (k=1からnまでの和)|n(n+1)(2n+1)/6;;Σk³ (k=1からnまでの和)|{n(n+1)/2}²;;階差数列 bn による一般項 an (n≧2)|a1 + Σbk (k=1〜n-1);;ベクトルの内積 a⃗・b⃗|｜a⃗｜｜b⃗｜cosθ;;成分表示での内積 (a1,a2)・(b1,b2)|a1b1 + a2b2;;2つのベクトルの垂直条件 (0でない)|a⃗・b⃗ = 0".split(";;");
 var M3="無限等比級数 Σar^(n-1) の収束条件|-1 < r < 1;;無限等比級数の和 (｜r｜<1 のとき)|a / (1 - r);;極限の基本公式：lim(x→0) (sinx)/x|1;;自然対数の底 e の定義：lim(x→0) (1+x)^(1/x)|e;;自然対数の底 e の定義：lim(n→∞) (1+1/n)^n|e;;積の微分法：{f(x)g(x)}'|f'(x)g(x) + f(x)g'(x);;商の微分法：{f(x)/g(x)}'|{f'(x)g(x)-f(x)g'(x)}/{g(x)}²;;合成関数の微分法：dy/dx|(dy/du)・(du/dx);;微分：(sin x)'|cos x;;微分：(cos x)'|-sin x;;微分：(tan x)'|1 / cos²x;;微分：(e^x)'|e^x;;微分：(a^x)'|a^x log a;;微分：(log｜x｜)'|1 / x;;不定積分：∫(1/x)dx|log｜x｜ + C;;不定積分：∫sin x dx|-cos x + C;;不定積分：∫cos x dx|sin x + C;;不定積分：∫(1/cos²x)dx|tan x + C;;不定積分：∫e^x dx|e^x + C;;部分積分法：∫f(x)g'(x)dx|f(x)g(x) - ∫f'(x)g(x)dx;;回転体の体積 V (x軸周り, a〜b)|π ∫[a→b] y² dx;;曲線の長さ L (媒介変数 t, α〜β)|∫[α→β] √{(dx/dt)²+(dy/dt)²} dt;;放物線の標準形：y² = 4px の焦点|(p, 0);;楕円の標準形：x²/a² + y²/b² =|1;;双曲線の標準形：x²/a² - y²/b² =|1;;複素数の極形式：z =|r(cosθ + i sinθ);;ド・モアブルの定理：(cosθ + i sinθ)^n|cos(nθ) + i sin(nθ);;複素数平面：2点 α, β 間の距離|｜β - α｜;;期待値 E(X+Y) (常に成立)|E(X) + E(Y);;分散 V(X+Y) (X,Yが独立のとき)|V(X) + V(Y);;二項分布 B(n,p) の期待値 E(X)|np;;二項分布 B(n,p) の分散 V(X)|np(1-p);;標準正規分布 N(0,1) への標準化 Z|(X - m) / σ".split(";;");
-var MA=M1.concat(M2,M3),ALL_D=D.concat(MA);
- 
+var H1="57年に後漢の光武帝から金印を授かった王|奴国王;;邪馬台国の女王で魏に使いを送った人物|卑弥呼;;538年(または552年)に百済から伝来したもの|仏教;;604年に聖徳太子が定めた官吏の心構え|十七条の憲法;;645年に中大兄皇子らが蘇我入鹿を倒した事件|乙巳の変;;663年に唐・新羅の連合軍に倭国が敗れた戦い|白村江の戦い;;672年に大海人皇子が大友皇子を破った内乱|壬申の乱;;701年に藤原不比等らが完成させた律令|大宝律令;;710年に元明天皇が遷都した都|平城京;;743年に聖武天皇が出した開墾地の永久私有を認める法|墾田永年私財法;;794年に桓武天皇が遷都した都|平安京;;894年に菅原道真の建議で停止された制度|遣唐使;;935年に平将門が関東で起こした反乱|承平・天慶の乱;;1016年に摂政となり全盛期を築いた人物|藤原道長;;1086年に白河上皇が開始した政治形態|院政;;1159年に平清盛が源義朝を破った戦乱|平治の乱;;1167年に武士として初めて太政大臣になった人物|平清盛;;1185年に平氏が滅亡した最後の戦い|壇ノ浦の戦い;;1192年に源頼朝が任命された役職|征夷大将軍;;1221年に後鳥羽上皇が幕府打倒を掲げて起こした乱|承久の乱;;1232年に北条泰時が制定した武家法|御成敗式目;;1274年・1281年に元軍が襲来した事件|元寇;;1297年に鎌倉幕府が御家人救済のために出した法令|永仁の徳政令;;1333年に鎌倉幕府を滅ぼし後醍醐天皇が始めた政治|建武の新政;;1336年に足利尊氏が制定した幕府の基本方針|建武式目;;1392年に足利義満が実現した朝廷の統合|南北朝の合体;;1404年に足利義満が明と開始した貿易|勘合貿易;;1467年に細川勝元と山名宗全の対立から始まった戦乱|応仁の乱;;1485年に国人一揆が守護を追い出し自治を行った国|山城国;;1543年にポルトガル人によって種子島に伝わったもの|鉄砲;;1549年に鹿児島に上陸しキリスト教を伝えた宣教師|フランシスコ・ザビエル;;1560年に織田信長が今川義元を破った戦い|桶狭間の戦い;;1575年に織田・徳川連合軍が武田勝頼を破った戦い|長篠の戦い;;1582年に明智光秀が織田信長を討った事件|本能寺の変;;1588年に豊臣秀吉が農民から武器を没収した政策|刀狩;;1590年に豊臣秀吉が滅ぼし全国統一を成し遂げた一族|北条氏".split(";;");
+var H2="1600年に徳川家康が石田三成らを破った戦い|関ヶ原の戦い;;1615年に大坂夏の陣で滅亡した一族|豊臣氏;;1635年に3代将軍家光が制度化した大名の江戸交代勤務|参勤交代;;1637年に天草四郎を総大将として起こった一揆|島原・天草一揆;;1639年にポルトガル船の来航を禁止し完成した外交体制|鎖国;;1687年に徳川綱吉が出した極端な動物愛護令|生類憐れみの令;;1716年に徳川吉宗が開始した幕政改革|享保の改革;;1742年に徳川吉宗が制定した裁判の基準法典|公事方御定書;;1774年に杉田玄白や前野良沢らが刊行した解剖書|解体新書;;1787年に松平定信が開始した幕政改革|寛政の改革;;1825年に幕府が出した外国船を無条件で撃退する法令|異国船打払令;;1837年に大坂で元幕府役人が起こした反乱|大塩平八郎の乱;;1841年に水野忠邦が開始した幕政改革|天保の改革;;1853年にペリーが4隻の軍艦を率いて来航した場所|浦賀;;1854年に日本とアメリカが結んだ開国条約|日米和親条約;;1858年に井伊直弼が朝廷の許可なく結んだ通商条約|日米修好通商条約;;1860年に井伊直弼が水戸浪士らに暗殺された事件|桜田門外の変;;1866年に坂本龍馬らの仲介で結ばれた軍事同盟|薩長同盟;;1867年に徳川慶喜が政権を朝廷に返上した出来事|大政奉還;;1868年に新政府が発表した政治の基本方針|五箇条の御誓文;;1871年に藩を廃止して県を置いた中央集権政策|廃藩置県;;1873年に政府が定めた土地所有者に地価の3%を課す税制|地租改正;;1877年に西郷隆盛を指導者として起こった最後の士族反乱|西南戦争;;1889年に大日本帝国憲法を発布した当時の首相|黒田清隆;;1894年に勃発した朝鮮をめぐる日本と清の戦争|日清戦争;;1904年に勃発した満州・韓国をめぐる日本とロシアの戦争|日露戦争;;1911年に小村寿太郎が達成した関税自主権の回復|条約改正の完了;;1918年に富山県から全国へ広がった米価高騰への抗議運動|米騒動;;1925年に25歳以上の男子に選挙権を与えた法律|普通選挙法;;1925年に共産主義などの取り締まりのために制定された法律|治安維持法;;1931年に日本軍が奉天郊外の鉄道を爆破し始めた軍事行動|満州事変;;1932年に海軍青年将校らが犬養毅首相を暗殺した事件|五・一五事件;;1936年に陸軍青年将校らが起こしたクーデター未遂事件|二・二六事件;;1945年に日本が受諾して太平洋戦争が終結した宣言|ポツダム宣言;;1951年に吉田茂首相らが調印し日本が主権を回復した条約|サンフランシスコ平和条約".split(";;");
+var HA=H1.concat(H2),MA=M1.concat(M2,M3),ALL_D=D.concat(MA,HA);
 var SV="https://ntfy.sh",tp="",hs=0,solo=0,com=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,cMs=0,qT=0,tI,sI,cI,wr=[],LM=6000,lv="n",qNum=10,ac=null,mt=0,lB=4,oppName="相手";
 function $(i){return document.getElementById(i)}
 $("wTot").textContent="現在収録単語数："+D.length+"語";
@@ -355,9 +356,9 @@ function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!
 function mk(){se("st");hs=1;solo=com=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=solo=com=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("接続中...");ls()}
 function shf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-function mapQ(arr){var isM=(lv==="m1"||lv==="m2"||lv==="m3"||lv==="ma");return arr.map(function(l){var p=l.split("|"),qTxt=(p.at(0)||"").trim(),ans=(p.at(1)||"").trim(),pool=isM?MA:D,opts=[ans],guard=0;while(opts.length<4&&guard<200){guard++;var r=(pool.at(Math.floor(Math.random()*pool.length)).split("|").at(1)||"").trim();if(r&&opts.indexOf(r)<0)opts.push(r)}return{e:qTxt,j:ans,o:shf(opts),raw:l}})}
-function nw(){var pl=lv==="e"?W1:lv==="h"?W2:lv==="m1"?M1:lv==="m2"?M2:lv==="m3"?M3:lv==="ma"?MA:WM;LM=lv==="h"?4000:lv==="n"?6000:lv==="ma"?7000:8000;qs=mapQ(shf(pl.slice()).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
-function startCom(){se("st");com=1;hs=solo=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var nmMap={e:"初級",n:"中級",h:"上級",m1:"数ⅠA",m2:"数ⅡB",m3:"数ⅢC",ma:"数学全"};oppName="🤖COM("+(nmMap[lv]||"中級")+")";nw()}
+function mapQ(arr){var isM=lv.startsWith("m"),isH=(lv==="h1"||lv==="h2"||lv==="ha");return arr.map(function(l){var p=l.split("|"),qTxt=(p.at(0)||"").trim(),ans=(p.at(1)||"").trim(),pool=isM?MA:isH?HA:D,opts=[ans],guard=0;while(opts.length<4&&guard<200){guard++;var r=(pool.at(Math.floor(Math.random()*pool.length)).split("|").at(1)||"").trim();if(r&&opts.indexOf(r)<0)opts.push(r)}return{e:qTxt,j:ans,o:shf(opts),raw:l}})}
+function nw(){var pl=lv==="e"?W1:lv==="h"?W2:lv==="m1"?M1:lv==="m2"?M2:lv==="m3"?M3:lv==="ma"?MA:lv==="h1"?H1:lv==="h2"?H2:lv==="ha"?HA:WM;LM=lv.startsWith("m")?10000:lv==="h"?4000:lv==="n"?6000:8000;qs=mapQ(shf(pl.slice()).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
+function startCom(){se("st");com=1;hs=solo=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var nmMap={e:"初級",n:"中級",h:"上級",m1:"数ⅠA",m2:"数ⅡB",m3:"数ⅢC",ma:"数学全",h1:"古代中世",h2:"近世近代",ha:"日本史全"};oppName="🤖COM("+(nmMap[lv]||"中級")+")";nw()}
 function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs=com=0;LM=8000;qs=mapQ(sv.slice().sort(function(){return Math.random()-.5}));go()}
 function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("bTop").classList.add("hd");$("rv").classList.add("hd");$("mLb").textContent=myTag();$("oLb").textContent=oppName;$("oppWrap").style.visibility=solo?"hidden":"visible";$("sBar").style.display=(solo||com)?"none":"flex";ix=mS=oS=0;wr=[];$("s1").textContent=$("s2").textContent=0;sh()}
 function aw(q){for(var i=0;i<wr.length;i++)if(wr[i].e===q.e)return;wr.push(q);var sv=getSaved(),raw=q.raw||ALL_D.find(function(x){return x.indexOf(q.e+"|")===0});if(raw&&sv.indexOf(raw)<0){sv.push(raw);setSaved(sv)}}
@@ -389,11 +390,114 @@ function sh(){
     if(!solo) $("bR").classList.remove("hd");
     $("bTop").classList.remove("hd");
     $("rv").classList.remove("hd");
-    $("rv").innerHTML = wr.length ? ("<b style='color:#facc15'>📝 振り返り（不要な単語は消去可）</b>" + wr.map(function(x){
+    $("rv").innerHTML = wr.length ? ("<b style='color:#facc15'>📝 振り返り（不要な問題は消去可）</b>" + wr.map(function(x){
       return "<div class='rv-row'><div><b>" + x.e + "</b>：" + x.j + "</div><button class='del-btn' onclick=\"delResItem('" + x.e.replace(/'/g,"") + "',this)\">苦手から消去</button></div>";
     }).join("")) : "<div style='color:#4ade80;font-weight:bold'>🎉 全問クリア！復習不要です！</div>";
     return;
   }
+
+  lk = ms = cMs = 0;
+  lB = 4;
+  if(solo) $("bDrop").classList.remove("hd"); else $("bDrop").classList.add("hd");
+
+  var q = qs.at(ix);
+  var lbMap = {e:"初級", n:"中級", h:"上級", m1:"数ⅠA", m2:"数ⅡB", m3:"数ⅢC", ma:"数学全", h1:"古代中世", h2:"近世近代", ha:"日本史全"};
+  var ln = solo ? "1人復習" : (lbMap[lv] || "中級");
+  var isJp = q.e.length > 14 || /[^a-zA-Z\-]/.test(q.e);
+
+  $("bSpeak").classList.toggle("hd", isJp);
+  $("wd").style.fontSize = isJp ? "21px" : "32px";
+  $("pg").textContent = "[" + ln + "] " + (ix + 1) + "/" + qs.length;
+  $("wd").textContent = q.e;
+  if(!isJp) speakWord(q.e);
+
+  $("gl").textContent = solo ? "答えを選べ！（不要なら上の消去ボタン）" : "早押しで正解を選べ！";
+  $("gl").style.color = "#94a3b8";
+  $("op").innerHTML = "";
+
+  shf(q.o).forEach(function(o){
+    var b = document.createElement("button");
+    b.className = "ch";
+    b.textContent = o;
+    b.onclick = function(){
+      if(lk || ms) return;
+      if(o === q.j){
+        lk = 1;
+        clearInterval(tI);
+        clearTimeout(cI);
+        se("ok");
+        var bn = Math.max(0, Math.round(((LM - (Date.now() - qT)) / LM) * 10));
+        var pt = 10 + bn;
+        mS += pt;
+        $("s1").textContent = mS;
+        $("gl").textContent = "正解！(+" + pt + "点/速度+" + bn + ")";
+        $("gl").style.color = "#38bdf8";
+        ds(1);
+        tx("W", {i:ix, p:pt});
+        setTimeout(function(){ ix++; sh(); }, 1300);
+      } else {
+        ms = 1;
+        se("ng");
+        mS -= 5;
+        $("s1").textContent = mS;
+        $("gl").textContent = solo ? ("不正解！正解:" + q.j) : ("お手つき！（-5点）");
+        $("gl").style.color = "#facc15";
+        aw(q);
+        ds(1);
+        tx("M", {i:ix});
+        if(solo){
+          lk = 1;
+          clearInterval(tI);
+          setTimeout(function(){ ix++; sh(); }, 1500);
+        } else if(com && cMs){
+          lk = 1;
+          clearInterval(tI);
+          clearTimeout(cI);
+          $("gl").textContent = "両方お手つき！正解:" + q.j;
+          setTimeout(function(){ ix++; sh(); }, 1500);
+        }
+      }
+    };
+    $("op").appendChild(b);
+  });
+
+  qT = Date.now();
+  $("tb").style.width = "100%";
+  $("tb").style.backgroundColor = "#4ade80";
+
+  if(com){
+    var dl = lv === "e" ? (3200 + Math.random() * 2800) : lv === "h" ? (1100 + Math.random() * 1300) : (2000 + Math.random() * 2000);
+    cI = setTimeout(function(){
+      if(lk) return;
+      if(Math.random() < (lv === "h" ? 0.1 : 0.22)){
+        oppMiss();
+      } else {
+        var bn = Math.max(0, Math.round(((LM - (Date.now() - qT)) / LM) * 10));
+        oppWin(10 + bn);
+      }
+    }, dl);
+  }
+
+  tI = setInterval(function(){
+    var r = Math.max(0, LM - (Date.now() - qT));
+    var pc = (r / LM) * 100;
+    var sec = Math.ceil(r / 1000);
+    $("tb").style.width = pc + "%";
+    $("tb").style.backgroundColor = pc < 30 ? "#f43f5e" : pc < 60 ? "#facc15" : "#4ade80";
+    if(sec <= 3 && sec < lB && sec > 0){ lB = sec; se("tk"); }
+    if(r <= 0 && !lk){
+      lk = 1;
+      clearInterval(tI);
+      clearTimeout(cI);
+      se("ng");
+      ds(1);
+      aw(q);
+      $("gl").textContent = "時間切れ！正解:" + q.j;
+      setTimeout(function(){ ix++; sh(); }, 1500);
+    }
+  }, 50);
+}
+
 
   lk = ms = cMs = 0;
   lB = 4;
