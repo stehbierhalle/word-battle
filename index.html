@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ターゲット1800 オンライン英単語バトル</title>
+  <script src="https://unpkg.com"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: 'Segoe UI', Meiryo, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      max-width: 720px;
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+    h1 { font-size: 24px; margin-top: 0; color: #facc15; }
+    .lobby-box {
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .room-id-display {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      color: #38bdf8;
+      background: #1e293b;
+      padding: 10px 20px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 8px 0;
+      user-select: all;
+    }
+    input[type="text"] {
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: 2px solid #334155;
+      background: #1e293b;
+      color: #fff;
+      width: 180px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    button {
+      background: #facc15;
+      color: #0f172a;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 6px;
+      transition: 0.15s;
+    }
+    button:hover { background: #fde047; }
+    button:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #334155;
+    }
+    .score-box {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px 16px;
+      border-radius: 10px;
+      width: 35%;
+    }
+    .me-box { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 2px solid #38bdf8; }
+    .opp-box { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 2px solid #f43f5e; }
+    .word-area {
+      margin: 20px 0;
+      padding: 24px;
+      background: #0f172a;
+      border-radius: 12px;
+    }
+    .english-word { font-size: 42px; font-weight: bold; letter-spacing: 2px; margin: 8px 0; color: #facc15; }
+    .choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .choice-btn {
+      background: #334155;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      border: 2px solid transparent;
+      cursor: pointer;
+      width: 100%;
+      margin: 0;
+    }
+    .choice-btn:hover:not(:disabled) { background: #475569; border-color: #38bdf8; }
+    .choice-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status-msg {
+      min-height: 28px;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 12px;
+      color: #4ade80;
+    }
+    .hidden { display: none; }
+    @media (max-width: 600px) {
+      .choices { grid-template-columns: 1fr; }
+      .english-word { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>ターゲット1800 オンライン対戦</h1>
+
+  <!-- ロビー画面 -->
+  <div id="lobby-screen">
+    <div class="lobby-box">
+      <div style="font-size: 14px; color: #94a3b8;">▼ 部屋を作って相手を待つ（ホスト側）</div>
+      <div class="room-id-display" id="my-room-id">接続中...</div>
+      <div style="font-size: 13px; color: #cbd5e1;">この5桁のIDを対戦相手に教えてください</div>
+    </div>
+
+    <div class="lobby-box">
+      <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">▼ 相手の部屋に入る（ゲスト側）</div>
+      <input type="text" id="join-id-input" placeholder="5桁のIDを入力" maxlength="5">
+      <button id="join-btn" onclick="joinRoom()" disabled>入室して対戦開始</button>
+    </div>
+
+    <div class="status-msg" id="lobby-status" style="color: #94a3b8;">サーバーに接続しています...</div>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div id="game-screen" class="hidden">
+    <div class="header">
+      <div class="score-box me-box">自分: <span id="my-score">0</span> 点</div>
+      <div style="font-size: 14px; color: #cbd5e1;" id="q-progress">準備中</div>
+      <div class="score-box opp-box">相手: <span id="opp-score">0</span> 点</div>
+    </div>
+
+    <div class="word-area">
+      <div class="english-word" id="word-display">READY</div>
+    </div>
+
+    <div class="choices" id="choices-container"></div>
+
+    <div class="status-msg" id="game-status">対戦相手と同期中...</div>
+    <button id="rematch-btn" class="hidden" onclick="requestRematch()">もう一度対戦する</button>
+  </div>
+</div>
+
+<script>
+  const wordBank = [
+    { en: "abandon", ja: "〜を捨てる、断念する", dummy: ["〜を吸収する", "〜を称賛する", "〜を加速させる"] },
+    { en: "absorb", ja: "〜を吸収する、夢中にさせる", dummy: ["〜を廃止する", "〜を適応させる", "〜を避難させる"] },
+    { en: "accomplish", ja: "〜を成し遂げる", dummy: ["〜を伴う", "〜を蓄積する", "〜を非難する"] },
+    { en: "accurate", ja: "正確な、的確な", dummy: ["急性の、激しい", "十分な", "人工の"] },
+    { en: "acquire", ja: "〜を習得する、得る", dummy: ["〜を要求する", "〜を調査する", "〜に賞賛を与える"] },
+    { en: "adapt", ja: "適応する、〜を適合させる", dummy: ["〜を採用する", "〜を崇拝する", "〜を前進させる"] },
+    { en: "adequate", ja: "十分な、適切な", dummy: ["隣接した", "進歩した", "熱心な"] },
+    { en: "affection", ja: "愛情、好意", dummy: ["影響、作用", "苦痛、悩み", "親和性"] },
+    { en: "alter", ja: "〜を変える、変わる", dummy: ["〜を交互に行う", "〜を警告する", "〜を割り当てる"] },
+    { en: "ambitious", ja: "野心的な、大志を抱いた", dummy: ["曖昧な", "熱心な", "匿名（とくめい）の"] },
+    { en: "analyze", ja: "〜を分析する", dummy: ["〜に麻酔をかける", "〜を公表する", "〜を予期する"] },
+    { en: "ancient", ja: "古代の、昔からの", dummy: ["不安な", "年間（毎年）の", "明らかな"] },
+    { en: "anticipate", ja: "〜を予期する、楽しみに待つ", dummy: ["〜に参加する", "〜に謝罪する", "〜を適用する"] },
+    { en: "apparent", ja: "明らかな、外見上の", dummy: ["適切な", "熱心な", "横柄な"] },
+    { en: "appreciate", ja: "〜に感謝する、真価を認める", dummy: ["〜に近づく", "〜を承認する", "〜を逮捕する"] },
+    { en: "appropriate", ja: "適切な、ふさわしい", dummy: ["おおよその", "横柄な", "人工の"] },
+    { en: "artificial", ja: "人工の、不自然な", dummy: ["芸術的な", "横柄な", "本質的な"] },
+    { en: "aspect", ja: "側面、様相", dummy: ["尊敬、敬意", "見込み、展望", "疑い"] },
+    { en: "assemble", ja: "集まる、〜を組み立てる", dummy: ["〜に似ている", "〜を割り当てる", "〜を仮定する"] },
+    { en: "assume", ja: "〜と思い込む、引き受ける", dummy: ["〜を保証する", "〜を消費する", "〜を再開する"] }
+  ];
+
+  // 5桁のランダムなルームID生成
+  const shortId = Math.random().toString(36).substring(2, 7).toUpperCase();
+  const peer = new Peer("T1800-" + shortId);
+  let conn = null;
+  let isHost = false;
+
+  let questions = [];
+  let currentIdx = 0;
+  let myScore = 0;
+  let oppScore = 0;
+  let currentOptions = [];
+  let myMissed = false;
+  let oppMissed = false;
+  let roundLocked = false;
+
+  peer.on("open", () => {
+    document.getElementById("my-room-id").textContent = shortId;
+    document.getElementById("join-btn").disabled = false;
+    document.getElementById("lobby-status").textContent = "準備完了！IDを共有するか、相手のIDを入力してください";
+  });
+
+  peer.on("error", (err) => {
+    document.getElementById("lobby-status").textContent = "接続エラー: IDが見つからないか通信に失敗しました";
+    document.getElementById("lobby-status").style.color = "#f43f5e";
+  });
+
+  // ホスト側：相手からの接続を受信
+  peer.on("connection", (connection) => {
+    conn = connection;
+    isHost = true;
+    setupConnection();
+  });
+
+  // ゲスト側：ホストへ接続
+  function joinRoom() {
+    const targetId = document.getElementById("join-id-input").value.trim().toUpperCase();
+    if (targetId.length !== 5) {
+      alert("5桁のルームIDを入力してください");
+      return;
+    }
+    document.getElementById("lobby-status").textContent = "部屋に接続中...";
+    conn = peer.connect("T1800-" + targetId);
+    isHost = false;
+    setupConnection();
+  }
+
+  function setupConnection() {
+    conn.on("open", () => {
+      document.getElementById("lobby-screen").classList.add("hidden");
+      document.getElementById("game-screen").classList.remove("hidden");
+
+      if (isHost) {
+        startNewMatch();
+      }
+    });
+
+    conn.on("data", (data) => {
+      handleNetworkData(data);
+    });
+
+    conn.on("close", () => {
+      document.getElementById("game-status").textContent = "相手との接続が切れました";
+      document.getElementById("game-status").style.color = "#f43f5e";
+      disableAllButtons(true);
+    });
+  }
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  // ホストが問題セットを作成して送信
+  function startNewMatch() {
+    const selected = shuffle([...wordBank]).slice(0, 10).map(q => ({
+      en: q.en,
+      ja: q.ja,
+      options: shuffle([q.ja, ...q.dummy])
+    }));
+    conn.send({ type: "START", questions: selected });
+    initMatch(selected);
+  }
+
+  function initMatch(qList) {
+    questions = qList;
+    currentIdx = 0;
+    myScore = 0;
+    oppScore = 0;
+    updateScoreUI();
+    document.getElementById("rematch-btn").classList.add("hidden");
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    if (currentIdx >= questions.length) {
+      endGame();
+      return;
+    }
+
+    myMissed = false;
+    oppMissed = false;
+    roundLocked = false;
+
+    const q = questions[currentIdx];
+    currentOptions = q.options;
+
+    document.getElementById("q-progress").textContent = `第 ${currentIdx + 1} 問 / 全 ${questions.length} 問`;
+    document.getElementById("word-display").textContent = q.en;
+    document.getElementById("game-status").textContent = "早押しで正しい意味をタップ！";
+    document.getElementById("game-status").style.color = "#94a3b8";
+
+    const container = document.getElementById("choices-container");
+    container.innerHTML = "";
+
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = `${idx + 1}. ${opt}`;
+      btn.onclick = () => submitAnswer(opt);
+      container.appendChild(btn);
+    });
+  }
+
+  // キーボード操作（1〜4キー）にも対応
