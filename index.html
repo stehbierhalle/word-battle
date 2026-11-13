@@ -1,301 +1,188 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" translate="no">
 <head>
   <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ターゲット1800 オンライン英単語バトル</title>
+  <title>ターゲット1800 オンライン対戦</title>
   <style>
-    body {
-      margin: 0;
-      background-color: #0f172a;
-      color: #f8fafc;
-      font-family: 'Segoe UI', Meiryo, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 16px;
-      box-sizing: border-box;
-    }
-    .container {
-      width: 100%;
-      max-width: 720px;
-      background: #1e293b;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      text-align: center;
-      position: relative;
-      z-index: 10;
-    }
-    h1 { font-size: 22px; margin-top: 0; color: #facc15; }
-    .lobby-box {
-      background: #0f172a;
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 14px;
-      text-align: left;
-    }
-    .step-title { font-size: 14px; font-weight: bold; color: #38bdf8; margin-bottom: 8px; }
-    textarea {
-      width: 100%;
-      height: 60px;
-      padding: 8px;
-      font-size: 11px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: #cbd5e1;
-      box-sizing: border-box;
-      resize: none;
-      margin-top: 6px;
-    }
-    button {
-      background: #facc15;
-      color: #0f172a;
-      border: none;
-      padding: 12px 20px;
-      font-size: 15px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 6px;
-      transition: 0.15s;
-    }
-    button:hover:not(:disabled) { background: #fde047; }
-    button:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
-    .copy-btn { background: #38bdf8; }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #334155;
-    }
-    .score-box {
-      font-size: 18px;
-      font-weight: bold;
-      padding: 10px 16px;
-      border-radius: 10px;
-      width: 35%;
-    }
-    .me-box { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 2px solid #38bdf8; }
-    .opp-box { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 2px solid #f43f5e; }
-    .word-area {
-      margin: 20px 0;
-      padding: 24px;
-      background: #0f172a;
-      border-radius: 12px;
-    }
-    .english-word { font-size: 42px; font-weight: bold; letter-spacing: 2px; margin: 8px 0; color: #facc15; }
-    .choices {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 20px 0;
-    }
-    .choice-btn {
-      background: #334155;
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      border: 2px solid transparent;
-      cursor: pointer;
-      width: 100%;
-      margin: 0;
-    }
-    .choice-btn:hover:not(:disabled) { background: #475569; border-color: #38bdf8; }
-    .choice-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .status-msg {
-      min-height: 24px;
-      font-size: 15px;
-      font-weight: bold;
-      margin-top: 10px;
-      color: #4ade80;
-      text-align: center;
-    }
-    .hidden { display: none !important; }
-    @media (max-width: 600px) {
-      .choices { grid-template-columns: 1fr; }
-      .english-word { font-size: 32px; }
-    }
+    body { background: #0f172a; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
+    .box { max-width: 600px; margin: 20px auto; background: #1e293b; padding: 24px; border-radius: 14px; }
+    button { padding: 12px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; margin: 6px; background: #facc15; color: #000; }
+    button:active { transform: scale(0.98); }
+    textarea { width: 100%; height: 65px; margin-top: 8px; background: #0f172a; color: #38bdf8; border: 1px solid #334155; border-radius: 6px; padding: 8px; box-sizing: border-box; font-size: 12px; }
+    .hidden { display: none; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+    .choice { background: #334155; color: #fff; width: 100%; margin: 0; padding: 16px; }
+    .choice:disabled { opacity: 0.4; cursor: not-allowed; }
+    .copy { background: #38bdf8; font-size: 13px; padding: 8px 14px; }
   </style>
 </head>
 <body>
+<div class="box">
+  <h2>ターゲット1800 オンライン対戦</h2>
+  <div id="lobby">
+    <button id="b-host">部屋を作る（ホスト）</button>
+    <button id="b-guest" style="background:#38bdf8;">部屋に入る（ゲスト）</button>
 
-<div class="container">
-  <h1>ターゲット1800 オンライン対戦</h1>
-
-  <!-- ロビー画面 -->
-  <div id="lobby-screen">
-    <div style="margin-bottom: 12px;">
-      <button type="button" id="btn-host">部屋を作る（ホスト）</button>
-      <button type="button" id="btn-guest" style="background:#38bdf8;">部屋に入る（ゲスト）</button>
+    <div id="p-host" class="hidden">
+      <p>① 下の招待コードをコピーして相手に送る</p>
+      <textarea id="t-offer" readonly></textarea>
+      <button id="c-offer" class="copy">招待コードをコピー</button>
+      <p>② 相手の参加コードを貼って接続</p>
+      <textarea id="t-ans-in" placeholder="ここに貼り付け"></textarea>
+      <button id="b-conn">接続して開始</button>
     </div>
 
-    <!-- ホスト用パネル -->
-    <div id="host-panel" class="lobby-box hidden">
-      <div class="step-title">手順1：下の「招待コード」をコピーして相手に送る</div>
-      <textarea id="host-offer" readonly placeholder="招待コードを生成中..."></textarea>
-      <button type="button" class="copy-btn" id="btn-copy-offer">招待コードをコピー</button>
-
-      <div class="step-title" style="margin-top: 16px;">手順2：相手から返ってきた「参加コード」を貼り付けて開始</div>
-      <textarea id="host-answer-input" placeholder="ここに相手の参加コードを貼り付け"></textarea>
-      <button type="button" id="btn-host-connect">接続して対戦開始！</button>
+    <div id="p-guest" class="hidden">
+      <p>① 相手の招待コードを貼って生成</p>
+      <textarea id="t-off-in" placeholder="ここに貼り付け"></textarea>
+      <button id="b-make">参加コード生成</button>
+      <p>② 下の参加コードを相手に送り返す</p>
+      <textarea id="t-ans" readonly></textarea>
+      <button id="c-ans" class="copy">参加コードをコピー</button>
     </div>
 
-    <!-- ゲスト用パネル -->
-    <div id="guest-panel" class="lobby-box hidden">
-      <div class="step-title">手順1：相手から届いた「招待コード」を貼り付けて生成</div>
-      <textarea id="guest-offer-input" placeholder="ここに相手の招待コードを貼り付け"></textarea>
-      <button type="button" id="btn-guest-answer">参加コードを生成する</button>
-
-      <div class="step-title" style="margin-top: 16px;">手順2：下の「参加コード」をコピーして相手に送り返す</div>
-      <textarea id="guest-answer" readonly placeholder="上のボタンを押すとここに表示されます"></textarea>
-      <button type="button" class="copy-btn" id="btn-copy-answer">参加コードをコピー</button>
-    </div>
-
-    <div class="status-msg" id="lobby-status" style="color: #94a3b8;">上のボタンから役割を選んでください</div>
+    <p id="msg" style="color:#4ade80; font-weight:bold;">役割を選んでください</p>
   </div>
 
-  <!-- ゲーム画面 -->
-  <div id="game-screen" class="hidden">
-    <div class="header">
-      <div class="score-box me-box">自分: <span id="my-score">0</span> 点</div>
-      <div style="font-size: 14px; color: #cbd5e1;" id="q-progress">準備中</div>
-      <div class="score-box opp-box">相手: <span id="opp-score">0</span> 点</div>
+  <div id="game" class="hidden">
+    <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:bold;">
+      <span style="color:#38bdf8;">自分: <span id="s1">0</span></span>
+      <span id="qnum">1/10</span>
+      <span style="color:#f43f5e;">相手: <span id="s2">0</span></span>
     </div>
-
-    <div class="word-area">
-      <div class="english-word" id="word-display">READY</div>
-    </div>
-
-    <div class="choices" id="choices-container"></div>
-
-    <div class="status-msg" id="game-status">対戦相手と同期中...</div>
-    <button type="button" id="rematch-btn" class="hidden">もう一度対戦する</button>
+    <h1 id="word" style="font-size:40px;color:#facc15;margin:20px 0;">READY</h1>
+    <div id="opts" class="grid"></div>
+    <p id="gmsg" style="font-weight:bold; min-height:24px;"></p>
+    <button id="b-re" class="hidden">もう一度対戦する</button>
   </div>
 </div>
 
 <script>
-  window.onerror = function(msg) {
-    const statusEl = document.getElementById("lobby-status");
-    if (statusEl) {
-      statusEl.textContent = "エラー発生: " + msg;
-      statusEl.style.color = "#f43f5e";
-    }
+const words = [
+  {en:"abandon", ja:"〜を捨てる", d:["〜を吸収する","〜を称賛する","〜を加速させる"]},
+  {en:"absorb", ja:"〜を吸収する", d:["〜を廃止する","〜を適応させる","〜を避難させる"]},
+  {en:"accomplish", ja:"〜を成し遂げる", d:["〜を伴う","〜を蓄積する","〜を非難する"]},
+  {en:"accurate", ja:"正確な", d:["急性の","十分な","人工の"]},
+  {en:"acquire", ja:"〜を習得する", d:["〜を要求する","〜を調査する","〜を賞賛する"]},
+  {en:"adapt", ja:"適応する", d:["〜を採用する","〜を崇拝する","〜を前進させる"]},
+  {en:"adequate", ja:"十分な", d:["隣接した","進歩した","熱心な"]},
+  {en:"affection", ja:"愛情", d:["影響","苦痛","親和性"]},
+  {en:"alter", ja:"〜を変える", d:["〜を交互にする","〜を警告する","〜を割り当てる"]},
+  {en:"ambitious", ja:"野心的な", d:["曖昧な","熱心な","匿名の"]}
+];
+
+let pc, dc, host=false, qs=[], idx=0, s1=0, s2=0, lock=false, miss=false;
+const $ = id => document.getElementById(id);
+
+$("b-host").onclick = async () => {
+  host = true;
+  $("p-host").classList.remove("hidden");
+  $("p-guest").classList.add("hidden");
+  $("msg").textContent = "招待コードを生成中...";
+  pc = new RTCPeerConnection({iceServers:[{urls:"stun:://google.com"}]});
+  dc = pc.createDataChannel("g");
+  setupDC();
+  let done = false;
+  const finish = () => {
+    if(done || !pc.localDescription) return;
+    done = true;
+    $("t-offer").value = btoa(encodeURIComponent(JSON.stringify(pc.localDescription)));
+    $("msg").textContent = "招待コードをコピーして相手に送ってください";
   };
+  pc.onicecandidate = e => { if(!e.candidate) finish(); };
+  await pc.setLocalDescription(await pc.createOffer());
+  setTimeout(finish, 2000);
+};
 
-  const wordBank = [
-    { en: "abandon", ja: "〜を捨てる、断念する", dummy: ["〜を吸収する", "〜を称賛する", "〜を加速させる"] },
-    { en: "absorb", ja: "〜を吸収する、夢中にさせる", dummy: ["〜を廃止する", "〜を適応させる", "〜を避難させる"] },
-    { en: "accomplish", ja: "〜を成し遂げる", dummy: ["〜を伴う", "〜を蓄積する", "〜を非難する"] },
-    { en: "accurate", ja: "正確な、的確な", dummy: ["急性の、激しい", "十分な", "人工の"] },
-    { en: "acquire", ja: "〜を習得する、得る", dummy: ["〜を要求する", "〜を調査する", "〜に賞賛を与える"] },
-    { en: "adapt", ja: "適応する、〜を適合させる", dummy: ["〜を採用する", "〜を崇拝する", "〜を前進させる"] },
-    { en: "adequate", ja: "十分な、適切な", dummy: ["隣接した", "進歩した", "熱心な"] },
-    { en: "affection", ja: "愛情、好意", dummy: ["影響、作用", "苦痛、悩み", "親和性"] },
-    { en: "alter", ja: "〜を変える、変わる", dummy: ["〜を交互に行う", "〜を警告する", "〜を割り当てる"] },
-    { en: "ambitious", ja: "野心的な、大志を抱いた", dummy: ["曖昧な", "熱心な", "匿名（とくめい）の"] },
-    { en: "analyze", ja: "〜を分析する", dummy: ["〜に麻酔をかける", "〜を公表する", "〜を予期する"] },
-    { en: "ancient", ja: "古代の、昔からの", dummy: ["不安な", "年間（毎年）の", "明らかな"] },
-    { en: "anticipate", ja: "〜を予期する、楽しみに待つ", dummy: ["〜に参加する", "〜に謝罪する", "〜を適用する"] },
-    { en: "apparent", ja: "明らかな、外見上の", dummy: ["適切な", "熱心な", "横柄な"] },
-    { en: "appreciate", ja: "〜に感謝する、真価を認める", dummy: ["〜に近づく", "〜を承認する", "〜を逮捕する"] },
-    { en: "appropriate", ja: "適切な、ふさわしい", dummy: ["おおよその", "横柄な", "人工の"] },
-    { en: "artificial", ja: "人工の、不自然な", dummy: ["芸術的な", "横柄な", "本質的な"] },
-    { en: "aspect", ja: "側面、様相", dummy: ["尊敬、敬意", "見込み、展望", "疑い"] },
-    { en: "assemble", ja: "集まる、〜を組み立てる", dummy: ["〜に似ている", "〜を割り当てる", "〜を仮定する"] },
-    { en: "assume", ja: "〜と思い込む、引き受ける", dummy: ["〜を保証する", "〜を消費する", "〜を再開する"] }
-  ];
+$("b-guest").onclick = () => {
+  host = false;
+  $("p-guest").classList.remove("hidden");
+  $("p-host").classList.add("hidden");
+  $("msg").textContent = "招待コードを貼り付けてください";
+  pc = new RTCPeerConnection({iceServers:[{urls:"stun:://google.com"}]});
+  pc.ondatachannel = e => { dc = e.channel; setupDC(); };
+};
 
-  let pc = null;
-  let dc = null;
-  let isHost = false;
+$("b-make").onclick = async () => {
+  try {
+    $("msg").textContent = "参加コードを生成中...";
+    await pc.setRemoteDescription(JSON.parse(decodeURIComponent(atob($("t-off-in").value.trim()))));
+    let done = false;
+    const finish = () => {
+      if(done || !pc.localDescription) return;
+      done = true;
+      $("t-ans").value = btoa(encodeURIComponent(JSON.stringify(pc.localDescription)));
+      $("msg").textContent = "参加コードをコピーして相手に送り返してください";
+    };
+    pc.onicecandidate = e => { if(!e.candidate) finish(); };
+    await pc.setLocalDescription(await pc.createAnswer());
+    setTimeout(finish, 2000);
+  } catch(e) { alert("招待コードが正しくありません"); }
+};
 
-  let questions = [];
-  let currentIdx = 0;
-  let myScore = 0;
-  let oppScore = 0;
-  let currentOptions = [];
-  let myMissed = false;
-  let oppMissed = false;
-  let roundLocked = false;
+$("b-conn").onclick = async () => {
+  try {
+    $("msg").textContent = "接続中...";
+    await pc.setRemoteDescription(JSON.parse(decodeURIComponent(atob($("t-ans-in").value.trim()))));
+  } catch(e) { alert("参加コードが正しくありません"); }
+};
 
-  function encodeSdp(desc) {
-    return btoa(encodeURIComponent(JSON.stringify(desc)));
+$("c-offer").onclick = () => { navigator.clipboard.writeText($("t-offer").value); $("msg").textContent = "招待コードをコピーしました！"; };
+$("c-ans").onclick = () => { navigator.clipboard.writeText($("t-ans").value); $("msg").textContent = "参加コードをコピーしました！"; };
+
+function setupDC() {
+  dc.onopen = () => {
+    $("lobby").classList.add("hidden");
+    $("game").classList.remove("hidden");
+    if(host) startMatch();
+  };
+  dc.onmessage = e => {
+    const d = JSON.parse(e.data);
+    if(d.t==="S") { qs=d.qs; idx=0; s1=0; s2=0; $("s1").textContent=0; $("s2").textContent=0; $("b-re").classList.add("hidden"); showQ(); }
+    if(d.t==="W" && !lock) { lock=true; s2+=10; $("s2").textContent=s2; $("gmsg").textContent="相手が正解！"; setBtns(true); next(); }
+    if(d.t==="M") { s2-=5; $("s2").textContent=s2; $("gmsg").textContent="相手がお手つき！"; }
+    if(d.t==="R" && host) { startMatch(); }
+  };
+}
+
+function startMatch() {
+  qs = [...words].sort(()=>Math.random()-0.5).map(w => ({en:w.en, ja:w.ja, o:[w.ja,...w.d].sort(()=>Math.random()-0.5)}));
+  idx=0; s1=0; s2=0; $("s1").textContent=0; $("s2").textContent=0; $("b-re").classList.add("hidden");
+  dc.send(JSON.stringify({t:"S", qs}));
+  showQ();
+}
+
+function showQ() {
+  if(idx>=qs.length) {
+    $("word").textContent = s1>s2?"🏆 勝利！":s1<s2?"😢 敗北...":"引き分け";
+    $("opts").innerHTML="";
+    $("b-re").classList.remove("hidden");
+    return;
   }
+  lock=false; miss=false;
+  const q = qs[idx];
+  $("qnum").textContent = (idx+1)+"/"+qs.length;
+  $("word").textContent = q.en;
+  $("gmsg").textContent = "";
+  $("opts").innerHTML = "";
+  q.o.forEach(txt => {
+    const b = document.createElement("button");
+    b.className = "choice";
+    b.textContent = txt;
+    b.onclick = () => {
+      if(lock || miss) return;
+      if(txt===q.ja) { lock=true; s1+=10; $("s1").textContent=s1; $("gmsg").textContent="正解！"; setBtns(true); dc.send(JSON.stringify({t:"W"})); next(); }
+      else { miss=true; s1-=5; $("s1").textContent=s1; $("gmsg").textContent="お手つき！"; setBtns(true); dc.send(JSON.stringify({t:"M"})); }
+    };
+    $("opts").appendChild(b);
+  });
+}
 
-  function decodeSdp(str) {
-    return JSON.parse(decodeURIComponent(atob(str)));
-  }
-
-  function createPeerConnection() {
-    const RTCPC = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
-    if (!RTCPC) {
-      throw new Error("このブラウザはP2P通信に対応していません");
-    }
-    return new RTCPC({
-      iceServers: [{ urls: "stun:://google.com" }]
-    });
-  }
-
-  async function selectRole(role) {
-    const statusEl = document.getElementById("lobby-status");
-    try {
-      document.getElementById("host-panel").classList.add("hidden");
-      document.getElementById("guest-panel").classList.add("hidden");
-
-      if (pc) pc.close();
-      pc = createPeerConnection();
-
-      if (role === "host") {
-        isHost = true;
-        document.getElementById("host-panel").classList.remove("hidden");
-        document.getElementById("host-offer").value = "";
-        statusEl.textContent = "招待コードを作成しています（数秒お待ちください）...";
-        statusEl.style.color = "#facc15";
-
-        dc = pc.createDataChannel("word-battle");
-        setupDataChannel();
-
-        let finished = false;
-        const finalizeOffer = () => {
-          if (finished || !pc.localDescription) return;
-          finished = true;
-          document.getElementById("host-offer").value = encodeSdp(pc.localDescription);
-          statusEl.textContent = "招待コードをコピーして相手に送ってください！";
-          statusEl.style.color = "#4ade80";
-        };
-
-        pc.onicecandidate = (e) => {
-          if (!e.candidate) finalizeOffer();
-        };
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        setTimeout(finalizeOffer, 2500);
-      } else {
-        isHost = false;
-        document.getElementById("guest-panel").classList.remove("hidden");
-        statusEl.textContent = "相手から届いた招待コードを貼り付けてください";
-        statusEl.style.color = "#38bdf8";
-
-        pc.ondatachannel = (e) => {
-          dc = e.channel;
-          setupDataChannel();
-        };
-      }
-    } catch (err) {
-      statusEl.textContent = "エラー: " + err.message;
-      statusEl.style.color = "#f43f5e";
-    }
-  }
-
-  async function guestCreateAnswer() {
-    const statusEl = document.getElementById("lobby-status");
-    try {
+function setBtns(dis) { document.querySelectorAll(".choice").forEach(b => b.disabled = dis); }
+function next() { setTimeout(()=>{ idx++; showQ(); }, 1200); }
+$("b-re").onclick = () => { if(host) startMatch(); else { dc.send(JSON.stringify({t:"R"})); $("gmsg").textContent="再戦リクエスト送信中..."; } };
+</script>
+</body>
+</html>
