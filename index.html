@@ -46,9 +46,10 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 <div class="p">
 <div>
-<select id="lv"><option value="e">初級(基本50語/8秒)</option><option value="n" selected>中級(全100語/6秒)</option><option value="h">上級(難単語50語/4秒)</option></select>
+<select id="lv"><option value="e">初級(前半単語/8秒)</option><option value="n" selected>中級(全単語/6秒)</option><option value="h">上級(後半難単語/4秒)</option></select>
 <select id="qCnt"><option value="10" selected>10問</option><option value="20">20問</option></select>
 </div>
+<div id="wTot" style="font-size:11px;color:#38bdf8;margin:4px 0"></div>
 <button id="bH" onclick="mk()">部屋を作る(対人)</button>
 <button id="bC" style="background:#fb923c" onclick="startCom()">🤖 1人でCOM対戦</button>
 <div id="rI" class="hd" style="margin-top:6px">合言葉：<b id="rD" style="font-size:22px;color:#38bdf8"></b></div>
@@ -116,9 +117,42 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 </div>
 <script>
-var D="abandon|捨てる|吸収|称賛|加速,absorb|吸収する|廃止|適応|避難,accomplish|成し遂げる|伴う|蓄積|非難,accurate|正確な|急性|十分|人工,acquire|習得する|要求|調査|賞賛,adapt|適応する|採用|崇拝|前進,adequate|十分な|隣接|進歩|熱心,affection|愛情|影響|苦痛|親和,alter|変える|交互|警告|割当,ambitious|野心的な|曖昧|熱心|匿名,analyze|分析する|麻酔|公表|予期,ancient|古代の|不安|年間|明白,anticipate|予期する|参加|謝罪|適用,apparent|明らかな|適切|熱心|横柄,appreciate|感謝する|接近|承認|逮捕,appropriate|適切な|概算|横柄|人工,artificial|人工の|芸術|本質|熱心,aspect|側面|尊敬|見込|疑い,assemble|組み立てる|類似|割当|仮定,assume|思い込む|保証|消費|再開,astonish|驚かせる|攻撃|到達|添付,attribute|せいにする|魅了|聴取|自動,available|利用できる|回避|平均|気づく,awkward|気まずい|素敵|覚醒|後向,ban|禁止する|曲げる|縛る|爆発,barrier|障壁|樽|基礎|戦い,behave|振る舞う|信じる|所属|利益,betray|裏切る|打負|懇願|曲げる,bother|悩ます|借りる|跳返|自慢,brief|簡潔な|明るい|勇敢|広い,brilliant|素晴らしい|脆い|残忍|退屈,burden|重荷|埋葬|茂み|予算,calculate|計算する|祝う|捕獲|彫る,capable|能力がある|注意|気軽|慎重,capture|捕らえる|運ぶ|引起|中止,cease|やめる|祝う|主張|分類,challenge|異議を唱える|変える|請求|追払,circumstance|状況|円周|市民|文明,collapse|崩壊する|収集|衝突|結合,combine|結合させる|慰める|命令|賞賛,commit|犯す|伝達|比較|競争,companion|仲間|会社|比較|同情,compel|強制する|補償|競争|完了,compensate|補償する|競争|不平|構成,concentrate|集中する|結論|懸念|確認,concept|概念|関心|演奏|結論,confess|告白する|確認|混乱|征服,confident|自信がある|機密|対立|混乱,confirm|確認する|従う|直面|混雑,consequence|結果|良心|意識|節約,abolish|廃止する|吸収|崇拝|加速,abrupt|突然の|抽象|豊富|不条理,absurd|ばかげた|豊富|抽象|急性,abundant|豊富な|愚か|隣接|曖昧,accelerate|加速する|蓄積|非難|適応,accommodate|収容する|伴う|達成|蓄積,accumulate|蓄積する|非難|収容|適応,acknowledge|認める|習得|接近|公表,acute|急性の|正確|十分|隣接,adjacent|隣接した|十分|進歩|熱心,adolescent|青年期の|成人|古代|年間,advocate|主張する|助言|崇拝|割当,aesthetic|美的な|運動|人工|不安,aggregate|合計の|攻撃|機敏|古代,allocate|割り当てる|変える|交互|警告,ambiguous|曖昧な|野心|匿名|不安,amend|修正する|驚かす|分析|公表,analogy|類推|分析|解剖|無政府,anonymous|匿名の|野心|曖昧|不安,apparatus|装置|外観|食欲|拍手,arbitrary|恣意的な|人工|芸術|横柄,arrogant|横柄な|適切|人工|明白,assert|断言する|評価|割当|組立,assess|評価する|断言|援助|仮定,astonishment|驚き|達成|雰囲気|愛着,atrocity|残虐行為|権威|魅力|属性,authentic|本物の|権威|自動|自治,authorize|権限を与える|自動|執筆|回避,autonomous|自治の|自動|本物|匿名,avert|そらす|主張|避ける|気づく,baffle|当惑させる|均衡|禁止|裏切る,benevolent|慈悲深い|有益|偏見|残忍,bewilder|途方に暮れさせる|裏切る|自慢|悩ます,blunt|鈍い|勇敢|簡潔|明るい,boast|自慢する|悩ます|借りる|曲げる,breach|違反|呼吸|簡潔|突破,brittle|脆い|素敵|残忍|広い,brutal|残忍な|脆い|退屈|勇敢,bureaucracy|官僚制|民主|貴族|資本,catastrophe|大惨事|分類|聖堂|特徴,chronological|年代順の|慢性|市民|臨床,coerce|強制する|一致|崩壊|結合,coherent|筋の通った|固有|粘着|同時,coincide|同時に起こる|崩壊|結合|犯す,commodity|商品|共同|委員|常識,compatible|互換性のある|同情|競争|複雑,compulsory|義務的な|強制|包括|複雑,conceal|隠す|認める|懸念|集中,conceive|思いつく|隠す|征服|確認".split(",");
-var W1=D.slice(0,50),W2=D.slice(50),SV="https://ntfy.sh",tp="",hs=0,solo=0,com=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,cMs=0,qT=0,tI,sI,cI,wr=[],LM=6000,lv="n",qNum=10,ac=null,mt=0,lB=4,oppName="相手";
+var RAW = `
+abandon|捨てる,absorb|吸収する,accomplish|成し遂げる,accurate|正確な,acquire|習得する,adapt|適応する,adequate|十分な,affection|愛情,alter|変える,ambitious|野心的な,
+analyze|分析する,ancient|古代の,anticipate|予期する,apparent|明らかな,appreciate|感謝する,appropriate|適切な,artificial|人工の,aspect|側面,assemble|組み立てる,assume|思い込む,
+astonish|驚かせる,attribute|せいにする,available|利用できる,awkward|気まずい,ban|禁止する,barrier|障壁,behave|振る舞う,betray|裏切る,bother|悩ます,brief|簡潔な,
+brilliant|素晴らしい,burden|重荷,calculate|計算する,capable|能力がある,capture|捕らえる,cease|やめる,challenge|異議を唱える,circumstance|状況,collapse|崩壊する,combine|結合させる,
+commit|犯す,companion|仲間,compel|強制する,compensate|補償する,concentrate|集中する,concept|概念,confess|告白する,confident|自信がある,confirm|確認する,consequence|結果,
+abolish|廃止する,abrupt|突然の,absurd|ばかげた,abundant|豊富な,accelerate|加速する,accommodate|収容する,accumulate|蓄積する,acknowledge|認める,acute|急性の,adjacent|隣接した,
+adolescent|青年期の,advocate|主張する,aesthetic|美的な,aggregate|合計の,allocate|割り当てる,ambiguous|曖昧な,amend|修正する,analogy|類推,anonymous|匿名の,apparatus|装置,
+arbitrary|恣意的な,arrogant|横柄な,assert|断言する,assess|評価する,astonishment|驚き,atrocity|残虐行為,authentic|本物の,authorize|権限を与える,autonomous|自治の,avert|そらす,
+baffle|当惑させる,benevolent|慈悲深い,bewilder|途方に暮れさせる,blunt|鈍い,boast|自慢する,breach|違反,brittle|脆い,brutal|残忍な,bureaucracy|官僚制,catastrophe|大惨事,
+chronological|年代順の,coerce|強制する,coherent|筋の通った,coincide|同時に起こる,commodity|商品,compatible|互換性のある,compulsory|義務的な,conceal|隠す,conceive|思いつく,concession|譲歩,
+considerable|かなりの,consist|成り立つ,constant|絶え間ない,constitute|構成する,construct|建設する,consult|相談する,consume|消費する,contact|接触する,contain|含む,contemporary|現代の,
+content|満足した,context|文脈,contract|契約する,contradict|矛盾する,contrary|反対の,contrast|対照,contribute|貢献する,controversy|論争,convenient|便利な,convention|慣習,
+convert|転換する,convince|確信させる,cooperate|協力する,cope|対処する,corporate|企業の,correspond|一致する,corrupt|腐敗した,courage|勇気,crucial|極めて重要な,cultivate|耕す,
+curious|好奇心の強い,currency|通貨,custom|習慣,damage|損害,deceive|だます,decline|減少する,decorate|飾る,decrease|減少する,dedicate|捧げる,defeat|打ち負かす,
+defend|防御する,define|定義する,definite|明確な,delay|遅らせる,deliberate|意図的な,delicate|繊細な,deliver|配達する,demand|要求する,demonstrate|実証する,deny|否定する,
+depart|出発する,depend|頼る,depict|描く,deposit|預ける,depress|落ち込ませる,deprive|奪う,derive|由来する,descend|降りる,describe|描写する,desert|見捨てる,
+deserve|値する,desire|望む,despair|絶望,despite|〜にもかかわらず,destination|目的地,destroy|破壊する,detach|切り離す,detail|詳細,detect|発見する,determine|決定する,
+develop|発達させる,device|装置,devote|捧げる,diagnose|診断する,differ|異なる,difficult|困難な,digest|消化する,dignity|尊厳,diminish|減少する,diplomat|外交官,
+direct|直接の,disappear|消える,disappoint|失望させる,disaster|災害,discipline|規律,disclose|暴露する,discount|割引,discourage|落胆させる,discover|発見する,discriminate|差別する,
+discuss|議論する,disease|病気,disguise|変装する,disgust|嫌悪,dismiss|解雇する,disorder|混乱,display|展示する,dispose|処分する,dispute|論争する,disrupt|混乱させる,
+dissolve|溶かす,distant|遠い,distinct|明確に異なる,distinguish|区別する,distort|歪める,distract|気を散らす,distribute|分配する,district|地区,disturb|邪魔する,diverse|多様な,
+divide|分ける,domestic|国内の,dominate|支配する,donate|寄付する,doubt|疑う,draft|下書き,drag|引きずる,dramatic|劇的な,drastic|抜本的な,dread|恐れる,
+drift|漂う,drown|溺れる,durable|耐久性のある,duration|期間,duty|義務,dwell|住む,dynamic|活動的な,eager|熱心な,earn|稼ぐ,earnest|真面目な,
+earthquake|地震,ecology|生態学,economic|経済の,economy|経済,edge|端,edit|編集する,educate|教育する,effect|効果,efficient|効率的な,effort|努力,
+elaborate|精巧な,elderly|年配の,elect|選ぶ,electric|電気の,elegant|上品な,element|要素,elevate|高める,eliminate|排除する,embarrass|恥ずかしい思いをさせる,embrace|抱擁する,
+emerge|現れる,emergency|緊急事態,emit|放出する,emotion|感情,emphasis|重点,empire|帝国,employ|雇う,enable|可能にする,enclose|囲む,encounter|遭遇する,
+encourage|励ます,endanger|危険にさらす,endeavor|努力する,endure|耐える,enemy|敵,enforce|施行する,engage|従事する,enhance|高める,enormous|巨大な,ensure|保証する
+`;
+</script>
+<script>
+var D=RAW.replace(/\n/g,"").split(",").map(function(s){return s.trim()}).filter(Boolean);
+var HALF=Math.floor(D.length/2),W1=D.slice(0,HALF),W2=D.slice(HALF);
+var SV="https://ntfy.sh",tp="",hs=0,solo=0,com=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,cMs=0,qT=0,tI,sI,cI,wr=[],LM=6000,lv="n",qNum=10,ac=null,mt=0,lB=4,oppName="相手";
 function $(i){return document.getElementById(i)}
+$("wTot").textContent="現在収録単語数："+D.length+"語";
 function getPr(){try{var d=JSON.parse(localStorage.getItem("t18_pr")||"{}");return{av:d.av||"🦁",nm:d.nm||"プレイヤー",bio:d.bio||"よろしくお願いします！",w:d.w||0,l:d.l||0,st:d.st||0,mx:d.mx||0,pt:d.pt||0}}catch(e){return{av:"🦁",nm:"プレイヤー",bio:"よろしくお願いします！",w:0,l:0,st:0,mx:0,pt:0}}}
 function getRank(w){return w>=30?"単語神":w>=20?"単語王":w>=10?"達人":w>=5?"熟練者":w>=1?"初段":"駆け出し"}
 function ldProf(){var p=getPr();$("hmName").textContent=p.av+" "+p.nm;$("hmRk").textContent=getRank(p.w);$("hmBio").textContent=p.bio}
@@ -133,14 +167,16 @@ function updRev(){var a=getSaved();$("reviewCount").textContent="長期保存中
 updRev();
 function openMgr(){renderMgr();$("mgrModal").classList.remove("hd")}
 function closeMgr(){$("mgrModal").classList.add("hd")}
-function renderMgr(){var a=getSaved();$("mRevBtn").disabled=!a.length;if(!a.length){$("mgrList").innerHTML="<div style='color:#94a3b8;text-align:center'>保存されている苦手単語はありません</div>";return}$("mgrList").innerHTML=a.map(function(raw){var p=raw.split("|");return"<div class='rv-row'><div><b>"+p[0]+"</b> ： "+p[1]+"</div><button class='del-btn' onclick=\"delOne('"+p[0].replace(/'/g,"")+"')\">消去</button></div>"}).join("")}
+function renderMgr(){var a=getSaved();$("mRevBtn").disabled=!a.length;if(!a.length){$("mgrList").innerHTML="<div style='color:#94a3b8;text-align:center'>保存されている苦手単語はありません</div>";return}$("mgrList").innerHTML=a.map(function(raw){var p=raw.split("|");return"<div class='rv-row'><div><b>"+p+"</b> ： "+p+"</div><button class='del-btn' onclick=\"delOne('"+p.replace(/'/g,"")+"')\">消去</button></div>"}).join("")}
 function delOne(en){rmSaved(en);renderMgr();se("st")}
 function clearAllWr(){setSaved([]);renderMgr();se("st")}
 function dropCurrent(){if(!qs[ix])return;var en=qs[ix].e;rmSaved(en);se("st");clearInterval(tI);$("gl").textContent="「"+en+"」を苦手リストから消去しました！";$("gl").style.color="#38bdf8";ds(1);setTimeout(function(){ix++;sh()},900)}
 function tgM(){mt=!mt;$("bM").textContent=mt?"🔇OFF":"🔊ON";if(mt&&"speechSynthesis"in window)window.speechSynthesis.cancel()}
 function speakWord(w){if(mt||!("speechSynthesis"in window)||!w||w==="READY")return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(w);u.lang="en-US";u.rate=0.85;var vs=window.speechSynthesis.getVoices(),ev=vs.find(function(v){return/^en-US/i.test(v.lang)})||vs.find(function(v){return/^en/i.test(v.lang)});if(ev)u.voice=ev;window.speechSynthesis.speak(u)}
 function speakCurrent(){speakWord($("wd").textContent)}
-function se(k){if(mt)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);if(k==="ok"){o.type="sine";o.frequency.setValueAtTime(660,t);o.frequency.setValueAtTime(880,t+.09);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.28);o.start(t);o.stop(t+.28)}else if(k==="ng"){o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.setValueAtTime(120,t+.12);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(k==="st"){o.type="triangle";o.frequency.setValueAtTime(520,t);o.frequency.setValueAtTime(780,t+.06);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.01,t+.15);o.start(t);o.stop(t+.15)}else if(k==="tk"){o.type="sine";o.frequency.setValueAtTime(900,t);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.01,t+.06);o.start(t);o.stop(t+.06)}else if(k==="wn"){o.type="triangle";[523,659,784,1046].forEach(function(f,i){o.frequency.setValueAtTime(f,t+i*.09)});g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5)}}catch(e){}}
+</script>
+<script>
+function se(k){if(mt)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);if(k==="ok"){o.type="sine";o.frequency.setValueAtTime(660,t);o.frequency.setValueAtTime(880,t+.09);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.28);o.start(t);o.stop(t+.28)}else if(k==="ng"){o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.setValueAtTime(120,t+.12);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(k==="st"){o.type="triangle";o.frequency.setValueAtTime(520,t);o.frequency.setValueAtTime(780,t+.06);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.01,t+.15);o.start(t);o.stop(t+.15)}else if(k==="tk"){o.type="sine";o.frequency.setValueAtTime(900,t);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.01,t+.06);o.start(t);o.stop(t+.06)}else if(k==="wn"){o.type="triangle";.forEach(function(f,i){o.frequency.setValueAtTime(f,t+i*.09)});g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5)}}catch(e){}}
 function lg(t,e){$("lg").textContent=t;$("lg").style.color=e?"#f43f5e":"#4ade80"}
 function tx(t,x){if(solo||com)return;var d={s:id,t:t};if(x)for(var k in x)d[k]=x[k];fetch(SV+"/"+tp,{method:"POST",body:JSON.stringify(d)}).catch(function(){lg("送信エラー",1)})}
 function st(t){se("st");pop(myTag()+": "+t,"#38bdf8");tx("S",{x:t})}
@@ -150,7 +186,7 @@ function oppMiss(){cMs=1;oS-=5;$("s2").textContent=oS;if(!ms){$("gl").textConten
 function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!hs){lg("接続完了！開始待ち...");tx("J",{nm:myTag()})}};es.onmessage=function(e){try{var m=JSON.parse(JSON.parse(e.data).message);if(m.s===id)return;if(m.t==="J"&&hs){oppName=m.nm||"相手";nw()}else if(m.t==="B"){oppName=m.nm||"相手";qs=m.q;LM=m.l;lv=m.v;go()}else if(m.t==="W"&&m.i===ix&&!lk)oppWin(m.p);else if(m.t==="M"&&m.i===ix)oppMiss();else if(m.t==="S"){se("st");pp(oppName+": "+m.x,"#f472b6")}else if(m.t==="R"&&hs)nw()}catch(z){}}}
 function mk(){se("st");hs=1;solo=com=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=solo=com=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("接続中...");ls()}
-function mapQ(arr){return arr.map(function(l){var p=l.split("|");return{e:p[0],j:p[1],o:[p[1],p[2],p[3],p[4]].sort(function(){return Math.random()-.5}),raw:l}})}
+function mapQ(arr){return arr.map(function(l){var p=l.split("|"),ans=p,opts=[ans];while(opts.length<4){var r=D[Math.floor(Math.random()*D.length)].split("|");if(opts.indexOf(r)<0)opts.push(r)}return{e:p,j:ans,o:opts.sort(function(){return Math.random()-.5}),raw:l}})}
 function nw(){var pl=lv==="e"?W1:lv==="h"?W2:D;LM=lv==="e"?8000:lv==="h"?4000:6000;qs=mapQ(pl.slice().sort(function(){return Math.random()-.5}).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
 function startCom(){se("st");com=1;hs=solo=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;oppName=lv==="e"?"🤖COM(初級)":lv==="h"?"🤖COM(上級)":"🤖COM(中級)";nw()}
 function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs=com=0;LM=8000;qs=mapQ(sv.slice().sort(function(){return Math.random()-.5}));go()}
