@@ -46,7 +46,25 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 <div class="p">
 <div>
-<select id="lv"><option value="e">英語：初級(8秒)</option><option value="n" selected>英語：中級(6秒)</option><option value="h">英語：上級(4秒)</option><option value="m1">📐 数学ⅠA(10秒)</option><option value="m2">📐 数学ⅡB(10秒)</option><option value="m3">📐 数学ⅢC(10秒)</option><option value="ma">📐 数学ⅠA〜ⅢC全範囲(10秒)</option><option value="h1">🏯 日本史：古代〜中世(8秒)</option><option value="h2">🏯 日本史：近世〜近代(8秒)</option><option value="ha">🏯 日本史：全時代(8秒)</option></select>
+<select id="lv" onchange="updCourseInfo()" style="max-width:240px;text-align:left">
+  <optgroup label="📘 英語（ターゲット1800）">
+    <option value="e">　├ 初級：基礎単語 (8秒)</option>
+    <option value="n" selected>　├ 中級：標準〜応用 (6秒)</option>
+    <option value="h">　└ 上級：難単語 (4秒)</option>
+  </optgroup>
+  <optgroup label="📐 高校数学（公式・定理）">
+    <option value="m1">　├ 数学ⅠA (10秒)</option>
+    <option value="m2">　├ 数学ⅡB (10秒)</option>
+    <option value="m3">　├ 数学ⅢC (10秒)</option>
+    <option value="ma">　└ 数学ⅠA〜ⅢC 全範囲 (10秒)</option>
+  </optgroup>
+  <optgroup label="🏯 高校日本史（重要用語）">
+    <option value="h1">　├ 古代〜中世 (8秒)</option>
+    <option value="h2">　├ 近世〜近代 (8秒)</option>
+    <option value="ha">　└ 日本史 全時代 (8秒)</option>
+  </optgroup>
+</select>
+
 <select id="qCnt"><option value="10" selected>10問</option><option value="20">20問</option></select>
 </div>
 <div id="wTot" style="font-size:11px;color:#38bdf8;margin:4px 0"></div>
@@ -321,7 +339,23 @@ var H2="1600年に徳川家康が石田三成らを破った戦い|関ヶ原の�
 var HA=H1.concat(H2),MA=M1.concat(M2,M3),ALL_D=D.concat(MA,HA);
 var SV="https://ntfy.sh",tp="",hs=0,solo=0,com=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,cMs=0,qT=0,tI,sI,cI,wr=[],LM=6000,lv="n",qNum=10,ac=null,mt=0,lB=4,oppName="相手";
 function $(i){return document.getElementById(i)}
-$("wTot").textContent="現在収録単語数："+D.length+"語";
+function updCourseInfo(){
+  var v=$("lv").value;
+  var info={
+    e:"📘 英語・初級（収録："+W1.length+"語 / 制限時間：8秒）",
+    n:"📘 英語・中級（収録："+WM.length+"語 / 制限時間：6秒）",
+    h:"📘 英語・上級（収録："+W2.length+"語 / 制限時間：4秒）",
+    m1:"📐 数学ⅠA（収録："+M1.length+"問 / 制限時間：10秒）",
+    m2:"📐 数学ⅡB（収録："+M2.length+"問 / 制限時間：10秒）",
+    m3:"📐 数学ⅢC（収録："+M3.length+"問 / 制限時間：10秒）",
+    ma:"📐 数学全範囲（収録："+MA.length+"問 / 制限時間：10秒）",
+    h1:"🏯 日本史・古代〜中世（収録："+H1.length+"問 / 制限時間：8秒）",
+    h2:"🏯 日本史・近世〜近代（収録："+H2.length+"問 / 制限時間：8秒）",
+    ha:"🏯 日本史・全時代（収録："+HA.length+"問 / 制限時間：8秒）"
+  };
+  $("wTot").textContent=(info[v]||"")+" ／ 総収録："+ALL_D.length+"問";
+}
+updCourseInfo();
 function getPr(){try{var d=JSON.parse(localStorage.getItem("t18_pr")||"{}");return{av:d.av||"🦁",nm:d.nm||"プレイヤー",bio:d.bio||"よろしくお願いします！",w:d.w||0,l:d.l||0,st:d.st||0,mx:d.mx||0,pt:d.pt||0}}catch(e){return{av:"🦁",nm:"プレイヤー",bio:"よろしくお願いします！",w:0,l:0,st:0,mx:0,pt:0}}}
 function getRank(w){return w>=30?"単語神":w>=20?"単語王":w>=10?"達人":w>=5?"熟練者":w>=1?"初段":"駆け出し"}
 function ldProf(){var p=getPr();$("hmName").textContent=p.av+" "+p.nm;$("hmRk").textContent=getRank(p.w);$("hmBio").textContent=p.bio}
