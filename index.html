@@ -26,6 +26,8 @@
       padding: 24px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       text-align: center;
+      position: relative;
+      z-index: 10;
     }
     h1 { font-size: 22px; margin-top: 0; color: #facc15; }
     .lobby-box {
@@ -38,7 +40,7 @@
     .step-title { font-size: 14px; font-weight: bold; color: #38bdf8; margin-bottom: 8px; }
     textarea {
       width: 100%;
-      height: 54px;
+      height: 60px;
       padding: 8px;
       font-size: 11px;
       border-radius: 8px;
@@ -53,17 +55,17 @@
       background: #facc15;
       color: #0f172a;
       border: none;
-      padding: 10px 18px;
-      font-size: 14px;
+      padding: 12px 20px;
+      font-size: 15px;
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 6px;
+      margin: 6px;
       transition: 0.15s;
     }
     button:hover:not(:disabled) { background: #fde047; }
     button:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
-    .copy-btn { background: #38bdf8; margin-left: 6px; }
+    .copy-btn { background: #38bdf8; }
     .header {
       display: flex;
       justify-content: space-between;
@@ -116,7 +118,7 @@
       color: #4ade80;
       text-align: center;
     }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     @media (max-width: 600px) {
       .choices { grid-template-columns: 1fr; }
       .english-word { font-size: 32px; }
@@ -131,30 +133,30 @@
   <!-- ロビー画面 -->
   <div id="lobby-screen">
     <div style="margin-bottom: 12px;">
-      <button onclick="selectRole('host')">部屋を作る（ホスト）</button>
-      <button onclick="selectRole('guest')" style="background:#38bdf8;">部屋に入る（ゲスト）</button>
+      <button type="button" id="btn-host">部屋を作る（ホスト）</button>
+      <button type="button" id="btn-guest" style="background:#38bdf8;">部屋に入る（ゲスト）</button>
     </div>
 
     <!-- ホスト用パネル -->
     <div id="host-panel" class="lobby-box hidden">
       <div class="step-title">手順1：下の「招待コード」をコピーして相手に送る</div>
       <textarea id="host-offer" readonly placeholder="招待コードを生成中..."></textarea>
-      <button class="copy-btn" onclick="copyText('host-offer')">招待コードをコピー</button>
+      <button type="button" class="copy-btn" id="btn-copy-offer">招待コードをコピー</button>
 
       <div class="step-title" style="margin-top: 16px;">手順2：相手から返ってきた「参加コード」を貼り付けて開始</div>
       <textarea id="host-answer-input" placeholder="ここに相手の参加コードを貼り付け"></textarea>
-      <button onclick="hostConnect()">接続して対戦開始！</button>
+      <button type="button" id="btn-host-connect">接続して対戦開始！</button>
     </div>
 
     <!-- ゲスト用パネル -->
     <div id="guest-panel" class="lobby-box hidden">
       <div class="step-title">手順1：相手から届いた「招待コード」を貼り付けて生成</div>
       <textarea id="guest-offer-input" placeholder="ここに相手の招待コードを貼り付け"></textarea>
-      <button onclick="guestCreateAnswer()">参加コードを生成する</button>
+      <button type="button" id="btn-guest-answer">参加コードを生成する</button>
 
       <div class="step-title" style="margin-top: 16px;">手順2：下の「参加コード」をコピーして相手に送り返す</div>
       <textarea id="guest-answer" readonly placeholder="上のボタンを押すとここに表示されます"></textarea>
-      <button class="copy-btn" onclick="copyText('guest-answer')">参加コードをコピー</button>
+      <button type="button" class="copy-btn" id="btn-copy-answer">参加コードをコピー</button>
     </div>
 
     <div class="status-msg" id="lobby-status" style="color: #94a3b8;">上のボタンから役割を選んでください</div>
@@ -175,11 +177,19 @@
     <div class="choices" id="choices-container"></div>
 
     <div class="status-msg" id="game-status">対戦相手と同期中...</div>
-    <button id="rematch-btn" class="hidden" onclick="requestRematch()">もう一度対戦する</button>
+    <button type="button" id="rematch-btn" class="hidden">もう一度対戦する</button>
   </div>
 </div>
 
 <script>
+  window.onerror = function(msg) {
+    const statusEl = document.getElementById("lobby-status");
+    if (statusEl) {
+      statusEl.textContent = "エラー発生: " + msg;
+      statusEl.style.color = "#f43f5e";
+    }
+  };
+
   const wordBank = [
     { en: "abandon", ja: "〜を捨てる、断念する", dummy: ["〜を吸収する", "〜を称賛する", "〜を加速させる"] },
     { en: "absorb", ja: "〜を吸収する、夢中にさせる", dummy: ["〜を廃止する", "〜を適応させる", "〜を避難させる"] },
@@ -216,81 +226,78 @@
   let oppMissed = false;
   let roundLocked = false;
 
+  function encodeSdp(desc) {
+    return btoa(encodeURIComponent(JSON.stringify(desc)));
+  }
+
+  function decodeSdp(str) {
+    return JSON.parse(decodeURIComponent(atob(str)));
+  }
+
   function createPeerConnection() {
-    return new RTCPeerConnection({
+    const RTCPC = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+    if (!RTCPC) {
+      throw new Error("このブラウザはP2P通信に対応していません");
+    }
+    return new RTCPC({
       iceServers: [{ urls: "stun:://google.com" }]
     });
   }
 
   async function selectRole(role) {
-    document.getElementById("host-panel").classList.add("hidden");
-    document.getElementById("guest-panel").classList.add("hidden");
+    const statusEl = document.getElementById("lobby-status");
+    try {
+      document.getElementById("host-panel").classList.add("hidden");
+      document.getElementById("guest-panel").classList.add("hidden");
 
-    if (pc) pc.close();
-    pc = createPeerConnection();
+      if (pc) pc.close();
+      pc = createPeerConnection();
 
-    if (role === "host") {
-      isHost = true;
-      document.getElementById("host-panel").classList.remove("hidden");
-      document.getElementById("lobby-status").textContent = "招待コードを作成しています...";
+      if (role === "host") {
+        isHost = true;
+        document.getElementById("host-panel").classList.remove("hidden");
+        document.getElementById("host-offer").value = "";
+        statusEl.textContent = "招待コードを作成しています（数秒お待ちください）...";
+        statusEl.style.color = "#facc15";
 
-      dc = pc.createDataChannel("word-battle");
-      setupDataChannel();
-
-      pc.onicecandidate = (e) => {
-        if (!e.candidate) {
-          document.getElementById("host-offer").value = btoa(JSON.stringify(pc.localDescription));
-          document.getElementById("lobby-status").textContent = "招待コードをコピーして相手に送ってください！";
-        }
-      };
-
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-    } else {
-      isHost = false;
-      document.getElementById("guest-panel").classList.remove("hidden");
-      document.getElementById("lobby-status").textContent = "相手から届いた招待コードを貼り付けてください";
-
-      pc.ondatachannel = (e) => {
-        dc = e.channel;
+        dc = pc.createDataChannel("word-battle");
         setupDataChannel();
-      };
+
+        let finished = false;
+        const finalizeOffer = () => {
+          if (finished || !pc.localDescription) return;
+          finished = true;
+          document.getElementById("host-offer").value = encodeSdp(pc.localDescription);
+          statusEl.textContent = "招待コードをコピーして相手に送ってください！";
+          statusEl.style.color = "#4ade80";
+        };
+
+        pc.onicecandidate = (e) => {
+          if (!e.candidate) finalizeOffer();
+        };
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        setTimeout(finalizeOffer, 2500);
+      } else {
+        isHost = false;
+        document.getElementById("guest-panel").classList.remove("hidden");
+        statusEl.textContent = "相手から届いた招待コードを貼り付けてください";
+        statusEl.style.color = "#38bdf8";
+
+        pc.ondatachannel = (e) => {
+          dc = e.channel;
+          setupDataChannel();
+        };
+      }
+    } catch (err) {
+      statusEl.textContent = "エラー: " + err.message;
+      statusEl.style.color = "#f43f5e";
     }
   }
 
   async function guestCreateAnswer() {
+    const statusEl = document.getElementById("lobby-status");
     try {
-      const offerText = document.getElementById("guest-offer-input").value.trim();
-      if (!offerText) return alert("招待コードを貼り付けてください");
 
-      document.getElementById("lobby-status").textContent = "参加コードを生成中...";
-      const offerDesc = JSON.parse(atob(offerText));
-      await pc.setRemoteDescription(offerDesc);
-
-      pc.onicecandidate = (e) => {
-        if (!e.candidate) {
-          document.getElementById("guest-answer").value = btoa(JSON.stringify(pc.localDescription));
-          document.getElementById("lobby-status").textContent = "参加コードをコピーして相手に送り返してください！（そのまま待機）";
-        }
-      };
-
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-    } catch (err) {
-      alert("招待コードが正しくありません。最初からコピーし直してください。");
-    }
-  }
-
-  async function hostConnect() {
-    try {
-      const answerText = document.getElementById("host-answer-input").value.trim();
-      if (!answerText) return alert("参加コードを貼り付けてください");
-
-      const answerDesc = JSON.parse(atob(answerText));
-      await pc.setRemoteDescription(answerDesc);
-      document.getElementById("lobby-status").textContent = "接続処理中...";
-    } catch (err) {
-      alert("参加コードが正しくありません。最初からコピーし直してください。");
-    }
-  }
 
