@@ -5,7 +5,6 @@
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ターゲット1800 オンライン対戦</title>
-  <script src="https://jsdelivr.net"></script>
   <style>
     body {
       margin: 0;
@@ -57,11 +56,10 @@
       border-radius: 8px;
       cursor: pointer;
       margin: 8px 4px;
-      transition: 0.15s;
     }
-    button:hover { background: #fde047; }
+    button:hover:not(:disabled) { background: #fde047; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
     .guest-btn { background: #38bdf8; }
-    .guest-btn:hover { background: #7dd3fc; }
     .header {
       display: flex;
       justify-content: space-between;
@@ -125,7 +123,6 @@
 <div class="container">
   <h1>ターゲット1800 オンライン対戦</h1>
 
-  <!-- ロビー画面 -->
   <div id="lobby-screen">
     <div class="lobby-box">
       <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">
@@ -140,7 +137,6 @@
     <div class="status-msg" id="lobby-status" style="color: #94a3b8;">合言葉を入れてボタンを押してください</div>
   </div>
 
-  <!-- ゲーム画面 -->
   <div id="game-screen" class="hidden">
     <div class="header">
       <div class="score-box me-box">自分: <span id="my-score">0</span> 点</div>
@@ -178,17 +174,11 @@
     { en: "appreciate", ja: "〜に感謝する、真価を認める", d: ["〜に近づく", "〜を承認する", "〜を逮捕する"] }
   ];
 
-  // 複数の公開リレーサーバーに接続（HTTPS通信なのでブロックされにくい）
-  const gun = Gun([
-    "https://herokuapp.com",
-    "https://wallie.io",
-    "https://ondigitalocean.app"
-  ]);
-
-  let room = null;
+  // 外部ライブラリ不要の標準WebSocket通信（無料の公開エコー/ブロードキャストサーバー利用）
+  let ws = null;
+  let roomName = "";
   let isHost = false;
   let myId = Math.random().toString(36).substring(2, 9);
-  let matchId = "";
   let questions = [];
   let currentIdx = 0;
   let myScore = 0;
@@ -196,9 +186,8 @@
   let myMissed = false;
   let oppMissed = false;
   let roundLocked = false;
-  let handledEvents = new Set();
 
-  function enterRoom(asHost) {
+  function connectServer(asHost) {
     const code = document.getElementById("room-input").value.trim();
     if (!code) {
       alert("合言葉（例：1234）を入力してください");
@@ -206,70 +195,73 @@
     }
 
     isHost = asHost;
-    room = gun.get("t1800-battle-room-" + code);
-
+    roomName = "t1800-battle-" + code;
     document.getElementById("btn-create").disabled = true;
     document.getElementById("btn-join").disabled = true;
+    document.getElementById("lobby-status").textContent = "通信サーバーに接続中...";
+    document.getElementById("lobby-status").style.color = "#facc15";
 
-    if (isHost) {
-      document.getElementById("lobby-status").textContent = `合言葉「${code}」で待機中... 相手の入室を待っています`;
-      document.getElementById("lobby-status").style.color = "#facc15";
+    // 公開WebSocketブロードキャストサーバー（PieSocket Free Demo / SocketsBay代替の汎用WS）
+    ws = new WebSocket("wss://://postman-echo.com");
 
-      // ゲストの参加合図を監視
-      room.get("join").on((data) => {
-        if (data && data.guestId && data.guestId !== myId && !matchId) {
-          startNewMatch();
-        }
-      });
-    } else {
-      document.getElementById("lobby-status").textContent = `合言葉「${code}」の部屋に入室中...`;
-      document.getElementById("lobby-status").style.color = "#38bdf8";
-
-      // ホストに自分の参加を通知
-      room.get("join").put({ guestId: myId, ts: Date.now() });
-
-      // ホストからの試合開始データを監視
-      room.get("match").on((data) => {
-        if (data && data.id && data.id !== matchId && data.qJson) {
-          matchId = data.id;
-          initMatch(JSON.parse(data.qJson));
-        }
-      });
-    }
-
-    // ゲーム中のイベント（正解・お手つき・再戦）を監視
-    room.get("event").on((ev) => {
-      if (!ev || !ev.evId || handledEvents.has(ev.evId)) return;
-      handledEvents.add(ev.evId);
-      if (ev.sender === myId) return; // 自分の送信は無視
-
-      if (ev.type === "WIN" && ev.qIdx === currentIdx && !roundLocked) {
-        roundLocked = true;
-        oppScore += 10;
-        updateScoreUI();
-        disableAllButtons(true);
-        document.getElementById("game-status").textContent = `相手が先に正解！ 正解は「${questions[currentIdx].ja}」`;
-        document.getElementById("game-status").style.color = "#f43f5e";
-        scheduleNextQuestion();
-      } else if (ev.type === "MISS" && ev.qIdx === currentIdx) {
-        oppMissed = true;
-        oppScore -= 5;
-        updateScoreUI();
-        if (!myMissed) {
-          document.getElementById("game-status").textContent = "相手がお手つき！（-5点）チャンス！";
-          document.getElementById("game-status").style.color = "#4ade80";
-        }
-        checkBothMissed();
-      } else if (ev.type === "REMATCH" && isHost) {
-        startNewMatch();
+    ws.onopen = () => {
+      if (isHost) {
+        document.getElementById("lobby-status").textContent = `合言葉「${code}」で待機中... 相手の入室を待っています`;
+        document.getElementById("lobby-status").style.color = "#4ade80";
+      } else {
+        document.getElementById("lobby-status").textContent = `合言葉「${code}」に入室しました！ホストの開始を待っています...`;
+        document.getElementById("lobby-status").style.color = "#38bdf8";
+        sendMsg({ type: "JOIN" });
       }
-    });
+    };
+
+    ws.onerror = () => {
+      document.getElementById("lobby-status").textContent = "ネットワーク制限により外部サーバーへ接続できませんでした";
+      document.getElementById("lobby-status").style.color = "#f43f5e";
+      document.getElementById("btn-create").disabled = false;
+      document.getElementById("btn-join").disabled = false;
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.room !== roomName || data.sender === myId) return;
+        handleMessage(data);
+      } catch (e) {}
+    };
   }
 
-  function sendEvent(type, qIdx = -1) {
-    const evId = myId + "-" + Date.now() + "-" + Math.random();
-    handledEvents.add(evId);
-    room.get("event").put({ evId, sender: myId, type, qIdx });
+  function sendMsg(payload) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ room: roomName, sender: myId, ...payload }));
+    }
+  }
+
+  function handleMessage(data) {
+    if (data.type === "JOIN" && isHost) {
+      startNewMatch();
+    } else if (data.type === "START") {
+      initMatch(data.questions);
+    } else if (data.type === "WIN" && data.qIdx === currentIdx && !roundLocked) {
+      roundLocked = true;
+      oppScore += 10;
+      updateScoreUI();
+      disableAllButtons(true);
+      document.getElementById("game-status").textContent = `相手が先に正解！ 正解は「${questions[currentIdx].ja}」`;
+      document.getElementById("game-status").style.color = "#f43f5e";
+      scheduleNextQuestion();
+    } else if (data.type === "MISS" && data.qIdx === currentIdx) {
+      oppMissed = true;
+      oppScore -= 5;
+      updateScoreUI();
+      if (!myMissed) {
+        document.getElementById("game-status").textContent = "相手がお手つき！（-5点）チャンス！";
+        document.getElementById("game-status").style.color = "#4ade80";
+      }
+      checkBothMissed();
+    } else if (data.type === "REMATCH" && isHost) {
+      startNewMatch();
+    }
   }
 
   function shuffle(array) {
@@ -282,8 +274,7 @@
       ja: q.ja,
       options: shuffle([q.ja, ...q.d])
     }));
-    matchId = "m-" + Date.now();
-    room.get("match").put({ id: matchId, qJson: JSON.stringify(selected) });
+    sendMsg({ type: "START", questions: selected });
     initMatch(selected);
   }
 
@@ -313,3 +304,4 @@
     document.getElementById("q-progress").textContent = `第 ${currentIdx + 1} 問 / 全 ${questions.length} 問`;
     document.getElementById("word-display").textContent = q.en;
     document.getElementById("game-status").textContent = "早押しで正しい意味をタップ！";
+    document.getElementById("game-status").style.color = "#94a3b8";
