@@ -6,124 +6,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ターゲット1800 オンライン対戦</title>
   <style>
-    body {
-      margin: 0;
-      background: #0f172a;
-      color: #f8fafc;
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
-      box-sizing: border-box;
-    }
-    .container {
-      width: 100%;
-      max-width: 640px;
-      background: #1e293b;
-      border-radius: 16px;
-      padding: 24px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
+    body { margin: 0; background: #0f172a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .box { width: 92%; max-width: 600px; background: #1e293b; padding: 24px; border-radius: 16px; text-align: center; box-sizing: border-box; }
     h1 { font-size: 22px; color: #facc15; margin-top: 0; }
-    .box { background: #0f172a; padding: 18px; border-radius: 12px; margin-bottom: 14px; }
-    .id-text {
-      font-size: 24px;
-      font-weight: bold;
-      color: #38bdf8;
-      background: #1e293b;
-      padding: 8px 16px;
-      border-radius: 8px;
-      margin: 10px auto;
-      display: inline-block;
-      user-select: all;
-    }
-    input {
-      padding: 12px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 8px;
-      border: 2px solid #38bdf8;
-      background: #1e293b;
-      color: #fff;
-      width: 220px;
-      text-align: center;
-    }
-    button {
-      background: #facc15;
-      color: #0f172a;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 6px;
-    }
+    .panel { background: #0f172a; padding: 16px; border-radius: 12px; margin-bottom: 12px; }
+    input { padding: 10px; font-size: 18px; border-radius: 8px; border: 2px solid #38bdf8; background: #1e293b; color: #fff; width: 160px; text-align: center; }
+    button { background: #facc15; color: #000; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin: 5px; }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
     .blue { background: #38bdf8; }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #334155;
-    }
-    .score { font-size: 18px; font-weight: bold; padding: 8px 14px; border-radius: 8px; width: 35%; }
-    .me { background: rgba(56,189,248,0.15); color: #38bdf8; border: 2px solid #38bdf8; }
-    .opp { background: rgba(244,63,94,0.15); color: #f43f5e; border: 2px solid #f43f5e; }
-    .word-box { background: #0f172a; padding: 20px; border-radius: 12px; margin: 16px 0; }
-    .word { font-size: 38px; font-weight: bold; color: #facc15; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
     .choice { background: #334155; color: #fff; width: 100%; margin: 0; padding: 14px; }
-    .msg { min-height: 24px; font-size: 15px; font-weight: bold; margin-top: 10px; color: #4ade80; }
-    .hidden { display: none !important; }
+    .hide { display: none; }
+    #log { font-size: 15px; color: #4ade80; margin-top: 10px; font-weight: bold; min-height: 22px; }
   </style>
 </head>
 <body>
-
-<div class="container">
+<div class="box">
   <h1>ターゲット1800 オンライン対戦</h1>
 
   <div id="lobby">
-    <div class="box">
-      <div style="font-size:14px;color:#94a3b8;">▼ 部屋を作って相手を待つ（ホスト側）</div>
-      <button id="btn-create" type="button">新しい部屋を作成する</button>
-      <div id="host-area" class="hidden">
-        <div style="font-size:13px;color:#cbd5e1;margin-top:6px;">この「合言葉」を相手に伝えてください</div>
-        <div class="id-text" id="room-code-disp"></div>
+    <div class="panel">
+      <div style="font-size:14px;color:#94a3b8;margin-bottom:8px;">▼ ホスト（部屋を作る）</div>
+      <button id="btnHost" onclick="createRoom()">部屋を作る</button>
+      <div id="roomInfo" class="hide" style="margin-top:10px;">
+        合言葉：<span id="roomId" style="font-size:26px;font-weight:bold;color:#38bdf8;"></span>
       </div>
     </div>
 
-    <div class="box">
-      <div style="font-size:14px;color:#94a3b8;margin-bottom:8px;">▼ 相手の部屋に入る（ゲスト側）</div>
-      <input type="text" id="join-code" placeholder="合言葉を入力">
-      <button id="btn-join" class="blue" type="button">入室して対戦開始</button>
+    <div class="panel">
+      <div style="font-size:14px;color:#94a3b8;margin-bottom:8px;">▼ ゲスト（部屋に入る）</div>
+      <input type="text" id="inputId" placeholder="5桁の合言葉">
+      <button id="btnGuest" class="blue" onclick="joinRoom()">入室する</button>
     </div>
 
-    <div class="msg" id="lobby-msg" style="color:#94a3b8;">ボタンを押して部屋を作るか、合言葉を入れて入室してください</div>
+    <div id="log">待機中（ボタンを押してください）</div>
   </div>
 
-  <div id="game" class="hidden">
-    <div class="header">
-      <div class="score me">自分: <span id="s-me">0</span> 点</div>
-      <div style="font-size:14px;color:#cbd5e1;" id="q-num">1 / 10</div>
-      <div class="score opp">相手: <span id="s-opp">0</span> 点</div>
+  <div id="game" class="hide">
+    <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;margin-bottom:12px;">
+      <span style="color:#38bdf8;">自分: <span id="myScore">0</span></span>
+      <span id="progress">1 / 10</span>
+      <span style="color:#f43f5e;">相手: <span id="oppScore">0</span></span>
     </div>
-    <div class="word-box">
-      <div class="word" id="word-disp">READY</div>
+    <div style="background:#0f172a;padding:20px;border-radius:12px;">
+      <div id="word" style="font-size:36px;font-weight:bold;color:#facc15;">READY</div>
     </div>
-    <div class="grid" id="opts"></div>
-    <div class="msg" id="game-msg">対戦中...</div>
-    <button id="btn-rematch" class="hidden" type="button">もう一度対戦する</button>
+    <div id="choices" class="grid"></div>
+    <p id="gLog" style="font-weight:bold;color:#4ade80;min-height:24px;"></p>
+    <button id="btnRematch" class="hide" onclick="reqRematch()">もう一度対戦する</button>
   </div>
 </div>
 
 <script>
-const words = [
+var words = [
   { en: "abandon", ja: "〜を捨てる", d: ["〜を吸収する", "〜を称賛する", "〜を加速させる"] },
   { en: "absorb", ja: "〜を吸収する", d: ["〜を廃止する", "〜を適応させる", "〜を避難させる"] },
   { en: "accomplish", ja: "〜を成し遂げる", d: ["〜を伴う", "〜を蓄積する", "〜を非難する"] },
@@ -141,169 +76,186 @@ const words = [
   { en: "appreciate", ja: "〜に感謝する", d: ["〜に近づく", "〜を承認する", "〜を逮捕する"] }
 ];
 
-// CORS対応・認証不要の公開KVストレージ（kvdb.io 公開バケット）
-const BUCKET = "https://kvdb.io";
-let roomUrl = "";
-let isHost = false;
-let timer = null;
-let state = null;
-let shownIdx = -1;
-let locked = false;
-let missed = false;
+var SERVER = "https://ntfy.sh";
+var topic = "";
+var isHost = false;
+var myId = String(Math.random()).slice(2, 8);
+var qs = [];
+var idx = 0;
+var sMe = 0;
+var sOpp = 0;
+var locked = false;
+var missed = false;
 
-function makeQs() {
-  const copy = [...words].sort(() => Math.random() - 0.5).slice(0, 10);
-  return copy.map(w => ({
-    en: w.en,
-    ja: w.ja,
-    opts: [w.ja, ...w.d].sort(() => Math.random() - 0.5)
-  }));
+function setLog(txt, isErr) {
+  var el = document.getElementById("log");
+  el.textContent = txt;
+  el.style.color = isErr ? "#f43f5e" : "#4ade80";
 }
 
-async function saveState(obj) {
-  await fetch(roomUrl, {
+function sendMsg(type, extra) {
+  var data = { sender: myId, type: type };
+  if (extra) {
+    for (var k in extra) { data[k] = extra[k]; }
+  }
+  fetch(SERVER + "/" + topic, {
     method: "POST",
-    body: JSON.stringify(obj)
+    body: JSON.stringify(data)
+  }).catch(function(e) {
+    setLog("送信エラー: " + e.message, true);
   });
 }
 
-async function loadState() {
-  const res = await fetch(roomUrl + "?t=" + Date.now());
-  if (!res.ok) return null;
-  return await res.json();
-}
-
-document.getElementById("btn-create").addEventListener("click", async () => {
-  const msg = document.getElementById("lobby-msg");
-  msg.textContent = "部屋を作成中...";
-  msg.style.color = "#facc15";
-  document.getElementById("btn-create").disabled = true;
-  document.getElementById("btn-join").disabled = true;
-
-  try {
-    isHost = true;
-    const code = Math.floor(10000 + Math.random() * 90000).toString();
-    roomUrl = BUCKET + "/room_" + code;
-
-    const initData = {
-      status: "waiting",
-      hScore: 0,
-      gScore: 0,
-      qIdx: 0,
-      win: "",
-      hMiss: false,
-      gMiss: false,
-      qs: makeQs()
-    };
-
-    await saveState(initData);
-    state = initData;
-
-    document.getElementById("room-code-disp").textContent = code;
-    document.getElementById("host-area").classList.remove("hidden");
-    msg.textContent = "合言葉「" + code + "」を相手に伝えてお待ちください...";
-    msg.style.color = "#4ade80";
-
-    startLoop();
-  } catch (e) {
-    msg.textContent = "通信エラー: " + e.message;
-    msg.style.color = "#f43f5e";
-    document.getElementById("btn-create").disabled = false;
-    document.getElementById("btn-join").disabled = false;
-  }
-});
-
-document.getElementById("btn-join").addEventListener("click", async () => {
-  const msg = document.getElementById("lobby-msg");
-  const code = document.getElementById("join-code").value.trim();
-  if (!code) {
-    msg.textContent = "合言葉（5桁の数字）を入力してください";
-    msg.style.color = "#facc15";
-    return;
-  }
-
-  msg.textContent = "入室中...";
-  msg.style.color = "#38bdf8";
-  document.getElementById("btn-create").disabled = true;
-  document.getElementById("btn-join").disabled = true;
-
-  try {
-    isHost = false;
-    roomUrl = BUCKET + "/room_" + code;
-    const data = await loadState();
-    if (!data || !data.qs) {
-      throw new Error("部屋が見つかりません");
+function startListen() {
+  var es = new EventSource(SERVER + "/" + topic + "/sse");
+  es.onopen = function() {
+    if (!isHost) {
+      setLog("接続完了！ホストの開始を待っています...");
+      sendMsg("JOIN");
     }
-
-    data.status = "playing";
-    await saveState(data);
-    state = data;
-
-    document.getElementById("lobby").classList.add("hidden");
-    document.getElementById("game").classList.remove("hidden");
-    render();
-    startLoop();
-  } catch (e) {
-    msg.textContent = "入室エラー: " + e.message;
-    msg.style.color = "#f43f5e";
-    document.getElementById("btn-create").disabled = false;
-    document.getElementById("btn-join").disabled = false;
-  }
-});
-
-function startLoop() {
-  if (timer) clearInterval(timer);
-  timer = setInterval(async () => {
+  };
+  es.onerror = function() {
+    setLog("通信待機中またはネットワーク制限です", true);
+  };
+  es.onmessage = function(e) {
     try {
-      const latest = await loadState();
-      if (!latest) return;
+      var outer = JSON.parse(e.data);
+      if (!outer.message) return;
+      var msg = JSON.parse(outer.message);
+      if (msg.sender === myId) return;
 
-      if (isHost && latest.status === "playing" && document.getElementById("game").classList.contains("hidden")) {
-        state = latest;
-        document.getElementById("lobby").classList.add("hidden");
-        document.getElementById("game").classList.remove("hidden");
-        render();
-        return;
+      if (msg.type === "JOIN" && isHost) {
+        startNewMatch();
+      } else if (msg.type === "START") {
+        qs = msg.qs;
+        beginGame();
+      } else if (msg.type === "WIN" && msg.idx === idx && !locked) {
+        locked = true;
+        sOpp += 10;
+        document.getElementById("oppScore").textContent = sOpp;
+        document.getElementById("gLog").textContent = "相手が正解！ 正解: " + qs[idx].ja;
+        setBtns(true);
+        setTimeout(function() { idx++; showQ(); }, 1500);
+      } else if (msg.type === "MISS" && msg.idx === idx) {
+        sOpp -= 5;
+        document.getElementById("oppScore").textContent = sOpp;
+        document.getElementById("gLog").textContent = "相手がお手つき！（-5点）";
+      } else if (msg.type === "REMATCH" && isHost) {
+        startNewMatch();
       }
-
-      if (!document.getElementById("game").classList.contains("hidden")) {
-        state = latest;
-        render();
-      }
-    } catch (e) {}
-  }, 900);
+    } catch (err) {}
+  };
 }
 
-function render() {
-  if (!state) return;
-  const myS = isHost ? state.hScore : state.gScore;
-  const oppS = isHost ? state.gScore : state.hScore;
-  document.getElementById("s-me").textContent = myS;
-  document.getElementById("s-opp").textContent = oppS;
+function createRoom() {
+  isHost = true;
+  var code = String(Math.floor(10000 + Math.random() * 90000));
+  topic = "t1800_battle_" + code;
+  document.getElementById("roomId").textContent = code;
+  document.getElementById("roomInfo").classList.remove("hide");
+  document.getElementById("btnHost").disabled = true;
+  document.getElementById("btnGuest").disabled = true;
+  setLog("部屋を作成しました！相手の入室待ち...");
+  startListen();
+}
 
-  if (state.qIdx >= state.qs.length) {
-    document.getElementById("q-num").textContent = "終了";
-    document.getElementById("opts").innerHTML = "";
-    let resText = "引き分け！";
-    if (myS > oppS) resText = "🏆 あなたの勝利！";
-    if (oppS > myS) resText = "😢 相手の勝利...";
-    document.getElementById("word-disp").textContent = resText;
-    document.getElementById("game-msg").textContent = "最終スコア: 自分 " + myS + "点 vs 相手 " + oppS + "点";
-    if (isHost) document.getElementById("btn-rematch").classList.remove("hidden");
+function joinRoom() {
+  var code = document.getElementById("inputId").value.trim();
+  if (!code) {
+    setLog("5桁の合言葉を入力してください", true);
     return;
   }
+  isHost = false;
+  topic = "t1800_battle_" + code;
+  document.getElementById("btnHost").disabled = true;
+  document.getElementById("btnGuest").disabled = true;
+  setLog("部屋に接続中...");
+  startListen();
+}
 
-  document.getElementById("btn-rematch").classList.add("hidden");
+function startNewMatch() {
+  var copy = words.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 10);
+  qs = copy.map(function(w) {
+    var opts = [w.ja].concat(w.d).sort(function() { return Math.random() - 0.5; });
+    return { en: w.en, ja: w.ja, opts: opts };
+  });
+  sendMsg("START", { qs: qs });
+  beginGame();
+}
 
-  if (shownIdx !== state.qIdx) {
-    shownIdx = state.qIdx;
-    locked = false;
-    missed = false;
+function beginGame() {
+  document.getElementById("lobby").classList.add("hide");
+  document.getElementById("game").classList.remove("hide");
+  document.getElementById("btnRematch").classList.add("hide");
+  idx = 0;
+  sMe = 0;
+  sOpp = 0;
+  document.getElementById("myScore").textContent = 0;
+  document.getElementById("oppScore").textContent = 0;
+  showQ();
+}
 
-    const q = state.qs[state.qIdx];
-    document.getElementById("q-num").textContent = (state.qIdx + 1) + " / " + state.qs.length;
-    document.getElementById("word-disp").textContent = q.en;
-    document.getElementById("game-msg").textContent = "早押しで正解を選べ！";
-    document.getElementById("game-msg").style.color = "#94a3b8";
+function showQ() {
+  if (idx >= qs.length) {
+    var res = "引き分け！";
+    if (sMe > sOpp) res = "🏆 あなたの勝利！";
+    if (sOpp > sMe) res = "😢 相手の勝利...";
+    document.getElementById("word").textContent = res;
+    document.getElementById("choices").innerHTML = "";
+    document.getElementById("gLog").textContent = "最終スコア: 自分 " + sMe + "点 vs 相手 " + sOpp + "点";
+    document.getElementById("btnRematch").classList.remove("hide");
+    return;
+  }
+  locked = false;
+  missed = false;
+  var q = qs[idx];
+  document.getElementById("progress").textContent = (idx + 1) + " / " + qs.length;
+  document.getElementById("word").textContent = q.en;
+  document.getElementById("gLog").textContent = "";
+  var box = document.getElementById("choices");
+  box.innerHTML = "";
+  q.opts.forEach(function(opt) {
+    var b = document.createElement("button");
+    b.className = "choice";
+    b.textContent = opt;
+    b.onclick = function() {
+      if (locked || missed) return;
+      if (opt === q.ja) {
+        locked = true;
+        sMe += 10;
+        document.getElementById("myScore").textContent = sMe;
+        document.getElementById("gLog").textContent = "正解！（+10点）";
+        setBtns(true);
+        sendMsg("WIN", { idx: idx });
+        setTimeout(function() { idx++; showQ(); }, 1500);
+      } else {
+        missed = true;
+        sMe -= 5;
+        document.getElementById("myScore").textContent = sMe;
+        document.getElementById("gLog").textContent = "お手つき！（-5点）";
+        setBtns(true);
+        sendMsg("MISS", { idx: idx });
+      }
+    };
+    box.appendChild(b);
+  });
+}
 
-    const box = document.getElementById("opts");
+function setBtns(flag) {
+  var list = document.querySelectorAll(".choice");
+  for (var i = 0; i < list.length; i++) {
+    list[i].disabled = flag;
+  }
+}
+
+function reqRematch() {
+  if (isHost) {
+    startNewMatch();
+  } else {
+    sendMsg("REMATCH");
+    document.getElementById("gLog").textContent = "ホストに再戦をリクエストしました...";
+  }
+}
+</script>
+</body>
+</html>
