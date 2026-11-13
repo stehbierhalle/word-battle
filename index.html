@@ -1,80 +1,61 @@
 <!DOCTYPE html>
 <html lang="ja" translate="no">
 <head>
-  <meta charset="UTF-8">
-  <meta name="google" content="notranslate">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ターゲット1800 オンライン対戦 DX</title>
-  <style>
-    body { margin: 0; background: #0f172a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 12px; box-sizing: border-box; }
-    .box { width: 100%; max-width: 640px; background: #1e293b; padding: 20px; border-radius: 16px; text-align: center; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    h1 { font-size: 22px; color: #facc15; margin: 0 0 14px; }
-    .panel { background: #0f172a; padding: 16px; border-radius: 12px; margin-bottom: 12px; }
-    input { padding: 10px; font-size: 18px; border-radius: 8px; border: 2px solid #38bdf8; background: #1e293b; color: #fff; width: 160px; text-align: center; }
-    button { background: #facc15; color: #000; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin: 5px; transition: 0.1s; }
-    button:active { transform: scale(0.97); }
-    button:disabled { opacity: 0.45; cursor: not-allowed; }
-    .blue { background: #38bdf8; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
-    .choice { background: #334155; color: #fff; width: 100%; margin: 0; padding: 14px; font-size: 16px; }
-    .choice:hover:not(:disabled) { background: #475569; }
-    .hide { display: none; }
-    #log { font-size: 15px; color: #4ade80; margin-top: 10px; font-weight: bold; min-height: 22px; }
-    .bar-bg { width: 100%; height: 10px; background: #334155; border-radius: 5px; overflow: hidden; margin: 10px 0; }
-    .bar-fill { width: 100%; height: 100%; background: #4ade80; transition: width 0.1s linear, background-color 0.2s; }
-    .stamp-bar { display: flex; justify-content: center; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
-    .stamp-btn { background: #0f172a; color: #f8fafc; border: 1px solid #475569; padding: 6px 10px; font-size: 13px; border-radius: 20px; margin: 0; }
-    .stamp-btn:hover { border-color: #facc15; }
-    .stamp-pop { min-height: 28px; font-size: 16px; font-weight: bold; color: #f472b6; margin-bottom: 6px; }
-    .review-box { background: #0f172a; border-radius: 10px; padding: 12px; margin: 14px 0; text-align: left; max-height: 220px; overflow-y: auto; }
-    .review-item { border-bottom: 1px solid #334155; padding: 6px 0; font-size: 14px; }
-    .review-item:last-child { border-bottom: none; }
-    @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ターゲット1800 オンライン対戦 DX</title>
+<style>
+body{margin:0;background:#0f172a;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:12px;box-sizing:border-box}
+.box{width:100%;max-width:620px;background:#1e293b;padding:20px;border-radius:16px;text-align:center;box-sizing:border-box}
+h1{font-size:21px;color:#facc15;margin:0 0 12px}
+.panel{background:#0f172a;padding:14px;border-radius:12px;margin-bottom:10px}
+input{padding:10px;font-size:18px;border-radius:8px;border:2px solid #38bdf8;background:#1e293b;color:#fff;width:150px;text-align:center}
+button{background:#facc15;color:#000;border:none;padding:11px 18px;font-size:15px;font-weight:bold;border-radius:8px;cursor:pointer;margin:4px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.blue{background:#38bdf8}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.choice{background:#334155;color:#fff;width:100%;margin:0;padding:13px;font-size:15px}
+.hide{display:none}
+#log{font-size:14px;color:#4ade80;margin-top:8px;font-weight:bold;min-height:20px}
+.bar-bg{width:100%;height:9px;background:#334155;border-radius:5px;overflow:hidden;margin:8px 0}
+.bar-fill{width:100%;height:100%;background:#4ade80;transition:width .1s linear}
+.stamp-bar{display:flex;justify-content:center;gap:5px;margin-top:10px;flex-wrap:wrap}
+.stamp-btn{background:#0f172a;color:#f8fafc;border:1px solid #475569;padding:5px 9px;font-size:12px;border-radius:16px;margin:0}
+.stamp-pop{min-height:24px;font-size:15px;font-weight:bold;color:#f472b6;margin-bottom:4px}
+.review-box{background:#0f172a;border-radius:10px;padding:10px;margin:12px 0;text-align:left;max-height:180px;overflow-y:auto;font-size:13px}
+</style>
 </head>
 <body>
 <div class="box">
   <h1>ターゲット1800 オンライン対戦 DX</h1>
-
   <div id="lobby">
     <div class="panel">
-      <div style="font-size:14px;color:#94a3b8;margin-bottom:8px;">▼ ホスト（部屋を作る）</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:6px">▼ ホスト（部屋を作る）</div>
       <button id="btnHost" onclick="createRoom()">部屋を作る</button>
-      <div id="roomInfo" class="hide" style="margin-top:10px;">
-        合言葉：<span id="roomId" style="font-size:26px;font-weight:bold;color:#38bdf8;"></span>
-      </div>
+      <div id="roomInfo" class="hide" style="margin-top:8px">合言葉：<span id="roomId" style="font-size:24px;font-weight:bold;color:#38bdf8"></span></div>
     </div>
-
     <div class="panel">
-      <div style="font-size:14px;color:#94a3b8;margin-bottom:8px;">▼ ゲスト（部屋に入る）</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:6px">▼ ゲスト（部屋に入る）</div>
       <input type="text" id="inputId" placeholder="5桁の合言葉">
       <button id="btnGuest" class="blue" onclick="joinRoom()">入室する</button>
     </div>
-
     <div id="log">待機中（ボタンを押してください）</div>
   </div>
-
   <div id="game" class="hide">
-    <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;margin-bottom:6px;">
-      <span style="color:#38bdf8;">自分: <span id="myScore">0</span></span>
+    <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:bold">
+      <span style="color:#38bdf8">自分: <span id="myScore">0</span></span>
       <span id="progress">1 / 10</span>
-      <span style="color:#f43f5e;">相手: <span id="oppScore">0</span></span>
+      <span style="color:#f43f5e">相手: <span id="oppScore">0</span></span>
     </div>
-
     <div class="bar-bg"><div id="timeBar" class="bar-fill"></div></div>
     <div id="stampPop" class="stamp-pop"></div>
-
-    <div style="background:#0f172a;padding:18px;border-radius:12px;">
-      <div id="word" style="font-size:36px;font-weight:bold;color:#facc15;">READY</div>
-    </div>
-
+    <div style="background:#0f172a;padding:16px;border-radius:12px"><div id="word" style="font-size:34px;font-weight:bold;color:#facc15">READY</div></div>
     <div id="choices" class="grid"></div>
-    <p id="gLog" style="font-weight:bold;color:#4ade80;min-height:24px;margin:10px 0 4px;"></p>
-
+    <p id="gLog" style="font-weight:bold;color:#4ade80;min-height:22px;margin:8px 0 4px"></p>
     <div id="reviewArea" class="review-box hide"></div>
     <button id="btnRematch" class="hide" onclick="reqRematch()">もう一度対戦する</button>
-
-    <div id="stampBar" class="stamp-bar">
+    <div class="stamp-bar">
       <button class="stamp-btn" onclick="sendStamp('👍 ナイス！')">👍 ナイス！</button>
       <button class="stamp-btn" onclick="sendStamp('🔥 速すぎ！')">🔥 速すぎ！</button>
       <button class="stamp-btn" onclick="sendStamp('💦 しまった！')">💦 しまった！</button>
@@ -82,134 +63,168 @@
     </div>
   </div>
 </div>
-
 <script>
-var words = [
-  { en: "abandon", ja: "〜を捨てる", d: ["〜を吸収する", "〜を称賛する", "〜を加速させる"] },
-  { en: "absorb", ja: "〜を吸収する", d: ["〜を廃止する", "〜を適応させる", "〜を避難させる"] },
-  { en: "accomplish", ja: "〜を成し遂げる", d: ["〜を伴う", "〜を蓄積する", "〜を非難する"] },
-  { en: "accurate", ja: "正確な", d: ["急性の", "十分な", "人工の"] },
-  { en: "acquire", ja: "〜を習得する", d: ["〜を要求する", "〜を調査する", "〜を賞賛する"] },
-  { en: "adapt", ja: "適応する", d: ["〜を採用する", "〜を崇拝する", "〜を前進させる"] },
-  { en: "adequate", ja: "十分な", d: ["隣接した", "進歩した", "熱心な"] },
-  { en: "affection", ja: "愛情", d: ["影響", "苦痛", "親和性"] },
-  { en: "alter", ja: "〜を変える", d: ["〜を交互にする", "〜を警告する", "〜を割り当てる"] },
-  { en: "ambitious", ja: "野心的な", d: ["曖昧な", "熱心な", "匿名の"] },
-  { en: "analyze", ja: "〜を分析する", d: ["〜に麻酔をかける", "〜を公表する", "〜を予期する"] },
-  { en: "ancient", ja: "古代の", d: ["不安な", "年間の", "明らかな"] },
-  { en: "anticipate", ja: "〜を予期する", d: ["〜に参加する", "〜に謝罪する", "〜を適用する"] },
-  { en: "apparent", ja: "明らかな", d: ["適切な", "熱心な", "横柄な"] },
-  { en: "appreciate", ja: "〜に感謝する", d: ["〜に近づく", "〜を承認する", "〜を逮捕する"] },
-  { en: "appropriate", ja: "適切な", d: ["おおよその", "横柄な", "人工の"] },
-  { en: "artificial", ja: "人工の", d: ["芸術的な", "本質的な", "熱心な"] },
-  { en: "aspect", ja: "側面", d: ["尊敬", "見込み", "疑い"] },
-  { en: "assemble", ja: "〜を組み立てる", d: ["〜に似ている", "〜を割り当てる", "〜を仮定する"] },
-  { en: "assume", ja: "〜と思い込む", d: ["〜を保証する", "〜を消費する", "〜を再開する"] },
-  { en: "astonish", ja: "〜を驚かせる", d: ["〜を攻撃する", "〜に到達する", "〜を添付する"] },
-  { en: "attribute", ja: "〜のせいにする", d: ["〜を引きつける", "〜を聴く", "〜を自動化する"] },
-  { en: "available", ja: "利用できる", d: ["避けられる", "平均的な", "気づいている"] },
-  { en: "awkward", ja: "気まずい", d: ["素晴らしい", "目覚めている", "後ろ向きの"] },
-  { en: "ban", ja: "〜を禁止する", d: ["〜を曲げる", "〜を縛る", "〜を爆発させる"] },
-  { en: "barrier", ja: "障壁", d: ["樽", "基礎", "戦い"] },
-  { en: "behave", ja: "振る舞う", d: ["信じる", "所属する", "利益を得る"] },
-  { en: "betray", ja: "〜を裏切る", d: ["〜を打ち負かす", "〜を懇願する", "〜を曲げる"] },
-  { en: "bother", ja: "〜を悩ます", d: ["〜を借りる", "〜を跳ね返す", "〜を自慢する"] },
-  { en: "brief", ja: "簡潔な", d: ["明るい", "勇敢な", "広い"] },
-  { en: "brilliant", ja: "素晴らしい", d: ["脆い", "残忍な", "退屈な"] },
-  { en: "burden", ja: "重荷", d: ["埋葬", "茂み", "予算"] },
-  { en: "calculate", ja: "〜を計算する", d: ["〜を祝う", "〜を捕獲する", "〜を彫る"] },
-  { en: "capable", ja: "能力がある", d: ["注意深い", "カジュアルな", "慎重な"] },
-  { en: "capture", ja: "〜を捕らえる", d: ["〜を運ぶ", "〜を引き起こす", "〜を中止する"] },
-  { en: "cease", ja: "〜をやめる", d: ["〜を祝う", "〜を主張する", "〜を分類する"] },
-  { en: "challenge", ja: "〜に異議を唱える", d: ["〜を変える", "〜を請求する", "〜を追い払う"] },
-  { en: "circumstance", ja: "状況", d: ["円周", "市民権", "文明"] },
-  { en: "collapse", ja: "崩壊する", d: ["収集する", "衝突する", "結合する"] },
-  { en: "combine", ja: "〜を結合させる", d: ["〜を慰める", "〜を命令する", "〜を賞賛する"] },
-  { en: "commit", ja: "（罪などを）犯す", d: ["〜を伝達する", "〜を比較する", "〜を競争する"] },
-  { en: "companion", ja: "仲間", d: ["会社", "比較", "同情"] },
-  { en: "compel", ja: "〜に強制する", d: ["〜を補償する", "〜を競争する", "〜を完了する"] },
-  { en: "compensate", ja: "補償する", d: ["競争する", "不平を言う", "構成する"] },
-  { en: "concentrate", ja: "集中する", d: ["結論づける", "懸念する", "確認する"] },
-  { en: "concept", ja: "概念", d: ["関心", "コンサート", "結論"] },
-  { en: "confess", ja: "告白する", d: ["確認する", "混乱させる", "征服する"] },
-  { en: "confident", ja: "自信がある", d: ["機密の", "対立する", "混乱した"] },
-  { en: "confirm", ja: "〜を確認する", d: ["〜に従う", "〜を直面させる", "〜を混雑させる"] },
-  { en: "consequence", ja: "結果", d: ["良心", "意識", "節約"] }
+var rawWords = [
+  "abandon|〜を捨てる|〜を吸収する|〜を称賛する|〜を加速させる",
+  "absorb|〜を吸収する|〜を廃止する|〜を適応させる|〜を避難させる",
+  "accomplish|〜を成し遂げる|〜を伴う|〜を蓄積する|〜を非難する",
+  "accurate|正確な|急性の|十分な|人工の",
+  "acquire|〜を習得する|〜を要求する|〜を調査する|〜を賞賛する",
+  "adapt|適応する|〜を採用する|〜を崇拝する|〜を前進させる",
+  "adequate|十分な|隣接した|進歩した|熱心な",
+  "affection|愛情|影響|苦痛|親和性",
+  "alter|〜を変える|〜を交互にする|〜を警告する|〜を割り当てる",
+  "ambitious|野心的な|曖昧な|熱心な|匿名の",
+  "analyze|〜を分析する|〜に麻酔をかける|〜を公表する|〜を予期する",
+  "ancient|古代の|不安な|年間の|明らかな",
+  "anticipate|〜を予期する|〜に参加する|〜に謝罪する|〜を適用する",
+  "apparent|明らかな|適切な|熱心な|横柄な",
+  "appreciate|〜に感謝する|〜に近づく|〜を承認する|〜を逮捕する",
+  "appropriate|適切な|おおよその|横柄な|人工の",
+  "artificial|人工の|芸術的な|本質的な|熱心な",
+  "aspect|側面|尊敬|見込み|疑い",
+  "assemble|〜を組み立てる|〜に似ている|〜を割り当てる|〜を仮定する",
+  "assume|〜と思い込む|〜を保証する|〜を消費する|〜を再開する",
+  "astonish|〜を驚かせる|〜を攻撃する|〜に到達する|〜を添付する",
+  "attribute|〜のせいにする|〜を引きつける|〜を聴く|〜を自動化する",
+  "available|利用できる|避けられる|平均的な|気づいている",
+  "awkward|気まずい|素晴らしい|目覚めている|後ろ向きの",
+  "ban|〜を禁止する|〜を曲げる|〜を縛る|〜を爆発させる",
+  "barrier|障壁|樽|基礎|戦い",
+  "behave|振る舞う|信じる|所属する|利益を得る",
+  "betray|〜を裏切る|〜を打ち負かす|〜を懇願する|〜を曲げる",
+  "bother|〜を悩ます|〜を借りる|〜を跳ね返す|〜を自慢する",
+  "brief|簡潔な|明るい|勇敢な|広い",
+  "brilliant|素晴らしい|脆い|残忍な|退屈な",
+  "burden|重荷|埋葬|茂み|予算",
+  "calculate|〜を計算する|〜を祝う|〜を捕獲する|〜を彫る",
+  "capable|能力がある|注意深い|カジュアルな|慎重な",
+  "capture|〜を捕らえる|〜を運ぶ|〜を引き起こす|〜を中止する",
+  "cease|〜をやめる|〜を祝う|〜を主張する|〜を分類する",
+  "challenge|〜に異議を唱える|〜を変える|〜を請求する|〜を追い払う",
+  "circumstance|状況|円周|市民権|文明",
+  "collapse|崩壊する|収集する|衝突する|結合する",
+  "combine|〜を結合させる|〜を慰める|〜を命令する|〜を賞賛する",
+  "commit|（罪などを）犯す|〜を伝達する|〜を比較する|〜を競争する",
+  "companion|仲間|会社|比較|同情",
+  "compel|〜に強制する|〜を補償する|〜を競争する|〜を完了する",
+  "compensate|補償する|競争する|不平を言う|構成する",
+  "concentrate|集中する|結論づける|懸念する|確認する",
+  "concept|概念|関心|コンサート|結論",
+  "confess|告白する|確認する|混乱させる|征服する",
+  "confident|自信がある|機密の|対立する|混乱した",
+  "confirm|〜を確認する|〜に従う|〜を直面させる|〜を混雑させる",
+  "consequence|結果|良心|意識|節約"
 ];
 
 var SERVER = "https://ntfy.sh";
-var topic = "";
-var isHost = false;
-var myId = String(Math.random()).slice(2, 8);
-var qs = [];
-var idx = 0;
-var sMe = 0;
-var sOpp = 0;
-var locked = false;
-var missed = false;
-var qStartTime = 0;
-var timerId = null;
-var stampTimer = null;
-var wrongWords = [];
-var LIMIT_MS = 6000;
+var topic = "", isHost = false, myId = String(Math.random()).slice(2, 8);
+var qs = [], idx = 0, sMe = 0, sOpp = 0, locked = false, missed = false;
+var qStart = 0, timerId = null, stampTimer = null, wrongs = [], LIMIT = 6000;
 
-function setLog(txt, isErr) {
-  var el = document.getElementById("log");
-  el.textContent = txt;
-  el.style.color = isErr ? "#f43f5e" : "#4ade80";
+function setLog(t, err) {
+  var e = document.getElementById("log");
+  e.textContent = t;
+  e.style.color = err ? "#f43f5e" : "#4ade80";
 }
 
-function sendMsg(type, extra) {
-  var data = { sender: myId, type: type };
-  if (extra) {
-    for (var k in extra) { data[k] = extra[k]; }
-  }
-  fetch(SERVER + "/" + topic, {
-    method: "POST",
-    body: JSON.stringify(data)
-  }).catch(function(e) {
-    setLog("送信エラー: " + e.message, true);
-  });
+function sendMsg(type, ex) {
+  var d = { sender: myId, type: type };
+  if (ex) { for (var k in ex) d[k] = ex[k]; }
+  fetch(SERVER + "/" + topic, { method: "POST", body: JSON.stringify(d) }).catch(function(e) { setLog("送信エラー", true); });
 }
 
-function sendStamp(text) {
-  showStamp("自分: " + text, "#38bdf8");
-  sendMsg("STAMP", { text: text });
+function sendStamp(t) {
+  showStamp("自分: " + t, "#38bdf8");
+  sendMsg("STAMP", { text: t });
 }
 
-function showStamp(txt, color) {
-  var el = document.getElementById("stampPop");
-  el.textContent = txt;
-  el.style.color = color;
+function showStamp(t, c) {
+  var e = document.getElementById("stampPop");
+  e.textContent = t; e.style.color = c;
   if (stampTimer) clearTimeout(stampTimer);
-  stampTimer = setTimeout(function() { el.textContent = ""; }, 2200);
+  stampTimer = setTimeout(function() { e.textContent = ""; }, 2000);
 }
 
 function startListen() {
   var es = new EventSource(SERVER + "/" + topic + "/sse");
-  es.onopen = function() {
-    if (!isHost) {
-      setLog("接続完了！ホストの開始を待っています...");
-      sendMsg("JOIN");
-    }
-  };
-  es.onerror = function() {
-    setLog("通信待機中またはネットワーク制限です", true);
-  };
+  es.onopen = function() { if (!isHost) { setLog("接続完了！開始待ち..."); sendMsg("JOIN"); } };
   es.onmessage = function(e) {
     try {
-      var outer = JSON.parse(e.data);
-      if (!outer.message) return;
-      var msg = JSON.parse(outer.message);
-      if (msg.sender === myId) return;
-
-      if (msg.type === "JOIN" && isHost) {
-        startNewMatch();
-      } else if (msg.type === "START") {
-        qs = msg.qs;
-        beginGame();
-      } else if (msg.type === "WIN" && msg.idx === idx && !locked) {
-        locked = true;
-        clearInterval(timerId);
-        sOpp += msg.pts;
+      var o = JSON.parse(e.data);
+      if (!o.message) return;
+      var m = JSON.parse(o.message);
+      if (m.sender === myId) return;
+      if (m.type === "JOIN" && isHost) startNewMatch();
+      else if (m.type === "START") { qs = m.qs; beginGame(); }
+      else if (m.type === "WIN" && m.idx === idx && !locked) {
+        locked = true; clearInterval(timerId); sOpp += m.pts;
         document.getElementById("oppScore").textContent = sOpp;
+        document.getElementById("gLog").textContent = "相手が正解！(+" + m.pts + ") 正解: " + qs[idx].ja;
+        document.getElementById("gLog").style.color = "#f43f5e";
+        addWrong(qs[idx]); setBtns(true);
+        setTimeout(function() { idx++; showQ(); }, 1500);
+      } else if (m.type === "MISS" && m.idx === idx) {
+        sOpp -= 5; document.getElementById("oppScore").textContent = sOpp;
+        if (!missed) { document.getElementById("gLog").textContent = "相手がお手つき！チャンス！"; document.getElementById("gLog").style.color = "#4ade80"; }
+      } else if (m.type === "STAMP") showStamp("相手: " + m.text, "#f472b6");
+      else if (m.type === "REMATCH" && isHost) startNewMatch();
+    } catch (err) {}
+  };
+}
+
+function createRoom() {
+  isHost = true;
+  var code = String(Math.floor(10000 + Math.random() * 90000));
+  topic = "t1800_dx_" + code;
+  document.getElementById("roomId").textContent = code;
+  document.getElementById("roomInfo").classList.remove("hide");
+  document.getElementById("btnHost").disabled = true;
+  document.getElementById("btnGuest").disabled = true;
+  setLog("部屋を作成しました！相手の入室待ち...");
+  startListen();
+}
+
+function joinRoom() {
+  var code = document.getElementById("inputId").value.trim();
+  if (!code) { setLog("5桁の合言葉を入力してください", true); return; }
+  isHost = false; topic = "t1800_dx_" + code;
+  document.getElementById("btnHost").disabled = true;
+  document.getElementById("btnGuest").disabled = true;
+  setLog("部屋に接続中...");
+  startListen();
+}
+
+function startNewMatch() {
+  var pick = rawWords.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 10);
+  qs = pick.map(function(line) {
+    var p = line.split("|");
+    var opts = [p[1], p[2], p[3], p[4]].sort(function() { return Math.random() - 0.5; });
+    return { en: p[0], ja: p[1], opts: opts };
+  });
+  sendMsg("START", { qs: qs });
+  beginGame();
+}
+
+function beginGame() {
+  document.getElementById("lobby").classList.add("hide");
+  document.getElementById("game").classList.remove("hide");
+  document.getElementById("btnRematch").classList.add("hide");
+  document.getElementById("reviewArea").classList.add("hide");
+  idx = 0; sMe = 0; sOpp = 0; wrongs = [];
+  document.getElementById("myScore").textContent = 0;
+  document.getElementById("oppScore").textContent = 0;
+  showQ();
+}
+
+function addWrong(q) {
+  for (var i = 0; i < wrongs.length; i++) if (wrongs[i].en === q.en) return;
+  wrongs.push(q);
+}
+
+function startTimer() {
+  if (timerId) clearInterval(timerId);
+  qStart = Date.now();
+  var bar = document.getElementById("timeBar");
+  bar.style.width = "100%"; bar.style.backgroundColor = "#4ade80";
+  timerId = setInterval(function() {
