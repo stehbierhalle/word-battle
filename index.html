@@ -35,15 +35,27 @@
       border-radius: 12px;
       margin-bottom: 16px;
     }
+    .room-id-box {
+      font-size: 26px;
+      font-weight: bold;
+      color: #38bdf8;
+      background: #1e293b;
+      padding: 10px 18px;
+      border-radius: 8px;
+      margin: 10px auto;
+      display: inline-block;
+      user-select: all;
+      letter-spacing: 2px;
+    }
     input[type="text"] {
       padding: 12px;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       border-radius: 8px;
       border: 2px solid #38bdf8;
       background: #1e293b;
       color: #fff;
-      width: 220px;
+      width: 240px;
       text-align: center;
     }
     button {
@@ -123,20 +135,29 @@
 <div class="container">
   <h1>ターゲット1800 オンライン対戦</h1>
 
+  <!-- ロビー画面 -->
   <div id="lobby-screen">
     <div class="lobby-box">
-      <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">
-        対戦相手と同じ「合言葉（好きな英数字）」を入力してください
-      </div>
-      <input type="text" id="room-input" placeholder="例: 1234" maxlength="12">
-      <div style="margin-top: 12px;">
-        <button id="btn-create">部屋を作って待つ（ホスト）</button>
-        <button id="btn-join" class="guest-btn">部屋に入る（ゲスト）</button>
+      <div style="font-size: 14px; color: #94a3b8;">▼ 部屋を作って相手を待つ（ホスト側）</div>
+      <button id="btn-create">新しい部屋を作成する</button>
+      <div id="host-room-area" class="hidden">
+        <div style="font-size: 13px; color: #cbd5e1; margin-top: 8px;">この「部屋ID」を相手に教えてください</div>
+        <div class="room-id-box" id="created-room-id"></div>
+        <br>
+        <button id="btn-copy-id" style="background:#38bdf8;font-size:13px;padding:6px 14px;">IDをコピー</button>
       </div>
     </div>
-    <div class="status-msg" id="lobby-status" style="color: #94a3b8;">合言葉を入れてボタンを押してください</div>
+
+    <div class="lobby-box">
+      <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">▼ 相手の部屋に入る（ゲスト側）</div>
+      <input type="text" id="join-id-input" placeholder="部屋IDを貼り付け">
+      <button id="btn-join" class="guest-btn">入室して対戦開始</button>
+    </div>
+
+    <div class="status-msg" id="lobby-status" style="color: #94a3b8;">ボタンを押して部屋を作るか、IDを入れて入室してください</div>
   </div>
 
+  <!-- ゲーム画面 -->
   <div id="game-screen" class="hidden">
     <div class="header">
       <div class="score-box me-box">自分: <span id="my-score">0</span> 点</div>
@@ -174,134 +195,121 @@
     { en: "appreciate", ja: "〜に感謝する、真価を認める", d: ["〜に近づく", "〜を承認する", "〜を逮捕する"] }
   ];
 
-  // 外部ライブラリ不要の標準WebSocket通信（無料の公開エコー/ブロードキャストサーバー利用）
-  let ws = null;
-  let roomName = "";
+  // 通常のHTTPS通信（fetch）のみで同期するサーバーレス方式（jsonblob.com）
+  const API_BASE = "https://jsonblob.com";
+  let blobUrl = "";
   let isHost = false;
-  let myId = Math.random().toString(36).substring(2, 9);
-  let questions = [];
-  let currentIdx = 0;
-  let myScore = 0;
-  let oppScore = 0;
-  let myMissed = false;
-  let oppMissed = false;
+  let pollTimer = null;
+  let roomState = null;
+  let renderedQIdx = -1;
   let roundLocked = false;
-
-  function connectServer(asHost) {
-    const code = document.getElementById("room-input").value.trim();
-    if (!code) {
-      alert("合言葉（例：1234）を入力してください");
-      return;
-    }
-
-    isHost = asHost;
-    roomName = "t1800-battle-" + code;
-    document.getElementById("btn-create").disabled = true;
-    document.getElementById("btn-join").disabled = true;
-    document.getElementById("lobby-status").textContent = "通信サーバーに接続中...";
-    document.getElementById("lobby-status").style.color = "#facc15";
-
-    // 公開WebSocketブロードキャストサーバー（PieSocket Free Demo / SocketsBay代替の汎用WS）
-    ws = new WebSocket("wss://://postman-echo.com");
-
-    ws.onopen = () => {
-      if (isHost) {
-        document.getElementById("lobby-status").textContent = `合言葉「${code}」で待機中... 相手の入室を待っています`;
-        document.getElementById("lobby-status").style.color = "#4ade80";
-      } else {
-        document.getElementById("lobby-status").textContent = `合言葉「${code}」に入室しました！ホストの開始を待っています...`;
-        document.getElementById("lobby-status").style.color = "#38bdf8";
-        sendMsg({ type: "JOIN" });
-      }
-    };
-
-    ws.onerror = () => {
-      document.getElementById("lobby-status").textContent = "ネットワーク制限により外部サーバーへ接続できませんでした";
-      document.getElementById("lobby-status").style.color = "#f43f5e";
-      document.getElementById("btn-create").disabled = false;
-      document.getElementById("btn-join").disabled = false;
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.room !== roomName || data.sender === myId) return;
-        handleMessage(data);
-      } catch (e) {}
-    };
-  }
-
-  function sendMsg(payload) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ room: roomName, sender: myId, ...payload }));
-    }
-  }
-
-  function handleMessage(data) {
-    if (data.type === "JOIN" && isHost) {
-      startNewMatch();
-    } else if (data.type === "START") {
-      initMatch(data.questions);
-    } else if (data.type === "WIN" && data.qIdx === currentIdx && !roundLocked) {
-      roundLocked = true;
-      oppScore += 10;
-      updateScoreUI();
-      disableAllButtons(true);
-      document.getElementById("game-status").textContent = `相手が先に正解！ 正解は「${questions[currentIdx].ja}」`;
-      document.getElementById("game-status").style.color = "#f43f5e";
-      scheduleNextQuestion();
-    } else if (data.type === "MISS" && data.qIdx === currentIdx) {
-      oppMissed = true;
-      oppScore -= 5;
-      updateScoreUI();
-      if (!myMissed) {
-        document.getElementById("game-status").textContent = "相手がお手つき！（-5点）チャンス！";
-        document.getElementById("game-status").style.color = "#4ade80";
-      }
-      checkBothMissed();
-    } else if (data.type === "REMATCH" && isHost) {
-      startNewMatch();
-    }
-  }
+  let myMissed = false;
 
   function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
   }
 
-  function startNewMatch() {
-    const selected = shuffle([...wordBank]).slice(0, 10).map(q => ({
+  function makeQuestions() {
+    return shuffle([...wordBank]).slice(0, 10).map(q => ({
       en: q.en,
       ja: q.ja,
       options: shuffle([q.ja, ...q.d])
     }));
-    sendMsg({ type: "START", questions: selected });
-    initMatch(selected);
   }
 
-  function initMatch(qList) {
-    questions = qList;
-    currentIdx = 0;
-    myScore = 0;
-    oppScore = 0;
-    updateScoreUI();
-    document.getElementById("lobby-screen").classList.add("hidden");
-    document.getElementById("game-screen").classList.remove("hidden");
-    document.getElementById("rematch-btn").classList.add("hidden");
-    loadQuestion();
-  }
+  // ホスト：新しい部屋（JSONデータ）をHTTPSで作成
+  document.getElementById("btn-create").onclick = async () => {
+    const statusEl = document.getElementById("lobby-status");
+    try {
+      document.getElementById("btn-create").disabled = true;
+      document.getElementById("btn-join").disabled = true;
+      statusEl.textContent = "部屋を作成しています...";
+      statusEl.style.color = "#facc15";
 
-  function loadQuestion() {
-    if (currentIdx >= questions.length) {
-      endGame();
+      isHost = true;
+      const initialData = {
+        status: "waiting",
+        hostScore: 0,
+        guestScore: 0,
+        qIdx: 0,
+        winner: null,
+        hostMissed: false,
+        guestMissed: false,
+        questions: makeQuestions()
+      };
+
+      const res = await fetch(API_BASE, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(initialData)
+      });
+
+      if (!res.ok) throw new Error("サーバー応答エラー (" + res.status + ")");
+
+      const locationHeader = res.headers.get("Location") || res.headers.get("x-jsonblob");
+      let blobId = "";
+      if (locationHeader) {
+        blobId = locationHeader.split("/").pop();
+      } else {
+        const text = await res.text();
+        blobId = text.trim();
+      }
+
+      if (!blobId) throw new Error("部屋IDの取得に失敗しました");
+
+      blobUrl = `${API_BASE}/${blobId}`;
+      document.getElementById("created-room-id").textContent = blobId;
+      document.getElementById("host-room-area").classList.remove("hidden");
+      statusEl.textContent = "部屋が完成しました！上のIDを相手に送ってお待ちください...";
+      statusEl.style.color = "#4ade80";
+
+      startPolling();
+    } catch (err) {
+      statusEl.textContent = "作成エラー: " + err.message;
+      statusEl.style.color = "#f43f5e";
+      document.getElementById("btn-create").disabled = false;
+      document.getElementById("btn-join").disabled = false;
+    }
+  };
+
+  document.getElementById("btn-copy-id").onclick = () => {
+    const id = document.getElementById("created-room-id").textContent;
+    navigator.clipboard.writeText(id);
+    document.getElementById("lobby-status").textContent = "部屋IDをコピーしました！相手に送ってください";
+  };
+
+  // ゲスト：IDを使って部屋に参加
+  document.getElementById("btn-join").onclick = async () => {
+    const statusEl = document.getElementById("lobby-status");
+    const blobId = document.getElementById("join-id-input").value.trim();
+    if (!blobId) {
+      alert("相手から送られた部屋IDを入力してください");
       return;
     }
 
-    myMissed = false;
-    oppMissed = false;
-    roundLocked = false;
+    try {
+      document.getElementById("btn-create").disabled = true;
+      document.getElementById("btn-join").disabled = true;
+      statusEl.textContent = "部屋に接続しています...";
+      statusEl.style.color = "#38bdf8";
 
-    const q = questions[currentIdx];
-    document.getElementById("q-progress").textContent = `第 ${currentIdx + 1} 問 / 全 ${questions.length} 問`;
-    document.getElementById("word-display").textContent = q.en;
-    document.getElementById("game-status").textContent = "早押しで正しい意味をタップ！";
-    document.getElementById("game-status").style.color = "#94a3b8";
+      isHost = false;
+      blobUrl = `${API_BASE}/${blobId}`;
+
+      const res = await fetch(blobUrl);
+      if (!res.ok) throw new Error("部屋が見つかりません。IDを確認してください");
+      const data = await res.json();
+
+      data.status = "playing";
+      await fetch(blobUrl, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      roomState = data;
+      enterGameScreen();
+      startPolling();
+    } catch (err) {
+      statusEl.textContent = "入室エラー: " + err.message;
+      statusEl.style.color = "#f43f5e";
