@@ -228,3 +228,70 @@ function startTimer() {
   var bar = document.getElementById("timeBar");
   bar.style.width = "100%"; bar.style.backgroundColor = "#4ade80";
   timerId = setInterval(function() {
+var rem = Math.max(0, LIMIT - (Date.now() - qStart));
+var pct = (rem / LIMIT) * 100;
+bar.style.width = pct + "%";
+if (pct < 30) bar.style.backgroundColor = "#f43f5e";
+else if (pct < 60) bar.style.backgroundColor = "#facc15";
+if (rem <= 0 && !locked) {
+locked = true; clearInterval(timerId); setBtns(true); addWrong(qs[idx]);
+document.getElementById("gLog").textContent = "時間切れ！ 正解: " + qs[idx].ja;
+setTimeout(function() { idx++; showQ(); }, 1500);
+}
+}, 50);
+}
+function showQ() {
+if (timerId) clearInterval(timerId);
+if (idx >= qs.length) { endMatch(); return; }
+locked = false; missed = false;
+var q = qs[idx];
+document.getElementById("progress").textContent = (idx + 1) + " / " + qs.length;
+document.getElementById("word").textContent = q.en;
+document.getElementById("gLog").textContent = "早押しで正解を選べ！（6秒以内）";
+document.getElementById("gLog").style.color = "#94a3b8";
+var box = document.getElementById("choices");
+box.innerHTML = "";
+q.opts.forEach(function(opt) {
+var b = document.createElement("button");
+b.className = "choice"; b.textContent = opt;
+b.onclick = function() {
+if (locked || missed) return;
+if (opt === q.ja) {
+locked = true; clearInterval(timerId);
+var bonus = Math.max(0, Math.round(((LIMIT - (Date.now() - qStart)) / LIMIT) * 10));
+var pts = 10 + bonus; sMe += pts;
+document.getElementById("myScore").textContent = sMe;
+document.getElementById("gLog").textContent = "正解！(+" + pts + "点 / 速度+" + bonus + ")";
+document.getElementById("gLog").style.color = "#38bdf8";
+setBtns(true); sendMsg("WIN", { idx: idx, pts: pts });
+setTimeout(function() { idx++; showQ(); }, 1500);
+} else {
+missed = true; sMe -= 5;
+document.getElementById("myScore").textContent = sMe;
+document.getElementById("gLog").textContent = "お手つき！（-5点）";
+document.getElementById("gLog").style.color = "#facc15";
+addWrong(q); setBtns(true); sendMsg("MISS", { idx: idx });
+}
+};
+box.appendChild(b);
+});
+startTimer();
+}
+function endMatch() {
+document.getElementById("timeBar").style.width = "0%";
+var res = sMe > sOpp ? "🏆 あなたの勝利！" : sMe < sOpp ? "😢 相手の勝利..." : "引き分け！";
+document.getElementById("word").textContent = res;
+document.getElementById("choices").innerHTML = "";
+document.getElementById("gLog").textContent = "最終: 自分 " + sMe + "点 vs 相手 " + sOpp + "点";
+document.getElementById("btnRematch").classList.remove("hide");
+var rev = document.getElementById("reviewArea");
+rev.classList.remove("hide");
+if (wrongs.length === 0) rev.innerHTML = "🎉 全問クリア！復習不要です！";
+else {
+var h = "📝 振り返りリスト";
+for (var i = 0; i < wrongs.length; i++) h += "" + wrongs[i].en + " ： " + wrongs[i].ja + "";
+rev.innerHTML = h;
+}
+}
+function setBtns(f) { var l = document.querySelectorAll(".choice"); for (var i = 0; i < l.length; i++) l[i].disabled = f; }
+function reqRematch() { if (isHost) startNewMatch(); else { sendMsg("REMATCH"); document.getElementById("gLog").textContent = "再戦リクエスト送信中..."; } }
