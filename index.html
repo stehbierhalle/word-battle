@@ -41,6 +41,10 @@ button:disabled{opacity:.45;cursor:not-allowed}
 <input id="in" placeholder="5桁の合言葉">
 <button id="bG" class="bl" onclick="jn()">入室する</button>
 </div>
+<div style="margin-top:10px">
+<button id="bReview" class="bl" onclick="startReview()">📝 間違えた単語を一人で復習</button>
+<div id="reviewCount" style="font-size:12px;color:#cbd5e1;margin-top:4px"></div>
+</div>
 <div id="lg">待機中（ボタンを押してください）</div>
 </div>
 <div id="gm" class="hd">
@@ -67,6 +71,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 <script>
 var D="abandon|捨てる|吸収|称賛|加速,absorb|吸収する|廃止|適応|避難,accomplish|成し遂げる|伴う|蓄積|非難,accurate|正確な|急性|十分|人工,acquire|習得する|要求|調査|賞賛,adapt|適応する|採用|崇拝|前進,adequate|十分な|隣接|進歩|熱心,affection|愛情|影響|苦痛|親和,alter|変える|交互|警告|割当,ambitious|野心的な|曖昧|熱心|匿名,analyze|分析する|麻酔|公表|予期,ancient|古代の|不安|年間|明白,anticipate|予期する|参加|謝罪|適用,apparent|明らかな|適切|熱心|横柄,appreciate|感謝する|接近|承認|逮捕,appropriate|適切な|概算|横柄|人工,artificial|人工の|芸術|本質|熱心,aspect|側面|尊敬|見込|疑い,assemble|組み立てる|類似|割当|仮定,assume|思い込む|保証|消費|再開,astonish|驚かせる|攻撃|到達|添付,attribute|せいにする|魅了|聴取|自動,available|利用できる|回避|平均|気づく,awkward|気まずい|素敵|覚醒|後向,ban|禁止する|曲げる|縛る|爆発,barrier|障壁|樽|基礎|戦い,behave|振る舞う|信じる|所属|利益,betray|裏切る|打負|懇願|曲げる,bother|悩ます|借りる|跳返|自慢,brief|簡潔な|明るい|勇敢|広い,brilliant|素晴らしい|脆い|残忍|退屈,burden|重荷|埋葬|茂み|予算,calculate|計算する|祝う|捕獲|彫る,capable|能力がある|注意|気軽|慎重,capture|捕らえる|運ぶ|引起|中止,cease|やめる|祝う|主張|分類,challenge|異議を唱える|変える|請求|追払,circumstance|状況|円周|市民|文明,collapse|崩壊する|収集|衝突|結合,combine|結合させる|慰める|命令|賞賛,commit|犯す|伝達|比較|競争,companion|仲間|会社|比較|同情,compel|強制する|補償|競争|完了,compensate|補償する|競争|不平|構成,concentrate|集中する|結論|懸念|確認,concept|概念|関心|演奏|結論,confess|告白する|確認|混乱|征服,confident|自信がある|機密|対立|混乱,confirm|確認する|従う|直面|混雑,consequence|結果|良心|意識|節約,abolish|廃止する|吸収|崇拝|加速,abrupt|突然の|抽象|豊富|不条理,absurd|ばかげた|豊富|抽象|急性,abundant|豊富な|愚か|隣接|曖昧,accelerate|加速する|蓄積|非難|適応,accommodate|収容する|伴う|達成|蓄積,accumulate|蓄積する|非難|収容|適応,acknowledge|認める|習得|接近|公表,acute|急性の|正確|十分|隣接,adjacent|隣接した|十分|進歩|熱心,adolescent|青年期の|成人|古代|年間,advocate|主張する|助言|崇拝|割当,aesthetic|美的な|運動|人工|不安,aggregate|合計の|攻撃|機敏|古代,allocate|割り当てる|変える|交互|警告,ambiguous|曖昧な|野心|匿名|不安,amend|修正する|驚かす|分析|公表,analogy|類推|分析|解剖|無政府,anonymous|匿名の|野心|曖昧|不安,apparatus|装置|外観|食欲|拍手,arbitrary|恣意的な|人工|芸術|横柄,arrogant|横柄な|適切|人工|明白,assert|断言する|評価|割当|組立,assess|評価する|断言|援助|仮定,astonishment|驚き|達成|雰囲気|愛着,atrocity|残虐行為|権威|魅力|属性,authentic|本物の|権威|自動|自治,authorize|権限を与える|自動|執筆|回避,autonomous|自治の|自動|本物|匿名,avert|そらす|主張|避ける|気づく,baffle|当惑させる|均衡|禁止|裏切る,benevolent|慈悲深い|有益|偏見|残忍,bewilder|途方に暮れさせる|裏切る|自慢|悩ます,blunt|鈍い|勇敢|簡潔|明るい,boast|自慢する|悩ます|借りる|曲げる,breach|違反|呼吸|簡潔|突破,brittle|脆い|素敵|残忍|広い,brutal|残忍な|脆い|退屈|勇敢,bureaucracy|官僚制|民主|貴族|資本,catastrophe|大惨事|分類|聖堂|特徴,chronological|年代順の|慢性|市民|臨床,coerce|強制する|一致|崩壊|結合,coherent|筋の通った|固有|粘着|同時,coincide|同時に起こる|崩壊|結合|犯す,commodity|商品|共同|委員|常識,compatible|互換性のある|同情|競争|複雑,compulsory|義務的な|強制|包括|複雑,conceal|隠す|認める|懸念|集中,conceive|思いつく|隠す|征服|確認".split(",");
+var soloReview=false,reviewWords=[];
 var W1=D.slice(0,50),W2=D.slice(50),SV="https://ntfy.sh",tp="",hs=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,qT=0,tI,sI,wr=[],LM=6000,lv="n",ac=null,mt=0,lB=4;
 function $(i){return document.getElementById(i)}
 function tgM(){
@@ -107,17 +112,100 @@ function tx(t,x){var d={s:id,t:t};if(x)for(var k in x)d[k]=x[k];fetch(SV+"/"+tp,
 function st(t){se("st");pp("自分: "+t,"#38bdf8");tx("S",{x:t})}
 function pp(t,c){$("sp").textContent=t;$("sp").style.color=c;clearTimeout(sI);sI=setTimeout(function(){$("sp").textContent=""},2000)}
 function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!hs){lg("接続完了！開始待ち...");tx("J")}};es.onmessage=function(e){try{var m=JSON.parse(JSON.parse(e.data).message);if(m.s===id)return;if(m.t==="J"&&hs)nw();else if(m.t==="B"){qs=m.q;LM=m.l;lv=m.v;go()}else if(m.t==="W"&&m.i===ix&&!lk){lk=1;clearInterval(tI);se("ng");oS+=m.p;$("s2").textContent=oS;$("gl").textContent="相手が正解！(+"+m.p+") 正解:"+qs[ix].j;$("gl").style.color="#f43f5e";aw(qs[ix]);ds(1);setTimeout(function(){ix++;sh()},1500)}else if(m.t==="M"&&m.i===ix){oS-=5;$("s2").textContent=oS;if(!ms){$("gl").textContent="相手がお手つき！チャンス！";$("gl").style.color="#4ade80"}}else if(m.t==="S"){se("st");pp("相手: "+m.x,"#f472b6")}else if(m.t==="R"&&hs)nw()}catch(z){}}}
+function loadMistakes(){
+ try{return JSON.parse(localStorage.getItem("t18_mistakes")||"[]")}
+ catch(e){return []}
+}
+function saveMistakes(list){
+ try{localStorage.setItem("t18_mistakes",JSON.stringify(list))}
+ catch(e){lg("復習データを保存できませんでした",1)}
+ updateReviewCount();
+}
+function updateReviewCount(){
+ var n=loadMistakes().length;
+ var el=$("reviewCount");
+ if(el)el.textContent=n+"語を保存中（この端末のブラウザに保存されます）";
+ var b=$("bReview");
+ if(b)b.disabled=n===0;
+}
+function startReview(){
+ var saved=loadMistakes();
+ if(!saved.length){lg("復習する単語はまだありません",1);return}
+ soloReview=true;hs=0;reviewWords=saved.slice();
+ qs=reviewWords.map(function(q){return {e:q.e,j:q.j,o:q.o&&q.o.length===4?q.o.slice():[q.j].concat(D.map(function(x){return x.split("|")[1]}).filter(function(v){return v!==q.j}).sort(function(){return Math.random()-.5}).slice(0,3))}});
+ ix=0;mS=0;oS=0;wr=[];
+ $("lb").classList.add("hd");$("gm").classList.remove("hd");
+ $("bR").classList.add("hd");$("rv").classList.add("hd");
+ $("s2").parentNode.style.visibility="hidden";
+ $("pg").textContent="一人で復習";
+ $("s1").textContent="0";$("s2").textContent="—";
+ $("gl").textContent="間違えた単語を、正解するまで練習しましょう";
+ reviewNext();
+}
+function reviewNext(){
+ clearInterval(tI);
+ if(ix>=qs.length){
+  $("wd").textContent="復習完了！";
+  $("op").innerHTML="";
+  $("tb").style.width="0%";
+  $("gl").textContent="今回正解した単語："+mS+"語";
+  $("rv").classList.remove("hd");$("rv").textContent="";
+  var title=document.createElement("div");title.textContent="まだ復習が必要な単語";title.style.fontWeight="bold";$("rv").appendChild(title);
+  var left=loadMistakes();
+  if(left.length){
+   left.forEach(function(x){var row=document.createElement("div");row.textContent=x.e+"："+x.j;row.style.marginTop="5px";$("rv").appendChild(row)});
+  }else{$("rv").textContent="🎉 保存されていた間違いをすべて克服しました！"}
+  var back=document.createElement("button");back.textContent="メニューに戻る";back.onclick=backToLobby;$("rv").appendChild(back);
+  updateReviewCount();return;
+ }
+ var q=qs[ix];lk=0;ms=0;
+ $("pg").textContent="復習 "+(ix+1)+"/"+qs.length;
+ $("wd").textContent=q.e;speakWord(q.e);
+ $("gl").textContent="正しい意味を選んでください（時間制限なし）";
+ $("gl").style.color="#94a3b8";$("op").innerHTML="";
+ q.o.slice().sort(function(){return Math.random()-.5}).forEach(function(o){
+  var b=document.createElement("button");b.className="ch";b.textContent=o;
+  b.onclick=function(){
+   if(lk)return;
+   if(o===q.j){
+    lk=1;se("ok");mS++;$("s1").textContent=mS;
+    $("gl").textContent="正解！ "+q.e+"："+q.j;$("gl").style.color="#38bdf8";
+    var left=loadMistakes().filter(function(x){return x.e!==q.e});
+    saveMistakes(left);ds(1);
+    setTimeout(function(){ix++;reviewNext()},900);
+   }else{
+    se("ng");$("gl").textContent="もう一度！ ヒント："+q.e;$("gl").style.color="#facc15";
+   }
+  };
+  $("op").appendChild(b);
+ });
+ $("tb").style.width="100%";$("tb").style.backgroundColor="#4ade80";
+}
+function backToLobby(){
+ soloReview=false;
+ $("gm").classList.add("hd");$("lb").classList.remove("hd");
+ $("s2").parentNode.style.visibility="visible";
+ $("rv").classList.add("hd");$("bR").classList.add("hd");
+ $("op").innerHTML="";$("wd").textContent="READY";
+ updateReviewCount();lg("待機中（ボタンを押してください）");
+}
 function mk(){se("st");hs=1;lv=$("lv").value;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("lv").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("lv").disabled=1;lg("接続中...");ls()}
 function nw(){var pl=lv==="e"?W1:lv==="h"?W2:D;LM=lv==="e"?8000:lv==="h"?4000:6000;qs=pl.slice().sort(function(){return Math.random()-.5}).slice(0,10).map(function(l){var p=l.split("|");return{e:p[0],j:p[1],o:[p[1],p[2],p[3],p[4]].sort(function(){return Math.random()-.5})}});tx("B",{q:qs,l:LM,v:lv});go()}
-function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("rv").classList.add("hd");ix=mS=oS=0;wr=[];$("s1").textContent=$("s2").textContent=0;sh()}
+function go(){soloReview=false;$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("rv").classList.add("hd");ix=mS=oS=0;wr=[];$("s1").textContent=$("s2").textContent=0;sh()}
 function aw(q){for(var i=0;i<wr.length;i++)if(wr[i].e===q.e)return;wr.push(q)}
 
 
 
 
 
-function sh(){clearInterval(tI);if(ix>=qs.length){if(mS>=oS)se("wn");else se("ng");$("tb").style.width="0%";$("wd").textContent=mS>oS?"🏆 あなたの勝利！":mS<oS?"😢 相手の勝利...":"引き分け！";$("op").innerHTML="";$("gl").textContent="最終: 自分 "+mS+"点 vs 相手 "+oS+"点";$("bR").classList.remove("hd");$("rv").classList.remove("hd");$("rv").textContent="";if(wr.length){
+function sh(){clearInterval(tI);if(ix>=qs.length){
+if(!soloReview && wr.length){
+ var old=loadMistakes();
+ wr.forEach(function(q){if(!old.some(function(x){return x.e===q.e}))old.push(q)});
+ saveMistakes(old);
+}
+if(soloReview){reviewNext();return;}if(mS>=oS)se("wn");else se("ng");$("tb").style.width="0%";$("wd").textContent=mS>oS?"🏆 あなたの勝利！":mS<oS?"😢 相手の勝利...":"引き分け！";$("op").innerHTML="";$("gl").textContent="最終: 自分 "+mS+"点 vs 相手 "+oS+"点";$("bR").classList.remove("hd");$("rv").classList.remove("hd");$("rv").textContent="";if(wr.length){
 var reviewTitle=document.createElement("div");
 reviewTitle.textContent="📝 振り返りリスト";
 reviewTitle.style.fontWeight="bold";
@@ -133,6 +221,7 @@ $("rv").textContent="🎉 全問クリア！復習不要です！";
 }return}lk=ms=0;lB=4;var q=qs[ix],ln=lv==="e"?"初級":lv==="h"?"上級":"中級";$("pg").textContent="["+ln+"] "+(ix+1)+"/"+qs.length;$("wd").textContent=q.e;speakWord(q.e);$("gl").textContent="早押しで正解を選べ！";$("gl").style.color="#94a3b8";$("op").innerHTML="";q.o.forEach(function(o){var b=document.createElement("button");b.className="ch";b.textContent=o;b.onclick=function(){if(lk||ms)return;if(o===q.j){lk=1;clearInterval(tI);se("ok");var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10)),pt=10+bn;mS+=pt;$("s1").textContent=mS;$("gl").textContent="正解！(+"+pt+"点/速度+"+bn+")";$("gl").style.color="#38bdf8";ds(1);tx("W",{i:ix,p:pt});setTimeout(function(){ix++;sh()},1500)}else{ms=1;se("ng");mS-=5;$("s1").textContent=mS;$("gl").textContent="お手つき！（-5点）";$("gl").style.color="#facc15";aw(q);ds(1);tx("M",{i:ix})}};$("op").appendChild(b)});qT=Date.now();$("tb").style.width="100%";$("tb").style.backgroundColor="#4ade80";tI=setInterval(function(){var r=Math.max(0,LM-(Date.now()-qT)),pc=(r/LM)*100,sec=Math.ceil(r/1000);$("tb").style.width=pc+"%";$("tb").style.backgroundColor=pc<30?"#f43f5e":pc<60?"#facc15":"#4ade80";if(sec<=3&&sec<lB&&sec>0){lB=sec;se("tk")}if(r<=0&&!lk){lk=1;clearInterval(tI);se("ng");ds(1);aw(q);$("gl").textContent="時間切れ！正解:"+q.j;setTimeout(function(){ix++;sh()},1500)}},50)}
 function ds(f){document.querySelectorAll(".ch").forEach(function(b){b.disabled=f})}
 function re(){if(hs)nw();else{tx("R");$("gl").textContent="再戦リクエスト送信中..."}}
+updateReviewCount();
 </script>
 </body>
 </html>
