@@ -61,6 +61,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 <div id="lg">待機中（ボタンを押してください）</div>
 </div>
+
 <div id="mgrModal" class="modal hd"><div class="m-card">
 <h2 style="margin:0 0 8px;font-size:18px;color:#4ade80">📋 長期保存中の苦手単語</h2>
 <div id="mgrList" class="rv" style="max-height:220px"></div>
@@ -68,6 +69,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 <button onclick="clearAllWr()" style="background:#f43f5e;color:#fff">全消去</button>
 <button onclick="closeMgr()" style="background:#64748b;color:#fff">閉じる</button>
 </div></div>
+
 <div id="profModal" class="modal hd"><div class="m-card">
 <h2 style="margin:0 0 8px;font-size:18px;color:#facc15">👤 プロフィール</h2>
 <div>
@@ -85,6 +87,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 <button onclick="saveProfModal()" style="background:#4ade80">保存</button>
 <button onclick="closeProf()" style="background:#64748b;color:#fff">閉じる</button>
 </div></div>
+
 <div id="gm" class="hd">
 <div style="display:flex;justify-content:space-between;align-items:center;font-weight:bold;font-size:14px">
 <span style="color:#38bdf8"><span id="mLb">自分</span>:<span id="s1">0</span></span>
@@ -137,7 +140,7 @@ function dropCurrent(){if(!qs[ix])return;var en=qs[ix].e;rmSaved(en);se("st");cl
 function tgM(){mt=!mt;$("bM").textContent=mt?"🔇OFF":"🔊ON";if(mt&&"speechSynthesis"in window)window.speechSynthesis.cancel()}
 function speakWord(w){if(mt||!("speechSynthesis"in window)||!w||w==="READY")return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(w);u.lang="en-US";u.rate=0.85;var vs=window.speechSynthesis.getVoices(),ev=vs.find(function(v){return/^en-US/i.test(v.lang)})||vs.find(function(v){return/^en/i.test(v.lang)});if(ev)u.voice=ev;window.speechSynthesis.speak(u)}
 function speakCurrent(){speakWord($("wd").textContent)}
-function se(k){if(mt)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);if(k==="ok"){o.type="sine";o.frequency.setValueAtTime(660,t);o.frequency.setValueAtTime(880,t+.09);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.28);o.start(t);o.stop(t+.28)}else if(k==="ng"){o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.setValueAtTime(120,t+.12);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(k==="st"){o.type="triangle";o.frequency.setValueAtTime(520,t);o.frequency.setValueAtTime(780,t+.06);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.01,t+.15);o.start(t);o.stop(t+.15)}else if(k==="tk"){o.type="sine";o.frequency.setValueAtTime(900,t);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.01,t+.06);o.start(t);o.stop(t+.06)}else if(k==="wn"){o.type="triangle";.forEach(function(f,i){o.frequency.setValueAtTime(f,t+i*.09)});g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5)}}catch(e){}}
+function se(k){if(mt)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);if(k==="ok"){o.type="sine";o.frequency.setValueAtTime(660,t);o.frequency.setValueAtTime(880,t+.09);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.28);o.start(t);o.stop(t+.28)}else if(k==="ng"){o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.setValueAtTime(120,t+.12);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(k==="st"){o.type="triangle";o.frequency.setValueAtTime(520,t);o.frequency.setValueAtTime(780,t+.06);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.01,t+.15);o.start(t);o.stop(t+.15)}else if(k==="tk"){o.type="sine";o.frequency.setValueAtTime(900,t);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.01,t+.06);o.start(t);o.stop(t+.06)}else if(k==="wn"){o.type="triangle";[523,659,784,1046].forEach(function(f,i){o.frequency.setValueAtTime(f,t+i*.09)});g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5)}}catch(e){}}
 function lg(t,e){$("lg").textContent=t;$("lg").style.color=e?"#f43f5e":"#4ade80"}
 function tx(t,x){if(solo||com)return;var d={s:id,t:t};if(x)for(var k in x)d[k]=x[k];fetch(SV+"/"+tp,{method:"POST",body:JSON.stringify(d)}).catch(function(){lg("送信エラー",1)})}
 function st(t){se("st");pop(myTag()+": "+t,"#38bdf8");tx("S",{x:t})}
