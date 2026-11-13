@@ -7,13 +7,13 @@
 <title>ターゲット1800 オンライン対戦 DX</title>
 <style>
 body{margin:0;background:#0f172a;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;box-sizing:border-box}
-.box{width:100%;max-width:600px;background:#1e293b;padding:18px;border-radius:16px;text-align:center;position:relative}
+.box{width:100%;max-width:580px;background:#1e293b;padding:16px;border-radius:16px;text-align:center;position:relative}
 h1{font-size:20px;color:#facc15;margin:0 0 10px}
-.p{background:#0f172a;padding:11px;border-radius:10px;margin-bottom:9px}
+.p{background:#0f172a;padding:10px;border-radius:10px;margin-bottom:8px}
 input,select,textarea{padding:7px;font-size:14px;border-radius:8px;border:2px solid #38bdf8;background:#1e293b;color:#fff;text-align:center;margin:3px;box-sizing:border-box}
 input{width:130px}
-textarea{width:100%;height:70px;text-align:left;font-size:12px;resize:none}
-button{background:#facc15;color:#000;border:none;padding:9px 15px;font-size:14px;font-weight:bold;border-radius:8px;cursor:pointer;margin:3px}
+textarea{width:100%;height:65px;text-align:left;font-size:12px;resize:none}
+button{background:#facc15;color:#000;border:none;padding:8px 14px;font-size:14px;font-weight:bold;border-radius:8px;cursor:pointer;margin:3px}
 button:disabled{opacity:.45;cursor:not-allowed}
 .bl{background:#38bdf8}
 .gr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
@@ -25,14 +25,16 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .sb{display:flex;justify-content:center;gap:4px;margin-top:8px;flex-wrap:wrap}
 .st{background:#0f172a;color:#fff;border:1px solid #475569;padding:4px 8px;font-size:12px;border-radius:14px;margin:0}
 .sp{min-height:22px;font-size:15px;font-weight:bold;color:#f472b6}
-.rv{background:#0f172a;border-radius:8px;padding:10px;margin:10px 0;text-align:left;max-height:140px;overflow-y:auto;font-size:13px}
-.top-bar{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:8px 12px;border-radius:10px;margin-bottom:10px;font-size:13px}
+.rv{background:#0f172a;border-radius:8px;padding:10px;margin:10px 0;text-align:left;max-height:160px;overflow-y:auto;font-size:13px}
+.rv-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e293b;padding:5px 0;gap:6px}
+.del-btn{background:#f43f5e;color:#fff;padding:4px 8px;font-size:11px;border-radius:6px;margin:0;flex-shrink:0}
+.top-bar{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:8px 12px;border-radius:10px;margin-bottom:8px;font-size:13px}
 .tag{background:#334155;color:#facc15;padding:3px 8px;border-radius:12px;font-weight:bold;font-size:12px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;justify-content:center;align-items:center;padding:12px;z-index:99}
-.m-card{background:#1e293b;border:2px solid #38bdf8;border-radius:16px;padding:18px;width:100%;max-width:420px;text-align:center}
-.stat-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;text-align:center}
+.m-card{background:#1e293b;border:2px solid #38bdf8;border-radius:16px;padding:16px;width:100%;max-width:420px;text-align:center}
+.stat-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
 .stat-c{background:#0f172a;padding:8px;border-radius:8px;font-size:12px;color:#94a3b8}
-.stat-c b{display:block;font-size:18px;color:#fff;margin-top:2px}
+.stat-c b{display:block;font-size:17px;color:#fff;margin-top:2px}
 </style>
 </head>
 <body>
@@ -40,64 +42,56 @@ button:disabled{opacity:.45;cursor:not-allowed}
 <h1>ターゲット1800 オンライン対戦 DX</h1>
 <div id="lb">
 <div class="top-bar">
-<div style="text-align:left">
-<b id="hmName" style="font-size:15px;color:#38bdf8">🦁 プレイヤー</b>
-<span id="hmRk" class="tag">駆け出し</span>
-<div id="hmBio" style="font-size:11px;color:#94a3b8;margin-top:2px">よろしくお願いします！</div>
-</div>
-<button onclick="openProf()" style="padding:7px 12px;font-size:13px;background:#38bdf8;margin:0">👤 プロフィール</button>
+<div style="text-align:left"><b id="hmName" style="font-size:15px;color:#38bdf8">🦁 プレイヤー</b> <span id="hmRk" class="tag">駆け出し</span><div id="hmBio" style="font-size:11px;color:#94a3b8;margin-top:2px">よろしくお願いします！</div></div>
+<button onclick="openProf()" style="padding:6px 10px;font-size:12px;background:#38bdf8;margin:0">👤 プロフィール</button>
 </div>
 <div class="p">
-<div>
-<select id="lv">
-<option value="e">初級(基本50語/8秒)</option>
-<option value="n" selected>中級(全100語/6秒)</option>
-<option value="h">上級(難単語50語/4秒)</option>
-<option value="c" id="optCust" disabled>自作単語帳(0語/6秒)</option>
-</select>
+<select id="lv"><option value="e">初級(基本50語/8秒)</option><option value="n" selected>中級(全100語/6秒)</option><option value="h">上級(難単語50語/4秒)</option><option value="c" id="optCust" disabled>自作単語帳(0語/6秒)</option></select>
 <select id="qCnt"><option value="10" selected>10問</option><option value="20">20問</option></select>
-</div>
 <button id="bH" onclick="mk()">部屋を作る</button>
 <div id="rI" class="hd" style="margin-top:6px">合言葉：<b id="rD" style="font-size:22px;color:#38bdf8"></b></div>
 </div>
+<div class="p"><input id="in" placeholder="5桁の合言葉"><button id="bG" class="bl" onclick="jn()">入室する</button></div>
 <div class="p">
-<input id="in" placeholder="5桁の合言葉">
-<button id="bG" class="bl" onclick="jn()">入室する</button>
-</div>
-<div class="p">
-<button id="bReview" style="background:#4ade80;padding:8px 12px;font-size:13px" onclick="startReview()">📝 苦手単語復習</button>
-<button style="background:#a78bfa;padding:8px 12px;font-size:13px" onclick="tgImp()">📚 自作単語帳登録</button>
+<button id="bReview" style="background:#4ade80;font-size:13px" onclick="startReview()">📝 苦手単語を復習</button>
+<button id="bMgr" style="background:#38bdf8;font-size:13px" onclick="openMgr()">📋 苦手一覧・消去</button>
+<button style="background:#a78bfa;font-size:13px" onclick="tgImp()">📚 自作単語帳</button>
 <div id="reviewCount" style="font-size:12px;color:#cbd5e1;margin-top:4px"></div>
 <div id="impBox" class="hd" style="margin-top:8px;text-align:left">
-<div style="font-size:11px;color:#94a3b8">1行に「英単語|正解|ダミー1|ダミー2|ダミー3」で入力(4語以上推奨)：</div>
-<textarea id="impTxt" placeholder="apple|りんご|みかん|ぶどう|もも&#10;book|本|机|椅子|ペン"></textarea>
-<button onclick="saveImp()" style="padding:6px 12px;font-size:13px">保存する</button>
-<button onclick="clearImp()" style="padding:6px 12px;font-size:13px;background:#f43f5e;color:#fff">削除</button>
+<div style="font-size:11px;color:#94a3b8">1行に「英単語|正解|ダミー1|ダミー2|ダミー3」で入力：</div>
+<textarea id="impTxt" placeholder="apple|りんご|みかん|ぶどう|もも"></textarea>
+<button onclick="saveImp()" style="padding:5px 10px;font-size:12px">保存</button>
+<button onclick="clearImp()" style="padding:5px 10px;font-size:12px;background:#f43f5e;color:#fff">削除</button>
 </div>
 </div>
 <div id="lg">待機中（ボタンを押してください）</div>
 </div>
 
-<!-- プロフィールモーダル -->
-<div id="profModal" class="modal hd">
-<div class="m-card">
-<h2 style="margin:0 0 10px;font-size:18px;color:#facc15">👤 プレイヤープロフィール</h2>
-<div style="margin-bottom:8px">
-<select id="pAv" style="font-size:18px;padding:6px"><option>🦁</option><option>🦊</option><option>🐼</option><option>🐯</option><option>🐲</option><option>🦉</option><option>🚀</option><option>👑</option><option>⚡</option><option>🎓</option><option>🐱</option><option>🐶</option></select>
-<input id="pNm" placeholder="ニックネーム(8文字)" maxlength="8" style="width:150px">
+<div id="mgrModal" class="modal hd"><div class="m-card">
+<h2 style="margin:0 0 8px;font-size:18px;color:#4ade80">📋 長期保存中の苦手単語</h2>
+<div id="mgrList" class="rv" style="max-height:220px"></div>
+<button onclick="startReview();closeMgr()" id="mRevBtn" style="background:#4ade80">復習する</button>
+<button onclick="clearAllWr()" style="background:#f43f5e;color:#fff">全消去</button>
+<button onclick="closeMgr()" style="background:#64748b;color:#fff">閉じる</button>
+</div></div>
+
+<div id="profModal" class="modal hd"><div class="m-card">
+<h2 style="margin:0 0 8px;font-size:18px;color:#facc15">👤 プロフィール</h2>
+<div>
+<select id="pAv" style="font-size:18px;padding:5px"><option>🦁</option><option>🦊</option><option>🐼</option><option>🐯</option><option>🐲</option><option>🦉</option><option>🚀</option><option>👑</option><option>⚡</option><option>🎓</option><option>🐱</option><option>🐶</option></select>
+<input id="pNm" placeholder="名前(8文字)" maxlength="8" style="width:140px">
 </div>
-<input id="pBioIn" placeholder="ひとことコメント(20文字)" maxlength="20" style="width:90%;margin-bottom:8px">
+<input id="pBioIn" placeholder="ひとこと(20文字)" maxlength="20" style="width:90%">
 <div class="stat-g">
 <div class="stat-c">対戦成績<b id="stWL">0勝 0敗</b></div>
 <div class="stat-c">勝率<b id="stRt">0%</b></div>
-<div class="stat-c">現在の連勝（最高）<b id="stStr">0 (0)</b></div>
-<div class="stat-c">累計獲得スコア<b id="stPt">0 pt</b></div>
+<div class="stat-c">連勝（最高）<b id="stStr">0 (0)</b></div>
+<div class="stat-c">累計スコア<b id="stPt">0 pt</b></div>
 </div>
-<div style="font-size:12px;color:#cbd5e1;margin-bottom:10px" id="stNext">次の称号まであと1勝！</div>
-<button onclick="saveProfModal()" style="background:#4ade80">保存して閉じる</button>
-<button onclick="closeProf()" style="background:#64748b;color:#fff">キャンセル</button>
-</div>
-</div>
+<div style="font-size:12px;color:#cbd5e1;margin-bottom:8px" id="stNext"></div>
+<button onclick="saveProfModal()" style="background:#4ade80">保存</button>
+<button onclick="closeProf()" style="background:#64748b;color:#fff">閉じる</button>
+</div></div>
 
 <div id="gm" class="hd">
 <div style="display:flex;justify-content:space-between;align-items:center;font-weight:bold;font-size:14px">
@@ -108,7 +102,11 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 <div class="bb"><div id="tb" class="bf"></div></div>
 <div id="sp" class="sp"></div>
-<div style="background:#0f172a;padding:14px;border-radius:10px"><b id="wd" style="font-size:32px;color:#facc15">READY</b><br><button id="bSpeak" type="button" class="bl" onclick="speakCurrent()" style="margin-top:6px;padding:6px 12px;font-size:13px">🔊 発音をもう一度聞く</button></div>
+<div style="background:#0f172a;padding:12px;border-radius:10px">
+<b id="wd" style="font-size:32px;color:#facc15">READY</b><br>
+<button id="bSpeak" type="button" class="bl" onclick="speakCurrent()" style="margin-top:6px;padding:5px 10px;font-size:12px">🔊 発音を聞く</button>
+<button id="bDrop" type="button" class="del-btn hd" onclick="dropCurrent()" style="margin-top:6px;padding:5px 10px;font-size:12px">🗑️ 覚えたので消去</button>
+</div>
 <div id="op" class="gr"></div>
 <p id="gl" style="font-weight:bold;color:#4ade80;min-height:20px;margin:6px 0"></p>
 <div id="rv" class="rv hd"></div>
@@ -142,8 +140,14 @@ function saveImp(){var lines=$("impTxt").value.split("\n").map(function(s){retur
 function clearImp(){localStorage.removeItem("t18_cs");if($("lv").value==="c")$("lv").value="n";updCust();lg("自作単語帳を削除しました")}
 function getSaved(){try{return JSON.parse(localStorage.getItem("t18_wr")||"[]")}catch(e){return[]}}
 function setSaved(a){try{localStorage.setItem("t18_wr",JSON.stringify(a));updRev()}catch(e){}}
-function updRev(){var a=getSaved();$("reviewCount").textContent="保存済みの苦手単語: "+a.length+"語";$("bReview").disabled=!a.length}
+function updRev(){var a=getSaved();$("reviewCount").textContent="長期保存中の苦手単語: "+a.length+"語";$("bReview").disabled=$("bMgr").disabled=!a.length}
 updRev();
+function openMgr(){renderMgr();$("mgrModal").classList.remove("hd")}
+function closeMgr(){$("mgrModal").classList.add("hd")}
+function renderMgr(){var a=getSaved();$("mRevBtn").disabled=!a.length;if(!a.length){$("mgrList").innerHTML="<div style='color:#94a3b8;text-align:center'>保存されている苦手単語はありません</div>";return}$("mgrList").innerHTML=a.map(function(raw){var p=raw.split("|");return"<div class='rv-row'><div><b>"+p+"</b> ： "+p+"</div><button class='del-btn' onclick=\"delOne('"+p.replace(/'/g,"")+"')\">消去</button></div>"}).join("")}
+function delOne(en){rmSaved(en);renderMgr();se("st")}
+function clearAllWr(){setSaved([]);renderMgr();se("st")}
+function dropCurrent(){if(!qs[ix])return;var en=qs[ix].e;rmSaved(en);se("st");clearInterval(tI);$("gl").textContent="「"+en+"」を苦手リストから消去しました！";$("gl").style.color="#38bdf8";ds(1);setTimeout(function(){ix++;sh()},900)}
 function tgM(){mt=!mt;$("bM").textContent=mt?"🔇OFF":"🔊ON";if(mt&&"speechSynthesis"in window)window.speechSynthesis.cancel()}
 function speakWord(w){if(mt||!("speechSynthesis"in window)||!w||w==="READY")return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(w);u.lang="en-US";u.rate=0.85;var vs=window.speechSynthesis.getVoices(),ev=vs.find(function(v){return/^en-US/i.test(v.lang)})||vs.find(function(v){return/^en/i.test(v.lang)});if(ev)u.voice=ev;window.speechSynthesis.speak(u)}
 function speakCurrent(){speakWord($("wd").textContent)}
@@ -161,7 +165,8 @@ function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs
 function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("bTop").classList.add("hd");$("rv").classList.add("hd");$("mLb").textContent=myTag();$("oLb").textContent=oppName;$("oppWrap").style.visibility=solo?"hidden":"visible";$("sBar").style.display=solo?"none":"flex";ix=mS=oS=0;wr=[];$("s1").textContent=$("s2").textContent=0;sh()}
 function aw(q){for(var i=0;i<wr.length;i++)if(wr[i].e===q.e)return;wr.push(q);var sv=getSaved(),raw=q.raw||D.find(function(x){return x.indexOf(q.e+"|")===0});if(raw&&sv.indexOf(raw)<0){sv.push(raw);setSaved(sv)}}
 function rmSaved(en){setSaved(getSaved().filter(function(x){return x.indexOf(en+"|")!==0}))}
-function sh(){clearInterval(tI);if(ix>=qs.length){if(!solo){var p=getPr();if(mS>oS){p.w++;p.st++;if(p.st>p.mx)p.mx=p.st}else if(mS<oS){p.l++;p.st=0}p.pt+=Math.max(0,mS);localStorage.setItem("t18_pr",JSON.stringify(p));ldProf()}if(solo||mS>=oS)se("wn");else se("ng");$("tb").style.width="0%";$("bSpeak").classList.add("hd");$("wd").textContent=solo?"🎉 復習完了！":mS>oS?"🏆 "+myTag()+"の勝利！":mS<oS?"😢 "+oppName+"の勝利...":"引き分け！";$("op").innerHTML="";$("gl").textContent=solo?("復習スコア: "+mS+"点（残り苦手: "+getSaved().length+"語）"):("最終: "+myTag()+" "+mS+"点 vs "+oppName+" "+oS+"点");if(!solo)$("bR").classList.remove("hd");$("bTop").classList.remove("hd");$("rv").classList.remove("hd");$("rv").innerHTML=wr.length?("<b style='color:#facc15'>📝 振り返りリスト</b>"+wr.map(function(x){return"<div><b>"+x.e+"</b>："+x.j+"</div>"}).join("")):"<div style='color:#4ade80;font-weight:bold'>🎉 全問クリア！復習不要です！</div>";return}lk=ms=0;lB=4;$("bSpeak").classList.remove("hd");var q=qs[ix],ln=solo?"1人復習":lv==="e"?"初級":lv==="h"?"上級":lv==="c"?"自作":"中級";$("pg").textContent="["+ln+"] "+(ix+1)+"/"+qs.length;$("wd").textContent=q.e;speakWord(q.e);$("gl").textContent=solo?"意味を選べ！":"早押しで正解を選べ！";$("gl").style.color="#94a3b8";$("op").innerHTML="";q.o.forEach(function(o){var b=document.createElement("button");b.className="ch";b.textContent=o;b.onclick=function(){if(lk||ms)return;if(o===q.j){lk=1;clearInterval(tI);se("ok");var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10)),pt=10+bn;mS+=pt;$("s1").textContent=mS;$("gl").textContent="正解！(+"+pt+"点/速度+"+bn+")";$("gl").style.color="#38bdf8";if(solo)rmSaved(q.e);ds(1);tx("W",{i:ix,p:pt});setTimeout(function(){ix++;sh()},1300)}else{ms=1;se("ng");mS-=5;$("s1").textContent=mS;$("gl").textContent=solo?("不正解！正解:"+q.j):("お手つき！（-5点）");$("gl").style.color="#facc15";aw(q);ds(1);tx("M",{i:ix});if(solo){lk=1;clearInterval(tI);setTimeout(function(){ix++;sh()},1500)}}};$("op").appendChild(b)});qT=Date.now();$("tb").style.width="100%";$("tb").style.backgroundColor="#4ade80";tI=setInterval(function(){var r=Math.max(0,LM-(Date.now()-qT)),pc=(r/LM)*100,sec=Math.ceil(r/1000);$("tb").style.width=pc+"%";$("tb").style.backgroundColor=pc<30?"#f43f5e":pc<60?"#facc15":"#4ade80";if(sec<=3&&sec<lB&&sec>0){lB=sec;se("tk")}if(r<=0&&!lk){lk=1;clearInterval(tI);se("ng");ds(1);aw(q);$("gl").textContent="時間切れ！正解:"+q.j;setTimeout(function(){ix++;sh()},1500)}},50)}
+function delResItem(en,btn){rmSaved(en);btn.textContent="消去済";btn.disabled=true;btn.style.background="#475569";se("st")}
+function sh(){clearInterval(tI);if(ix>=qs.length){if(!solo){var p=getPr();if(mS>oS){p.w++;p.st++;if(p.st>p.mx)p.mx=p.st}else if(mS<oS){p.l++;p.st=0}p.pt+=Math.max(0,mS);localStorage.setItem("t18_pr",JSON.stringify(p));ldProf()}if(solo||mS>=oS)se("wn");else se("ng");$("tb").style.width="0%";$("bSpeak").classList.add("hd");$("bDrop").classList.add("hd");$("wd").textContent=solo?"🎉 復習完了！":mS>oS?"🏆 "+myTag()+"の勝利！":mS<oS?"😢 "+oppName+"の勝利...":"引き分け！";$("op").innerHTML="";$("gl").textContent=solo?("復習スコア: "+mS+"点（残り苦手: "+getSaved().length+"語）"):("最終: "+myTag()+" "+mS+"点 vs "+oppName+" "+oS+"点");if(!solo)$("bR").classList.remove("hd");$("bTop").classList.remove("hd");$("rv").classList.remove("hd");$("rv").innerHTML=wr.length?("<b style='color:#facc15'>📝 振り返り（不要な単語は消去可）</b>"+wr.map(function(x){return"<div class='rv-row'><div><b>"+x.e+"</b>："+x.j+"</div><button class='del-btn' onclick=\"delResItem('"+x.e+"',this)\">苦手から消去</button></div>"}).join("")):"<div style='color:#4ade80;font-weight:bold'>🎉 全問クリア！復習不要です！</div>";return}lk=ms=0;lB=4;$("bSpeak").classList.remove("hd");if(solo)$("bDrop").classList.remove("hd");else $("bDrop").classList.add("hd");var q=qs[ix],ln=solo?"1人復習":lv==="e"?"初級":lv==="h"?"上級":lv==="c"?"自作":"中級";$("pg").textContent="["+ln+"] "+(ix+1)+"/"+qs.length;$("wd").textContent=q.e;speakWord(q.e);$("gl").textContent=solo?"意味を選べ！（不要なら上の消去ボタン）":"早押しで正解を選べ！";$("gl").style.color="#94a3b8";$("op").innerHTML="";q.o.forEach(function(o){var b=document.createElement("button");b.className="ch";b.textContent=o;b.onclick=function(){if(lk||ms)return;if(o===q.j){lk=1;clearInterval(tI);se("ok");var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10)),pt=10+bn;mS+=pt;$("s1").textContent=mS;$("gl").textContent="正解！(+"+pt+"点/速度+"+bn+")";$("gl").style.color="#38bdf8";ds(1);tx("W",{i:ix,p:pt});setTimeout(function(){ix++;sh()},1300)}else{ms=1;se("ng");mS-=5;$("s1").textContent=mS;$("gl").textContent=solo?("不正解！正解:"+q.j):("お手つき！（-5点）");$("gl").style.color="#facc15";aw(q);ds(1);tx("M",{i:ix});if(solo){lk=1;clearInterval(tI);setTimeout(function(){ix++;sh()},1500)}}};$("op").appendChild(b)});qT=Date.now();$("tb").style.width="100%";$("tb").style.backgroundColor="#4ade80";tI=setInterval(function(){var r=Math.max(0,LM-(Date.now()-qT)),pc=(r/LM)*100,sec=Math.ceil(r/1000);$("tb").style.width=pc+"%";$("tb").style.backgroundColor=pc<30?"#f43f5e":pc<60?"#facc15":"#4ade80";if(sec<=3&&sec<lB&&sec>0){lB=sec;se("tk")}if(r<=0&&!lk){lk=1;clearInterval(tI);se("ng");ds(1);aw(q);$("gl").textContent="時間切れ！正解:"+q.j;setTimeout(function(){ix++;sh()},1500)}},50)}
 function ds(f){document.querySelectorAll(".ch").forEach(function(b){b.disabled=f})}
 function re(){if(hs)nw();else{tx("R");$("gl").textContent="再戦リクエスト送信中..."}}
 </script>
