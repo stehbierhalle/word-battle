@@ -390,7 +390,22 @@ function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!
 function mk(){se("st");hs=1;solo=com=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=solo=com=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("接続中...");ls()}
 function shf(a){var r=new Array(),c=a.slice();while(c.length){var j=Math.floor(Math.random()*c.length);r.push(c.splice(j,1).at(0))}return r}
-function mapQ(arr){var isM=lv.startsWith("m"),isH=(lv==="h1"||lv==="h2"||lv==="ha");return arr.map(function(l){var p=l.split("|"),qTxt=(p.at(0)||"").trim(),ans=(p.at(1)||"").trim(),pool=isM?MA:isH?HA:D,opts=new Array(ans),guard=0;while(opts.length<4&&guard<200){guard++;var r=(pool.at(Math.floor(Math.random()*pool.length)).split("|").at(1)||"").trim();if(r&&opts.indexOf(r)<0)opts.push(r)}return{e:qTxt,j:ans,o:shf(opts),raw:l}})}
+function mapQ(arr){
+  return arr.map(function(l){
+    var p = l.split("|");
+    var qTxt = (p.at(0) || "").trim();
+    var ans = (p.at(1) || "").trim();
+    var pool = MA.indexOf(l) >= 0 ? MA : HA.indexOf(l) >= 0 ? HA : D;
+    var opts = new Array(ans);
+    var guard = 0;
+    while(opts.length < 4 && guard < 200){
+      guard++;
+      var r = (pool.at(Math.floor(Math.random() * pool.length)).split("|").at(1) || "").trim();
+      if(r && opts.indexOf(r) < 0) opts.push(r);
+    }
+    return {e: qTxt, j: ans, o: shf(opts), raw: l};
+  });
+}
 function nw(){var pl=lv==="e"?W1:lv==="h"?W2:lv==="m1"?M1:lv==="m2"?M2:lv==="m3"?M3:lv==="ma"?MA:lv==="h1"?H1:lv==="h2"?H2:lv==="ha"?HA:WM;LM=lv.startsWith("m")?10000:lv==="h"?4000:lv==="n"?6000:8000;qs=mapQ(shf(pl.slice()).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
 function startCom(){se("st");com=1;hs=solo=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var nmMap={e:"初級",n:"中級",h:"上級",m1:"数ⅠA",m2:"数ⅡB",m3:"数ⅢC",ma:"数学全",h1:"古代中世",h2:"近世近代",ha:"日本史全"};oppName="🤖COM("+(nmMap[lv]||"中級")+")";nw()}
 function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs=com=0;LM=8000;qs=mapQ(shf(sv.slice()));go()}
