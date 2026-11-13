@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ターゲット1800 オンライン英単語バトル</title>
-  <script src="https://unpkg.com"></script>
+  <script src="https://cloudflare.com"></script>
   <style>
     body {
       margin: 0;
@@ -31,9 +31,9 @@
     h1 { font-size: 24px; margin-top: 0; color: #facc15; }
     .lobby-box {
       background: #0f172a;
-      padding: 20px;
+      padding: 18px;
       border-radius: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .room-id-display {
       font-size: 28px;
@@ -47,31 +47,43 @@
       margin: 8px 0;
       user-select: all;
     }
-    input[type="text"] {
-      padding: 12px;
-      font-size: 18px;
+    input[type="text"], textarea {
+      padding: 10px;
+      font-size: 16px;
       border-radius: 8px;
       border: 2px solid #334155;
       background: #1e293b;
       color: #fff;
+      box-sizing: border-box;
+    }
+    input[type="text"] {
       width: 180px;
       text-align: center;
       text-transform: uppercase;
+      font-size: 18px;
+    }
+    textarea {
+      width: 100%;
+      height: 60px;
+      font-size: 12px;
+      margin-top: 8px;
+      resize: none;
     }
     button {
       background: #facc15;
       color: #0f172a;
       border: none;
-      padding: 12px 24px;
-      font-size: 16px;
+      padding: 10px 20px;
+      font-size: 15px;
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
       margin: 6px;
       transition: 0.15s;
     }
-    button:hover { background: #fde047; }
+    button:hover:not(:disabled) { background: #fde047; }
     button:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
+    .sub-btn { background: #38bdf8; color: #0f172a; font-size: 13px; padding: 8px 14px; }
     .header {
       display: flex;
       justify-content: space-between;
@@ -118,9 +130,9 @@
     .choice-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .status-msg {
       min-height: 28px;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
-      margin-top: 12px;
+      margin-top: 10px;
       color: #4ade80;
     }
     .hidden { display: none; }
@@ -140,7 +152,10 @@
     <div class="lobby-box">
       <div style="font-size: 14px; color: #94a3b8;">▼ 部屋を作って相手を待つ（ホスト側）</div>
       <div class="room-id-display" id="my-room-id">接続中...</div>
-      <div style="font-size: 13px; color: #cbd5e1;">この5桁のIDを対戦相手に教えてください</div>
+      <div>
+        <button class="sub-btn" onclick="copyRoomId()">IDをコピー</button>
+        <button class="sub-btn" style="background:#64748b;color:#fff;" onclick="initPeer()">再接続</button>
+      </div>
     </div>
 
     <div class="lobby-box">
@@ -195,11 +210,10 @@
     { en: "assume", ja: "〜と思い込む、引き受ける", dummy: ["〜を保証する", "〜を消費する", "〜を再開する"] }
   ];
 
-  // 5桁のランダムなルームID生成
-  const shortId = Math.random().toString(36).substring(2, 7).toUpperCase();
-  const peer = new Peer("T1800-" + shortId);
+  let peer = null;
   let conn = null;
   let isHost = false;
+  let shortId = "";
 
   let questions = [];
   let currentIdx = 0;
@@ -210,25 +224,66 @@
   let oppMissed = false;
   let roundLocked = false;
 
-  peer.on("open", () => {
-    document.getElementById("my-room-id").textContent = shortId;
-    document.getElementById("join-btn").disabled = false;
-    document.getElementById("lobby-status").textContent = "準備完了！IDを共有するか、相手のIDを入力してください";
-  });
+  function generateId() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let res = "";
+    for (let i = 0; i < 5; i++) {
+      res += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return res;
+  }
 
-  peer.on("error", (err) => {
-    document.getElementById("lobby-status").textContent = "接続エラー: IDが見つからないか通信に失敗しました";
-    document.getElementById("lobby-status").style.color = "#f43f5e";
-  });
+  function initPeer() {
+    if (typeof Peer === "undefined") {
+      document.getElementById("lobby-status").textContent = "通信ライブラリの読み込みに失敗しました。再読み込みしてください。";
+      document.getElementById("lobby-status").style.color = "#f43f5e";
+      return;
+    }
 
-  // ホスト側：相手からの接続を受信
-  peer.on("connection", (connection) => {
-    conn = connection;
-    isHost = true;
-    setupConnection();
-  });
+    if (peer) {
+      peer.destroy();
+    }
 
-  // ゲスト側：ホストへ接続
+    document.getElementById("my-room-id").textContent = "接続中...";
+    document.getElementById("lobby-status").textContent = "サーバーに接続しています...";
+    document.getElementById("lobby-status").style.color = "#94a3b8";
+
+    shortId = generateId();
+    peer = new Peer("T1800-" + shortId, {
+      config: {
+        iceServers: [
+          { urls: "stun:://google.com" },
+          { urls: "stun:://google.com" }
+        ]
+      }
+    });
+
+    peer.on("open", () => {
+      document.getElementById("my-room-id").textContent = shortId;
+      document.getElementById("join-btn").disabled = false;
+      document.getElementById("lobby-status").textContent = "準備完了！IDを共有するか、相手のIDを入力してください";
+      document.getElementById("lobby-status").style.color = "#4ade80";
+    });
+
+    peer.on("error", (err) => {
+      document.getElementById("lobby-status").textContent = "エラー (" + err.type + "): 「再接続」を押してください";
+      document.getElementById("lobby-status").style.color = "#f43f5e";
+    });
+
+    peer.on("connection", (connection) => {
+      conn = connection;
+      isHost = true;
+      setupConnection();
+    });
+  }
+
+  function copyRoomId() {
+    if (shortId) {
+      navigator.clipboard.writeText(shortId);
+      document.getElementById("lobby-status").textContent = "ID「" + shortId + "」をコピーしました！";
+    }
+  }
+
   function joinRoom() {
     const targetId = document.getElementById("join-id-input").value.trim().toUpperCase();
     if (targetId.length !== 5) {
@@ -236,7 +291,7 @@
       return;
     }
     document.getElementById("lobby-status").textContent = "部屋に接続中...";
-    conn = peer.connect("T1800-" + targetId);
+    conn = peer.connect("T1800-" + targetId, { reliable: true });
     isHost = false;
     setupConnection();
   }
@@ -257,64 +312,3 @@
 
     conn.on("close", () => {
       document.getElementById("game-status").textContent = "相手との接続が切れました";
-      document.getElementById("game-status").style.color = "#f43f5e";
-      disableAllButtons(true);
-    });
-  }
-
-  function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
-  }
-
-  // ホストが問題セットを作成して送信
-  function startNewMatch() {
-    const selected = shuffle([...wordBank]).slice(0, 10).map(q => ({
-      en: q.en,
-      ja: q.ja,
-      options: shuffle([q.ja, ...q.dummy])
-    }));
-    conn.send({ type: "START", questions: selected });
-    initMatch(selected);
-  }
-
-  function initMatch(qList) {
-    questions = qList;
-    currentIdx = 0;
-    myScore = 0;
-    oppScore = 0;
-    updateScoreUI();
-    document.getElementById("rematch-btn").classList.add("hidden");
-    loadQuestion();
-  }
-
-  function loadQuestion() {
-    if (currentIdx >= questions.length) {
-      endGame();
-      return;
-    }
-
-    myMissed = false;
-    oppMissed = false;
-    roundLocked = false;
-
-    const q = questions[currentIdx];
-    currentOptions = q.options;
-
-    document.getElementById("q-progress").textContent = `第 ${currentIdx + 1} 問 / 全 ${questions.length} 問`;
-    document.getElementById("word-display").textContent = q.en;
-    document.getElementById("game-status").textContent = "早押しで正しい意味をタップ！";
-    document.getElementById("game-status").style.color = "#94a3b8";
-
-    const container = document.getElementById("choices-container");
-    container.innerHTML = "";
-
-    q.options.forEach((opt, idx) => {
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = `${idx + 1}. ${opt}`;
-      btn.onclick = () => submitAnswer(opt);
-      container.appendChild(btn);
-    });
-  }
-
-  // キーボード操作（1〜4キー）にも対応
