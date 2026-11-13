@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja" translate="no">
 <head>
@@ -51,7 +52,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </div>
 <div class="bb"><div id="tb" class="bf"></div></div>
 <div id="sp" class="sp"></div>
-<div style="background:#0f172a;padding:14px;border-radius:10px"><b id="wd" style="font-size:32px;color:#facc15">READY</b></div>
+<div style="background:#0f172a;padding:14px;border-radius:10px"><b id="wd" style="font-size:32px;color:#facc15">READY</b><br><button id="bSpeak" type="button" class="bl" onclick="speakCurrent()" style="margin-top:8px">🔊 発音をもう一度聞く</button></div>
 <div id="op" class="gr"></div>
 <p id="gl" style="font-weight:bold;color:#4ade80;min-height:20px;margin:6px 0"></p>
 <div id="rv" class="rv hd"></div>
@@ -68,7 +69,25 @@ button:disabled{opacity:.45;cursor:not-allowed}
 var D="abandon|捨てる|吸収|称賛|加速,absorb|吸収する|廃止|適応|避難,accomplish|成し遂げる|伴う|蓄積|非難,accurate|正確な|急性|十分|人工,acquire|習得する|要求|調査|賞賛,adapt|適応する|採用|崇拝|前進,adequate|十分な|隣接|進歩|熱心,affection|愛情|影響|苦痛|親和,alter|変える|交互|警告|割当,ambitious|野心的な|曖昧|熱心|匿名,analyze|分析する|麻酔|公表|予期,ancient|古代の|不安|年間|明白,anticipate|予期する|参加|謝罪|適用,apparent|明らかな|適切|熱心|横柄,appreciate|感謝する|接近|承認|逮捕,appropriate|適切な|概算|横柄|人工,artificial|人工の|芸術|本質|熱心,aspect|側面|尊敬|見込|疑い,assemble|組み立てる|類似|割当|仮定,assume|思い込む|保証|消費|再開,astonish|驚かせる|攻撃|到達|添付,attribute|せいにする|魅了|聴取|自動,available|利用できる|回避|平均|気づく,awkward|気まずい|素敵|覚醒|後向,ban|禁止する|曲げる|縛る|爆発,barrier|障壁|樽|基礎|戦い,behave|振る舞う|信じる|所属|利益,betray|裏切る|打負|懇願|曲げる,bother|悩ます|借りる|跳返|自慢,brief|簡潔な|明るい|勇敢|広い,brilliant|素晴らしい|脆い|残忍|退屈,burden|重荷|埋葬|茂み|予算,calculate|計算する|祝う|捕獲|彫る,capable|能力がある|注意|気軽|慎重,capture|捕らえる|運ぶ|引起|中止,cease|やめる|祝う|主張|分類,challenge|異議を唱える|変える|請求|追払,circumstance|状況|円周|市民|文明,collapse|崩壊する|収集|衝突|結合,combine|結合させる|慰める|命令|賞賛,commit|犯す|伝達|比較|競争,companion|仲間|会社|比較|同情,compel|強制する|補償|競争|完了,compensate|補償する|競争|不平|構成,concentrate|集中する|結論|懸念|確認,concept|概念|関心|演奏|結論,confess|告白する|確認|混乱|征服,confident|自信がある|機密|対立|混乱,confirm|確認する|従う|直面|混雑,consequence|結果|良心|意識|節約,abolish|廃止する|吸収|崇拝|加速,abrupt|突然の|抽象|豊富|不条理,absurd|ばかげた|豊富|抽象|急性,abundant|豊富な|愚か|隣接|曖昧,accelerate|加速する|蓄積|非難|適応,accommodate|収容する|伴う|達成|蓄積,accumulate|蓄積する|非難|収容|適応,acknowledge|認める|習得|接近|公表,acute|急性の|正確|十分|隣接,adjacent|隣接した|十分|進歩|熱心,adolescent|青年期の|成人|古代|年間,advocate|主張する|助言|崇拝|割当,aesthetic|美的な|運動|人工|不安,aggregate|合計の|攻撃|機敏|古代,allocate|割り当てる|変える|交互|警告,ambiguous|曖昧な|野心|匿名|不安,amend|修正する|驚かす|分析|公表,analogy|類推|分析|解剖|無政府,anonymous|匿名の|野心|曖昧|不安,apparatus|装置|外観|食欲|拍手,arbitrary|恣意的な|人工|芸術|横柄,arrogant|横柄な|適切|人工|明白,assert|断言する|評価|割当|組立,assess|評価する|断言|援助|仮定,astonishment|驚き|達成|雰囲気|愛着,atrocity|残虐行為|権威|魅力|属性,authentic|本物の|権威|自動|自治,authorize|権限を与える|自動|執筆|回避,autonomous|自治の|自動|本物|匿名,avert|そらす|主張|避ける|気づく,baffle|当惑させる|均衡|禁止|裏切る,benevolent|慈悲深い|有益|偏見|残忍,bewilder|途方に暮れさせる|裏切る|自慢|悩ます,blunt|鈍い|勇敢|簡潔|明るい,boast|自慢する|悩ます|借りる|曲げる,breach|違反|呼吸|簡潔|突破,brittle|脆い|素敵|残忍|広い,brutal|残忍な|脆い|退屈|勇敢,bureaucracy|官僚制|民主|貴族|資本,catastrophe|大惨事|分類|聖堂|特徴,chronological|年代順の|慢性|市民|臨床,coerce|強制する|一致|崩壊|結合,coherent|筋の通った|固有|粘着|同時,coincide|同時に起こる|崩壊|結合|犯す,commodity|商品|共同|委員|常識,compatible|互換性のある|同情|競争|複雑,compulsory|義務的な|強制|包括|複雑,conceal|隠す|認める|懸念|集中,conceive|思いつく|隠す|征服|確認".split(",");
 var W1=D.slice(0,50),W2=D.slice(50),SV="https://ntfy.sh",tp="",hs=0,id=String(Math.random()).slice(2,8),qs=[],ix=0,mS=0,oS=0,lk=0,ms=0,qT=0,tI,sI,wr=[],LM=6000,lv="n",ac=null,mt=0,lB=4;
 function $(i){return document.getElementById(i)}
-function tgM(){mt=!mt;$("bM").textContent=mt?"🔇OFF":"🔊ON"}
+function tgM(){
+ mt=!mt;
+ $("bM").textContent=mt?"🔇OFF":"🔊ON";
+ if(mt && "speechSynthesis" in window) window.speechSynthesis.cancel();
+}
+function speakWord(word){
+ if(mt || !("speechSynthesis" in window) || !word) return;
+ window.speechSynthesis.cancel();
+ var utterance=new SpeechSynthesisUtterance(word);
+ utterance.lang="en-US";
+ utterance.rate=0.85;
+ utterance.pitch=1;
+ var voices=window.speechSynthesis.getVoices();
+ var englishVoice=voices.find(function(v){return /^en-US/i.test(v.lang)}) ||
+                 voices.find(function(v){return /^en/i.test(v.lang)});
+ if(englishVoice) utterance.voice=englishVoice;
+ window.speechSynthesis.speak(utterance);
+}
+function speakCurrent(){speakWord($("wd").textContent)}
 function se(k){
 if(mt)return;
 try{
@@ -111,7 +130,7 @@ $("rv").appendChild(item);
 });
 }else{
 $("rv").textContent="🎉 全問クリア！復習不要です！";
-}return}lk=ms=0;lB=4;var q=qs[ix],ln=lv==="e"?"初級":lv==="h"?"上級":"中級";$("pg").textContent="["+ln+"] "+(ix+1)+"/"+qs.length;$("wd").textContent=q.e;$("gl").textContent="早押しで正解を選べ！";$("gl").style.color="#94a3b8";$("op").innerHTML="";q.o.forEach(function(o){var b=document.createElement("button");b.className="ch";b.textContent=o;b.onclick=function(){if(lk||ms)return;if(o===q.j){lk=1;clearInterval(tI);se("ok");var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10)),pt=10+bn;mS+=pt;$("s1").textContent=mS;$("gl").textContent="正解！(+"+pt+"点/速度+"+bn+")";$("gl").style.color="#38bdf8";ds(1);tx("W",{i:ix,p:pt});setTimeout(function(){ix++;sh()},1500)}else{ms=1;se("ng");mS-=5;$("s1").textContent=mS;$("gl").textContent="お手つき！（-5点）";$("gl").style.color="#facc15";aw(q);ds(1);tx("M",{i:ix})}};$("op").appendChild(b)});qT=Date.now();$("tb").style.width="100%";$("tb").style.backgroundColor="#4ade80";tI=setInterval(function(){var r=Math.max(0,LM-(Date.now()-qT)),pc=(r/LM)*100,sec=Math.ceil(r/1000);$("tb").style.width=pc+"%";$("tb").style.backgroundColor=pc<30?"#f43f5e":pc<60?"#facc15":"#4ade80";if(sec<=3&&sec<lB&&sec>0){lB=sec;se("tk")}if(r<=0&&!lk){lk=1;clearInterval(tI);se("ng");ds(1);aw(q);$("gl").textContent="時間切れ！正解:"+q.j;setTimeout(function(){ix++;sh()},1500)}},50)}
+}return}lk=ms=0;lB=4;var q=qs[ix],ln=lv==="e"?"初級":lv==="h"?"上級":"中級";$("pg").textContent="["+ln+"] "+(ix+1)+"/"+qs.length;$("wd").textContent=q.e;speakWord(q.e);$("gl").textContent="早押しで正解を選べ！";$("gl").style.color="#94a3b8";$("op").innerHTML="";q.o.forEach(function(o){var b=document.createElement("button");b.className="ch";b.textContent=o;b.onclick=function(){if(lk||ms)return;if(o===q.j){lk=1;clearInterval(tI);se("ok");var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10)),pt=10+bn;mS+=pt;$("s1").textContent=mS;$("gl").textContent="正解！(+"+pt+"点/速度+"+bn+")";$("gl").style.color="#38bdf8";ds(1);tx("W",{i:ix,p:pt});setTimeout(function(){ix++;sh()},1500)}else{ms=1;se("ng");mS-=5;$("s1").textContent=mS;$("gl").textContent="お手つき！（-5点）";$("gl").style.color="#facc15";aw(q);ds(1);tx("M",{i:ix})}};$("op").appendChild(b)});qT=Date.now();$("tb").style.width="100%";$("tb").style.backgroundColor="#4ade80";tI=setInterval(function(){var r=Math.max(0,LM-(Date.now()-qT)),pc=(r/LM)*100,sec=Math.ceil(r/1000);$("tb").style.width=pc+"%";$("tb").style.backgroundColor=pc<30?"#f43f5e":pc<60?"#facc15":"#4ade80";if(sec<=3&&sec<lB&&sec>0){lB=sec;se("tk")}if(r<=0&&!lk){lk=1;clearInterval(tI);se("ng");ds(1);aw(q);$("gl").textContent="時間切れ！正解:"+q.j;setTimeout(function(){ix++;sh()},1500)}},50)}
 function ds(f){document.querySelectorAll(".ch").forEach(function(b){b.disabled=f})}
 function re(){if(hs)nw();else{tx("R");$("gl").textContent="再戦リクエスト送信中..."}}
 </script>
