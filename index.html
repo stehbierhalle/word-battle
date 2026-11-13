@@ -330,7 +330,7 @@ function updRev(){var a=getSaved();$("reviewCount").textContent="長期保存中
 updRev();
 function openMgr(){renderMgr();$("mgrModal").classList.remove("hd")}
 function closeMgr(){$("mgrModal").classList.add("hd")}
-function renderMgr(){var a=getSaved();$("mRevBtn").disabled=!a.length;if(!a.length){$("mgrList").innerHTML="<div style='color:#94a3b8;text-align:center'>保存されている苦手単語はありません</div>";return}$("mgrList").innerHTML=a.map(function(raw){var p=raw.split("|");return"<div class='rv-row'><div><b>"+p+"</b> ： "+p+"</div><button class='del-btn' onclick=\"delOne('"+p.replace(/'/g,"")+"')\">消去</button></div>"}).join("")}
+function renderMgr(){var a=getSaved();$("mRevBtn").disabled=!a.length;if(!a.length){$("mgrList").innerHTML="<div style='color:#94a3b8;text-align:center'>保存されている苦手単語はありません</div>";return}$("mgrList").innerHTML=a.map(function(raw){var p=raw.split("|"),en=p.at(0)||"",jp=p.at(1)||"";return"<div class='rv-row'><div><b>"+en+"</b> ： "+jp+"</div><button class='del-btn' onclick=\"delOne('"+en.replace(/'/g,"")+"')\">消去</button></div>"}).join("")}
 function delOne(en){rmSaved(en);renderMgr();se("st")}
 function clearAllWr(){setSaved([]);renderMgr();se("st")}
 function dropCurrent(){if(!qs[ix])return;var en=qs[ix].e;rmSaved(en);se("st");clearInterval(tI);$("gl").textContent="「"+en+"」を苦手リストから消去しました！";$("gl").style.color="#38bdf8";ds(1);setTimeout(function(){ix++;sh()},900)}
