@@ -73,6 +73,15 @@ button:disabled{opacity:.45;cursor:not-allowed}
 #gm .bb{border:2px solid #0f172a;background:#cbd5e1;height:10px}
 #gm .rv{background:#fff;color:#0f172a;border:3px solid #0f172a}
 #gm .rv-row{border-bottom:1px solid #cbd5e1} 
+/* 画面切り替え・問題進行時のガタつき（サイズ変動）防止 */
+.box{height:710px;max-height:95vh;display:flex;flex-direction:column;justify-content:space-between;overflow-y:auto;box-sizing:border-box}
+#lb,#gm{flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.pk-qbox{height:122px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box;overflow:hidden}
+#gm #bSpeak.hd{display:inline-block!important;visibility:hidden!important;pointer-events:none}
+#gm .gr{height:132px;grid-template-rows:1fr 1fr;box-sizing:border-box}
+#gm .ch{height:56px;display:flex;align-items:center;line-height:1.25;overflow:hidden}
+#gm #gl{height:72px;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;overflow:hidden;margin:6px 0!important}
+#gm .rv{max-height:125px}
 </style>
 </head>
 <body>
