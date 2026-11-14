@@ -26,7 +26,11 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .bf{width:100%;height:100%;background:#4ade80}
 .sb{display:flex;justify-content:center;gap:4px;margin-top:8px;flex-wrap:wrap}
 .st{background:#0f172a;color:#fff;border:1px solid #475569;padding:4px 8px;font-size:12px;border-radius:14px;margin:0}
-.sp{min-height:22px;font-size:15px;font-weight:bold;color:#f472b6}
+.sp-wrap{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:28px;margin-bottom:6px}
+.sp-box{flex:1;min-height:24px;font-size:13px;font-weight:bold;padding:3px 8px;border-radius:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#sp1{text-align:left;color:#38bdf8}
+#sp2{text-align:right;color:#f472b6}
+.sp-on{background:#0f172a;border:1px solid #334155}
 .rv{background:#0f172a;border-radius:8px;padding:10px;margin:10px 0;text-align:left;max-height:160px;overflow-y:auto;font-size:13px}
 .rv-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e293b;padding:5px 0;gap:6px}
 .del-btn{background:#f43f5e;color:#fff;padding:4px 8px;font-size:11px;border-radius:6px;margin:0;flex-shrink:0}
@@ -118,7 +122,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 <button id="bM" onclick="tgM()" style="padding:4px 8px;font-size:12px;background:#334155;color:#fff;margin:0">🔊ON</button>
 </div>
 <div class="bb"><div id="tb" class="bf"></div></div>
-<div id="sp" class="sp"></div>
+<div class="sp-wrap"><div id="sp1" class="sp-box"></div><div id="sp2" class="sp-box"></div></div>
 <div style="background:#0f172a;padding:12px;border-radius:10px">
 <b id="wd" style="font-size:32px;color:#facc15">READY</b><br>
 <button id="bSpeak" type="button" class="bl" onclick="speakCurrent()" style="margin-top:6px;padding:5px 10px;font-size:12px">🔊 発音を聞く</button>
@@ -391,8 +395,15 @@ var SV="https://ntfy.sh",tp="",hs=0,solo=0,com=0,id=String(Math.random()).slice(
 function se(k){if(mt)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);if(k==="ok"){o.type="sine";o.frequency.setValueAtTime(660,t);o.frequency.setValueAtTime(880,t+.09);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.28);o.start(t);o.stop(t+.28)}else if(k==="ng"){o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.setValueAtTime(120,t+.12);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(k==="st"){o.type="triangle";o.frequency.setValueAtTime(520,t);o.frequency.setValueAtTime(780,t+.06);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.01,t+.15);o.start(t);o.stop(t+.15)}else if(k==="tk"){o.type="sine";o.frequency.setValueAtTime(900,t);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.01,t+.06);o.start(t);o.stop(t+.06)}else if(k==="wn"){o.type="triangle";new Array(523,659,784,1046).forEach(function(f,i){o.frequency.setValueAtTime(f,t+i*.09)});g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5)}}catch(e){}}
 function lg(t,e){$("lg").textContent=t;$("lg").style.color=e?"#f43f5e":"#4ade80"}
 function tx(t,x){if(solo||com)return;var d={s:id,t:t};if(x)for(var k in x)d[k]=x[k];fetch(SV+"/"+tp,{method:"POST",body:JSON.stringify(d)}).catch(function(){lg("送信エラー",1)})}
-function st(t){se("st");pp(myTag()+": "+t,"#38bdf8");tx("S",{x:t})}
-function pp(t,c){$("sp").textContent=t;$("sp").style.color=c;clearTimeout(sI);sI=setTimeout(function(){$("sp").textContent=""},2000)}
+var sI1,sI2;
+function st(t){se("st");pp(1,myTag()+": "+t);tx("S",{x:t})}
+function pp(side,t){
+  var el=$(side===1?"sp1":"sp2");
+  el.textContent=t;
+  el.classList.add("sp-on");
+  if(side===1){clearTimeout(sI1);sI1=setTimeout(function(){el.textContent="";el.classList.remove("sp-on")},2500)}
+  else{clearTimeout(sI2);sI2=setTimeout(function(){el.textContent="";el.classList.remove("sp-on")},2500)}
+}
 function markAns(ans, picked){
   document.querySelectorAll(".ch").forEach(function(b){
     b.disabled = 1;
@@ -435,24 +446,24 @@ function oppMiss(){
   }
 }
 
-function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!hs){lg("接続完了！開始待ち...");tx("J",{nm:myTag()})}};es.onmessage=function(e){try{var m=JSON.parse(JSON.parse(e.data).message);if(m.s===id)return;if(m.t==="J"&&hs){oppName=m.nm||"相手";nw()}else if(m.t==="B"){oppName=m.nm||"相手";qs=m.q;LM=m.l;lv=m.v;go()}else if(m.t==="W"&&m.i===ix&&!lk)oppWin(m.p);else if(m.t==="M"&&m.i===ix)oppMiss();else if(m.t==="S"){se("st");pp(oppName+": "+m.x,"#f472b6")}else if(m.t==="R"&&hs)nw()}catch(z){}}}
+function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!hs){lg("接続完了！開始待ち...");tx("J",{nm:myTag()})}};es.onmessage=function(e){try{var m=JSON.parse(JSON.parse(e.data).message);if(m.s===id)return;if(m.t==="J"&&hs){oppName=m.nm||"相手";nw()}else if(m.t==="B"){oppName=m.nm||"相手";qs=m.q;LM=m.l;lv=m.v;go()}else if(m.t==="W"&&m.i===ix&&!lk)oppWin(m.p);else if(m.t==="M"&&m.i===ix)oppMiss();else if(m.t==="S"){se("st");pp(2,oppName+": "+m.x)}else if(m.t==="R"&&hs)nw()}catch(z){}}}
 function mk(){se("st");hs=1;solo=com=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=solo=com=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("接続中...");ls()}
 function shf(a){var r=new Array(),c=a.slice();while(c.length){var j=Math.floor(Math.random()*c.length);r.push(c.splice(j,1).at(0))}return r}
 function mapQ(arr){
   return arr.map(function(l){
-    var p = l.split("|");
-    var qTxt = (p.at(0) || "").trim();
-    var ans = (p.at(1) || "").trim();
-    var pool = MA.indexOf(l) >= 0 ? MA : HA.indexOf(l) >= 0 ? HA : D;
-    var opts = new Array(ans);
-    var guard = 0;
-    while(opts.length < 4 && guard < 200){
+    var p=l.split("|");
+    var qTxt=(p.at(0)||"").trim();
+    var ans=(p.at(1)||"").trim();
+    var pool=MA.indexOf(l)>=0?MA:HA.indexOf(l)>=0?HA:D;
+    var opts=new Array(ans);
+    var guard=0;
+    while(opts.length<4&&guard<200){
       guard++;
-      var r = (pool.at(Math.floor(Math.random() * pool.length)).split("|").at(1) || "").trim();
-      if(r && opts.indexOf(r) < 0) opts.push(r);
+      var r=(pool.at(Math.floor(Math.random()*pool.length)).split("|").at(1)||"").trim();
+      if(r&&opts.indexOf(r)<0)opts.push(r);
     }
-    return {e: qTxt, j: ans, o: shf(opts), raw: l};
+    return{e:qTxt,j:ans,o:shf(opts),raw:l};
   });
 }
 function nw(){var pl=lv==="e"?W1:lv==="h"?W2:lv==="m1"?M1:lv==="m2"?M2:lv==="m3"?M3:lv==="ma"?MA:lv==="h1"?H1:lv==="h2"?H2:lv==="ha"?HA:WM;LM=lv.startsWith("m")?10000:lv==="h"?4000:lv==="n"?6000:8000;qs=mapQ(shf(pl.slice()).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
@@ -465,99 +476,94 @@ function delResItem(en,btn){rmSaved(en);btn.textContent="消去済";btn.disabled
 function sh(){
   clearInterval(tI);
   clearTimeout(cI);
-  ix = Number(ix) || 0;
-  if(ix >= qs.length){
+  ix=Number(ix)||0;
+  if(ix>=qs.length){
     if(!solo){
-      var p = getPr();
+      var p=getPr();
       if(!com){
-        if(mS > oS){ p.w++; p.st++; if(p.st > p.mx) p.mx = p.st; }
-        else if(mS < oS){ p.l++; p.st = 0; }
+        if(mS>oS){p.w++;p.st++;if(p.st>p.mx)p.mx=p.st;}
+        else if(mS<oS){p.l++;p.st=0;}
       }
-      p.pt += Math.max(0, mS);
-      localStorage.setItem("t18_pr", JSON.stringify(p));
+      p.pt+=Math.max(0,mS);
+      localStorage.setItem("t18_pr",JSON.stringify(p));
       ldProf();
     }
-    if(solo || mS >= oS) se("wn"); else se("ng");
-    $("tb").style.width = "0%";
+    if(solo||mS>=oS)se("wn");else se("ng");
+    $("tb").style.width="0%";
     $("bSpeak").classList.add("hd");
     $("bDrop").classList.add("hd");
-    $("wd").style.fontSize = "32px";
-    $("wd").textContent = solo ? "🎉 復習完了！" : mS > oS ? "🏆 " + myTag() + "の勝利！" : mS < oS ? "😢 " + oppName + "の勝利..." : "引き分け！";
-    $("op").innerHTML = "";
-    $("gl").textContent = solo ? ("復習スコア: " + mS + "点（残り苦手: " + getSaved().length + "語）") : ("最終: " + myTag() + " " + mS + "点 vs " + oppName + " " + oS + "点");
-    if(!solo) $("bR").classList.remove("hd");
+    $("wd").style.fontSize="32px";
+    $("wd").textContent=solo?"🎉 復習完了！":mS>oS?"🏆 "+myTag()+"の勝利！":mS<oS?"😢 "+oppName+"の勝利...":"引き分け！";
+    $("op").innerHTML="";
+    $("gl").textContent=solo?("復習スコア: "+mS+"点（残り苦手: "+getSaved().length+"問）"):("最終: "+myTag()+" "+mS+"点 vs "+oppName+" "+oS+"点");
+    if(!solo)$("bR").classList.remove("hd");
     $("bTop").classList.remove("hd");
     $("rv").classList.remove("hd");
-    $("rv").innerHTML = wr.length ? ("<b style='color:#facc15'>📝 振り返り（不要な問題は消去可）</b>" + wr.map(function(x){
-      return "<div class='rv-row'><div><b>" + x.e + "</b>：" + x.j + "</div><button class='del-btn' onclick=\"delResItem('" + x.e.replace(/'/g,"") + "',this)\">苦手から消去</button></div>";
-    }).join("")) : "<div style='color:#4ade80;font-weight:bold'>🎉 全問クリア！復習不要です！</div>";
+    $("rv").innerHTML=wr.length?("<b style='color:#facc15'>📝 振り返り（不要な問題は消去可）</b>"+wr.map(function(x){
+      return"<div class='rv-row'><div><b>"+x.e+"</b>："+x.j+"</div><button class='del-btn' onclick=\"delResItem('"+x.e.replace(/'/g,"")+"',this)\">苦手から消去</button></div>";
+    }).join("")):"<div style='color:#4ade80;font-weight:bold'>🎉 全問クリア！復習不要です！</div>";
     return;
   }
-
-  lk = ms = cMs = 0;
-  lB = 4;
-  if(solo) $("bDrop").classList.remove("hd"); else $("bDrop").classList.add("hd");
-
-  var q = qs.at(ix);
-  var lbMap = {e:"初級", n:"中級", h:"上級", m1:"数ⅠA", m2:"数ⅡB", m3:"数ⅢC", ma:"数学全", h1:"古代中世", h2:"近世近代", ha:"日本史全"};
-  var ln = solo ? "1人復習" : (lbMap[lv] || "中級");
-  var isJp = q.e.length > 14 || /[^a-zA-Z\-]/.test(q.e);
-
-  $("bSpeak").classList.toggle("hd", isJp);
-  $("wd").style.fontSize = isJp ? "21px" : "32px";
-  $("pg").textContent = "[" + ln + "] " + (ix + 1) + "/" + qs.length;
-  $("wd").textContent = q.e;
-  if(!isJp) speakWord(q.e);
-
-  $("gl").textContent = solo ? "答えを選べ！（不要なら上の消去ボタン）" : "早押しで正解を選べ！";
-  $("gl").style.color = "#94a3b8";
-  $("op").innerHTML = "";
-
+  lk=ms=cMs=0;
+  lB=4;
+  if(solo)$("bDrop").classList.remove("hd");else $("bDrop").classList.add("hd");
+  var q=qs.at(ix);
+  var lbMap={e:"初級",n:"中級",h:"上級",m1:"数ⅠA",m2:"数ⅡB",m3:"数ⅢC",ma:"数学全",h1:"古代中世",h2:"近世近代",ha:"日本史全"};
+  var ln=solo?"1人復習":(lbMap[lv]||"中級");
+  var isJp=q.e.length>14||/[^a-zA-Z\-]/.test(q.e);
+  $("bSpeak").classList.toggle("hd",isJp);
+  $("wd").style.fontSize=isJp?"21px":"32px";
+  $("pg").textContent="["+ln+"] "+(ix+1)+"/"+qs.length;
+  $("wd").textContent=q.e;
+  if(!isJp)speakWord(q.e);
+  $("gl").textContent=solo?"答えを選べ！（不要なら上の消去ボタン）":"早押しで正解を選べ！";
+  $("gl").style.color="#94a3b8";
+  $("op").innerHTML="";
   shf(q.o).forEach(function(o){
-    var b = document.createElement("button");
-    b.className = "ch";
-    b.textContent = o;
-    b.onclick = function(){
-      if(lk || ms) return;
-      if(o === q.j){
-        lk = 1;
+    var b=document.createElement("button");
+    b.className="ch";
+    b.textContent=o;
+    b.onclick=function(){
+      if(lk||ms)return;
+      if(o===q.j){
+        lk=1;
         clearInterval(tI);
         clearTimeout(cI);
         se("ok");
-        var bn = Math.max(0, Math.round(((LM - (Date.now() - qT)) / LM) * 10));
-        var pt = 10 + bn;
-        mS += pt;
-        $("s1").textContent = mS;
-        $("gl").innerHTML = "⭕ 正解！(+" + pt + "点 / 速度+" + bn + ")<br><span style='color:#4ade80;font-size:19px'>" + q.j + "</span>";
-        $("gl").style.color = "#38bdf8";
+        var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10));
+        var pt=10+bn;
+        mS+=pt;
+        $("s1").textContent=mS;
+        $("gl").innerHTML="⭕ 正解！(+"+pt+"点 / 速度+"+bn+")<br><span style='color:#4ade80;font-size:19px'>"+q.j+"</span>";
+        $("gl").style.color="#38bdf8";
         markAns(q.j);
-        tx("W", {i:ix, p:pt});
-        setTimeout(function(){ ix++; sh(); }, 2500);
-      } else {
-        ms = 1;
+        tx("W",{i:ix,p:pt});
+        setTimeout(function(){ix++;sh()},2500);
+      }else{
+        ms=1;
         se("ng");
-        mS -= 5;
-        $("s1").textContent = mS;
+        mS-=5;
+        $("s1").textContent=mS;
         aw(q);
-        tx("M", {i:ix});
+        tx("M",{i:ix});
         if(solo){
-          lk = 1;
+          lk=1;
           clearInterval(tI);
-          $("gl").innerHTML = "❌ 不正解！<br><span style='color:#4ade80;font-size:19px'>正解： " + q.j + "</span>";
-          $("gl").style.color = "#f43f5e";
-          markAns(q.j, o);
-          setTimeout(function(){ ix++; sh(); }, 2500);
-        } else if(com && cMs){
-          lk = 1;
+          $("gl").innerHTML="❌ 不正解！<br><span style='color:#4ade80;font-size:19px'>正解： "+q.j+"</span>";
+          $("gl").style.color="#f43f5e";
+          markAns(q.j,o);
+          setTimeout(function(){ix++;sh()},2500);
+        }else if(com&&cMs){
+          lk=1;
           clearInterval(tI);
           clearTimeout(cI);
-          $("gl").innerHTML = "両方お手つき！<br><span style='color:#4ade80;font-size:19px'>正解： " + q.j + "</span>";
-          $("gl").style.color = "#facc15";
-          markAns(q.j, o);
-          setTimeout(function(){ ix++; sh(); }, 2500);
-        } else {
-          $("gl").textContent = "❌ お手つき！（-5点）相手の解答待ち...";
-          $("gl").style.color = "#facc15";
+          $("gl").innerHTML="両方お手つき！<br><span style='color:#4ade80;font-size:19px'>正解： "+q.j+"</span>";
+          $("gl").style.color="#facc15";
+          markAns(q.j,o);
+          setTimeout(function(){ix++;sh()},2500);
+        }else{
+          $("gl").textContent="❌ お手つき！（-5点）相手の解答待ち...";
+          $("gl").style.color="#facc15";
           b.classList.add("ans-ng");
           ds(1);
         }
@@ -565,47 +571,50 @@ function sh(){
     };
     $("op").appendChild(b);
   });
-
-  qT = Date.now();
-  $("tb").style.width = "100%";
-  $("tb").style.backgroundColor = "#4ade80";
-
+  qT=Date.now();
+  $("tb").style.width="100%";
+  $("tb").style.backgroundColor="#4ade80";
   if(com){
-    var dl = lv.startsWith("m") ? (5500 + Math.random() * 3000) : (lv === "h1" || lv === "h2" || lv === "ha") ? (4500 + Math.random() * 2500) : lv === "e" ? (4500 + Math.random() * 2700) : lv === "h" ? (2400 + Math.random() * 1200) : (3500 + Math.random() * 1900);
-    cI = setTimeout(function(){
-      if(lk) return;
-      if(Math.random() < (lv === "h" ? 0.1 : 0.22)){
+    var dl=lv.startsWith("m")?(5500+Math.random()*3000):(lv==="h1"||lv==="h2"||lv==="ha")?(4500+Math.random()*2500):lv==="e"?(4500+Math.random()*2700):lv==="h"?(2400+Math.random()*1200):(3500+Math.random()*1900);
+    cI=setTimeout(function(){
+      if(lk)return;
+      if(Math.random()<(lv==="h"?0.1:0.22)){
         oppMiss();
-      } else {
-        var bn = Math.max(0, Math.round(((LM - (Date.now() - qT)) / LM) * 10));
-        oppWin(10 + bn);
+      }else{
+        var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10));
+        oppWin(10+bn);
       }
-    }, dl);
+    },dl);
   }
-
-  tI = setInterval(function(){
-    var r = Math.max(0, LM - (Date.now() - qT));
-    var pc = (r / LM) * 100;
-    var sec = Math.ceil(r / 1000);
-    $("tb").style.width = pc + "%";
-    $("tb").style.backgroundColor = pc < 30 ? "#f43f5e" : pc < 60 ? "#facc15" : "#4ade80";
-    if(sec <= 3 && sec < lB && sec > 0){ lB = sec; se("tk"); }
-    if(r <= 0 && !lk){
-      lk = 1;
+  tI=setInterval(function(){
+    var r=Math.max(0,LM-(Date.now()-qT));
+    var pc=(r/LM)*100;
+    var sec=Math.ceil(r/1000);
+    $("tb").style.width=pc+"%";
+    $("tb").style.backgroundColor=pc<30?"#f43f5e":pc<60?"#facc15":"#4ade80";
+    if(sec<=3&&sec<lB&&sec>0){lB=sec;se("tk")}
+    if(r<=0&&!lk){
+      lk=1;
       clearInterval(tI);
       clearTimeout(cI);
       se("ng");
       aw(q);
-      $("gl").innerHTML = "⌛ 時間切れ！<br><span style='color:#4ade80;font-size:19px'>正解： " + q.j + "</span>";
-      $("gl").style.color = "#f43f5e";
+      $("gl").innerHTML="⌛ 時間切れ！<br><span style='color:#4ade80;font-size:19px'>正解： "+q.j+"</span>";
+      $("gl").style.color="#f43f5e";
       markAns(q.j);
-      setTimeout(function(){ ix++; sh(); }, 2500);
+      setTimeout(function(){ix++;sh()},2500);
     }
-  }, 50);
+  },50);
+}
+function markAns(ans, picked){
+  document.querySelectorAll(".ch").forEach(function(b){
+    b.disabled = 1;
+    if(b.textContent === ans) b.classList.add("ans-ok");
+    else if(picked && b.textContent === picked) b.classList.add("ans-ng");
+  });
 }
 function ds(f){document.querySelectorAll(".ch").forEach(function(b){b.disabled=f})}
 function re(){if(com)nw();else if(hs)nw();else{tx("R");$("gl").textContent="再戦リクエスト送信中..."}}
 </script>
 </body>
 </html>
-
