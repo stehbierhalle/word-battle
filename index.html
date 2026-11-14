@@ -17,6 +17,9 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .bl{background:#38bdf8}
 .gr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .ch{background:#334155;color:#fff;width:100%;margin:0;padding:12px;font-size:14px}
+.ch.ans-ok{background:#16a34a!important;color:#fff!important;border:2px solid #86efac!important;opacity:1!important;transform:scale(1.02)}
+.ch.ans-ng{background:#dc2626!important;color:#fff!important;border:2px solid #fca5a5!important;opacity:1!important}
+#gl{font-weight:bold;font-size:17px;min-height:26px;margin:10px 0;padding:10px;border-radius:10px;background:#0f172a;border:1px solid #334155;line-height:1.4}  
 .hd{display:none!important}
 #lg{font-size:14px;color:#4ade80;margin-top:6px;font-weight:bold;min-height:20px}
 .bb{width:100%;height:8px;background:#334155;border-radius:4px;overflow:hidden;margin:8px 0}
@@ -384,8 +387,48 @@ function lg(t,e){$("lg").textContent=t;$("lg").style.color=e?"#f43f5e":"#4ade80"
 function tx(t,x){if(solo||com)return;var d={s:id,t:t};if(x)for(var k in x)d[k]=x[k];fetch(SV+"/"+tp,{method:"POST",body:JSON.stringify(d)}).catch(function(){lg("送信エラー",1)})}
 function st(t){se("st");pp(myTag()+": "+t,"#38bdf8");tx("S",{x:t})}
 function pp(t,c){$("sp").textContent=t;$("sp").style.color=c;clearTimeout(sI);sI=setTimeout(function(){$("sp").textContent=""},2000)}
-function oppWin(pts){if(lk)return;lk=1;clearInterval(tI);clearTimeout(cI);se("ng");oS+=pts;$("s2").textContent=oS;$("gl").textContent=oppName+"が正解！(+"+pts+") 正解:"+qs.at(ix).j;$("gl").style.color="#f43f5e";aw(qs.at(ix));ds(1);setTimeout(function(){ix++;sh()},1500)}
-function oppMiss(){cMs=1;oS-=5;$("s2").textContent=oS;if(!ms){$("gl").textContent=oppName+"がお手つき！チャンス！";$("gl").style.color="#4ade80"}else if(com){lk=1;clearInterval(tI);clearTimeout(cI);aw(qs.at(ix));$("gl").textContent="両方お手つき！正解:"+qs.at(ix).j;setTimeout(function(){ix++;sh()},1500)}}
+function markAns(ans, picked){
+  document.querySelectorAll(".ch").forEach(function(b){
+    b.disabled = 1;
+    if(b.textContent === ans) b.classList.add("ans-ok");
+    else if(picked && b.textContent === picked) b.classList.add("ans-ng");
+  });
+}
+
+function oppWin(pts){
+  if(lk) return;
+  lk = 1;
+  clearInterval(tI);
+  clearTimeout(cI);
+  se("ng");
+  oS += pts;
+  $("s2").textContent = oS;
+  $("gl").innerHTML = oppName + "が正解！(+" + pts + "点)<br><span style='color:#4ade80;font-size:19px'>正解： " + qs.at(ix).j + "</span>";
+  $("gl").style.color = "#f43f5e";
+  aw(qs.at(ix));
+  markAns(qs.at(ix).j);
+  setTimeout(function(){ ix++; sh(); }, 2500);
+}
+
+function oppMiss(){
+  cMs = 1;
+  oS -= 5;
+  $("s2").textContent = oS;
+  if(!ms){
+    $("gl").textContent = oppName + "がお手つき！チャンス！";
+    $("gl").style.color = "#4ade80";
+  } else if(com){
+    lk = 1;
+    clearInterval(tI);
+    clearTimeout(cI);
+    aw(qs.at(ix));
+    $("gl").innerHTML = "両方お手つき！<br><span style='color:#4ade80;font-size:19px'>正解： " + qs.at(ix).j + "</span>";
+    $("gl").style.color = "#facc15";
+    markAns(qs.at(ix).j);
+    setTimeout(function(){ ix++; sh(); }, 2500);
+  }
+}
+
 function ls(){var es=new EventSource(SV+"/"+tp+"/sse");es.onopen=function(){if(!hs){lg("接続完了！開始待ち...");tx("J",{nm:myTag()})}};es.onmessage=function(e){try{var m=JSON.parse(JSON.parse(e.data).message);if(m.s===id)return;if(m.t==="J"&&hs){oppName=m.nm||"相手";nw()}else if(m.t==="B"){oppName=m.nm||"相手";qs=m.q;LM=m.l;lv=m.v;go()}else if(m.t==="W"&&m.i===ix&&!lk)oppWin(m.p);else if(m.t==="M"&&m.i===ix)oppMiss();else if(m.t==="S"){se("st");pp(oppName+": "+m.x,"#f472b6")}else if(m.t==="R"&&hs)nw()}catch(z){}}}
 function mk(){se("st");hs=1;solo=com=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var c=String(Math.floor(10000+Math.random()*90000));tp="t18_"+c;$("rD").textContent=c;$("rI").classList.remove("hd");$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("部屋を作成！入室待ち...");ls()}
 function jn(){var c=$("in").value.trim();if(!c)return lg("5桁の合言葉を入力",1);se("st");hs=solo=com=0;tp="t18_"+c;$("bH").disabled=$("bG").disabled=$("bC").disabled=$("lv").disabled=$("qCnt").disabled=1;lg("接続中...");ls()}
@@ -479,31 +522,38 @@ function sh(){
         var pt = 10 + bn;
         mS += pt;
         $("s1").textContent = mS;
-        $("gl").textContent = "正解！(+" + pt + "点/速度+" + bn + ")";
+        $("gl").innerHTML = "⭕ 正解！(+" + pt + "点 / 速度+" + bn + ")<br><span style='color:#4ade80;font-size:19px'>" + q.j + "</span>";
         $("gl").style.color = "#38bdf8";
-        ds(1);
+        markAns(q.j);
         tx("W", {i:ix, p:pt});
-        setTimeout(function(){ ix++; sh(); }, 1300);
+        setTimeout(function(){ ix++; sh(); }, 2500);
       } else {
         ms = 1;
         se("ng");
         mS -= 5;
         $("s1").textContent = mS;
-        $("gl").textContent = solo ? ("不正解！正解:" + q.j) : ("お手つき！（-5点）");
-        $("gl").style.color = "#facc15";
         aw(q);
-        ds(1);
         tx("M", {i:ix});
         if(solo){
           lk = 1;
           clearInterval(tI);
-          setTimeout(function(){ ix++; sh(); }, 1500);
+          $("gl").innerHTML = "❌ 不正解！<br><span style='color:#4ade80;font-size:19px'>正解： " + q.j + "</span>";
+          $("gl").style.color = "#f43f5e";
+          markAns(q.j, o);
+          setTimeout(function(){ ix++; sh(); }, 2500);
         } else if(com && cMs){
           lk = 1;
           clearInterval(tI);
           clearTimeout(cI);
-          $("gl").textContent = "両方お手つき！正解:" + q.j;
-          setTimeout(function(){ ix++; sh(); }, 1500);
+          $("gl").innerHTML = "両方お手つき！<br><span style='color:#4ade80;font-size:19px'>正解： " + q.j + "</span>";
+          $("gl").style.color = "#facc15";
+          markAns(q.j, o);
+          setTimeout(function(){ ix++; sh(); }, 2500);
+        } else {
+          $("gl").textContent = "❌ お手つき！（-5点）相手の解答待ち...";
+          $("gl").style.color = "#facc15";
+          b.classList.add("ans-ng");
+          ds(1);
         }
       }
     };
@@ -539,10 +589,11 @@ function sh(){
       clearInterval(tI);
       clearTimeout(cI);
       se("ng");
-      ds(1);
       aw(q);
-      $("gl").textContent = "時間切れ！正解:" + q.j;
-      setTimeout(function(){ ix++; sh(); }, 1500);
+      $("gl").innerHTML = "⌛ 時間切れ！<br><span style='color:#4ade80;font-size:19px'>正解： " + q.j + "</span>";
+      $("gl").style.color = "#f43f5e";
+      markAns(q.j);
+      setTimeout(function(){ ix++; sh(); }, 2500);
     }
   }, 50);
 }
