@@ -571,7 +571,7 @@ function oppWin(pts){
   clearTimeout(cI);
   se("ng");
   oS += pts;
-  $("s2").textContent = oS;
+  $("s2").textContent = oS;updPtBar(2, pts);
   $("gl").innerHTML = oppName + "が正解！(+" + pts + "点)<br><span style='color:#4ade80;font-size:19px'>正解： " + qs.at(ix).j + "</span>";
   $("gl").style.color = "#f43f5e";
   aw(qs.at(ix));
@@ -582,7 +582,7 @@ function oppWin(pts){
 function oppMiss(){
   cMs = 1;
   oS -= 5;
-  $("s2").textContent = oS;
+  $("s2").textContent = oS;updPtBar(2, -5);
   if(!ms){
     $("gl").textContent = oppName + "がお手つき！チャンス！";
     $("gl").style.color = "#4ade80";
