@@ -76,8 +76,9 @@ button:disabled{opacity:.45;cursor:not-allowed}
 /* 画面切り替え・問題進行時のガタつき（サイズ変動）防止 */
 .box{height:710px;max-height:95vh;display:flex;flex-direction:column;justify-content:space-between;overflow-y:auto;box-sizing:border-box}
 #lb,#gm{flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.pk-qbox{height:122px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box;overflow:hidden}
-#gm #bSpeak.hd{display:inline-block!important;visibility:hidden!important;pointer-events:none}
+.pk-qbox{height:126px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box;overflow:hidden}
+.pk-btns{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;min-height:28px}
+.pk-btns button{margin:0!important;padding:4px 10px!important;font-size:12px!important;border:2px solid #0f172a!important}
 #gm .gr{height:132px;grid-template-rows:1fr 1fr;box-sizing:border-box}
 #gm .ch{height:56px;display:flex;align-items:center;line-height:1.25;overflow:hidden}
 #gm #gl{height:72px;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;overflow:hidden;margin:6px 0!important}
@@ -197,9 +198,11 @@ button:disabled{opacity:.45;cursor:not-allowed}
     <!-- 問題ウィンドウ -->
     <div class="pk-qbox">
       <div style="font-size:11px;font-weight:bold;color:#64748b;margin-bottom:4px;text-align:left">▼ もんだいが あらわれた！</div>
-      <b id="wd" style="font-size:30px">READY</b><br>
-      <button id="bSpeak" type="button" class="bl" onclick="speakCurrent()" style="margin-top:6px;padding:4px 10px;font-size:12px;border:2px solid #0f172a">🔊 発音を聞く</button>
-      <button id="bDrop" type="button" class="del-btn hd" onclick="dropCurrent()" style="margin-top:6px;padding:4px 10px;font-size:12px;border:2px solid #0f172a">🗑️ 覚えたので消去</button>
+      <b id="wd" style="font-size:30px">READY</b>
+<div class="pk-btns">
+  <button id="bSpeak" type="button" class="bl" onclick="speakCurrent()">🔊 発音を聞く</button>
+  <button id="bDrop" type="button" class="del-btn hd" onclick="dropCurrent()">🗑️ 覚えたので消去</button>
+</div>
     </div>
 
     <!-- 自分ステータス（左下） -->
