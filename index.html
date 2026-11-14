@@ -621,7 +621,31 @@ function mapQ(arr){
 function nw(){var pl=lv==="e"?W1:lv==="h"?W2:lv==="m1"?M1:lv==="m2"?M2:lv==="m3"?M3:lv==="ma"?MA:lv==="h1"?H1:lv==="h2"?H2:lv==="ha"?HA:WM;LM=lv.startsWith("m")?10000:lv==="h"?4000:lv==="n"?6000:8000;qs=mapQ(shf(pl.slice()).slice(0,qNum));if(!com)tx("B",{q:qs,l:LM,v:lv,nm:myTag()});go()}
 function startCom(){se("st");com=1;hs=solo=0;lv=$("lv").value;qNum=Number($("qCnt").value)||10;var nmMap={e:"初級",n:"中級",h:"上級",m1:"数ⅠA",m2:"数ⅡB",m3:"数ⅢC",ma:"数学全",h1:"古代中世",h2:"近世近代",ha:"日本史全"};oppName="🤖COM("+(nmMap[lv]||"中級")+")";nw()}
 function startReview(){var sv=getSaved();if(!sv.length)return;se("st");solo=1;hs=com=0;LM=8000;qs=mapQ(shf(sv.slice()));go()}
-function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("bTop").classList.add("hd");$("rv").classList.add("hd");$("mLb").textContent=myTag();$("oLb").textContent=oppName;$("oppWrap").style.visibility=solo?"hidden":"visible";$("sBar").style.display=(solo||com)?"none":"flex";ix=mS=oS=0;wr=new Array();$("s1").textContent=$("s2").textContent=0;sh()}
+function updPtBar(who, diff){
+  var sc = who === 1 ? mS : oS;
+  var maxPt = Math.max(100, (qs.length || 10) * 15);
+  var pct = Math.max(0, Math.min(100, Math.round((sc / maxPt) * 100)));
+  var bar = $(who === 1 ? "hp1" : "hp2");
+  var hud = bar ? bar.closest(".pk-hud") : null;
+  if(bar){
+    bar.style.width = pct + "%";
+    bar.style.background = sc < 0 ? "#ef4444" : pct < 25 ? "#f59e0b" : "#22c55e";
+  }
+  if(hud && diff){
+    var tag = document.createElement("span");
+    tag.className = "pk-pop";
+    tag.textContent = (diff > 0 ? "+" : "") + diff;
+    tag.style.color = diff > 0 ? "#2563eb" : "#dc2626";
+    hud.appendChild(tag);
+    setTimeout(function(){ tag.remove(); }, 900);
+    if(diff < 0){
+      hud.classList.remove("pk-shake");
+      void hud.offsetWidth;
+      hud.classList.add("pk-shake");
+    }
+  }
+}
+function go(){$("lb").classList.add("hd");$("gm").classList.remove("hd");$("bR").classList.add("hd");$("bTop").classList.add("hd");$("rv").classList.add("hd");$("mLb").textContent=myTag();$("oLb").textContent=oppName;$("oppWrap").style.visibility=solo?"hidden":"visible";$("sBar").style.display=(solo||com)?"none":"flex";ix=mS=oS=0;wr=new Array();$("s1").textContent=$("s2").textContent=0;updPtBar(1,0);updPtBar(2,0);sh()}
 function aw(q){for(var i=0;i<wr.length;i++)if(wr.at(i).e===q.e)return;wr.push(q);var sv=getSaved(),raw=q.raw||ALL_D.find(function(x){return x.indexOf(q.e+"|")===0});if(raw&&sv.indexOf(raw)<0){sv.push(raw);setSaved(sv)}}
 function rmSaved(en){setSaved(getSaved().filter(function(x){return x.indexOf(en+"|")!==0}))}
 function delResItem(en,btn){rmSaved(en);btn.textContent="消去済";btn.disabled=true;btn.style.background="#475569";se("st")}
@@ -686,7 +710,7 @@ function sh(){
         var pt=10+bn;
         mS+=pt;
         var pr=getPr();if(MA.indexOf(q.raw)>=0)pr.mOk++;else if(HA.indexOf(q.raw)>=0)pr.hOk++;else pr.eOk++;localStorage.setItem("t18_pr",JSON.stringify(pr));
-        $("s1").textContent=mS;
+        $("s1").textContent=mS;updPtBar(1,pt);
         $("gl").innerHTML="⭕ 正解！(+"+pt+"点 / 速度+"+bn+")<br><span style='color:#4ade80;font-size:19px'>"+q.j+"</span>";
         $("gl").style.color="#38bdf8";
         markAns(q.j);
@@ -696,7 +720,7 @@ function sh(){
         ms=1;
         se("ng");
         mS-=5;
-        $("s1").textContent=mS;
+        $('s1').textContent=mS;updPtBar(1,-5);
         aw(q);
         tx("M",{i:ix});
         if(solo){
