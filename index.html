@@ -41,14 +41,28 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .stat-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
 .stat-c{background:#0f172a;padding:8px;border-radius:8px;font-size:12px;color:#94a3b8}
 .stat-c b{display:block;font-size:17px;color:#fff;margin-top:2px}
+.m-card{max-height:86vh;overflow-y:auto}
+.lv-wrap{background:#0f172a;padding:8px 10px;border-radius:10px;margin:8px 0;text-align:left}
+.lv-bar{width:100%;height:8px;background:#334155;border-radius:4px;overflow:hidden;margin-top:5px}
+.lv-fill{height:100%;background:linear-gradient(90deg,#38bdf8,#facc15);transition:width .3s}
+.sub-row{display:flex;align-items:center;gap:8px;font-size:12px;margin:5px 0}
+.sub-bar{flex:1;height:8px;background:#1e293b;border-radius:4px;overflow:hidden}
+.sub-fill{height:100%;border-radius:4px}
+.bdg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.bdg{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:6px 4px;font-size:11px;color:#64748b;opacity:.55}
+.bdg.on{border-color:#facc15;color:#fff;opacity:1;background:#1e293b}
+.bdg span{display:block;font-size:18px;margin-bottom:2px}
 </style>
 </head>
 <body>
 <div class="box">
 <h1>ザ・英単語✊</h1>
 <div id="lb">
-<div class="top-bar">
-<div style="text-align:left"><b id="hmName" style="font-size:15px;color:#38bdf8">🦁 プレイヤー</b> <span id="hmRk" class="tag">駆け出し</span><div id="hmBio" style="font-size:11px;color:#94a3b8;margin-top:2px">よろしくお願いします！</div></div>
+<div id="topBar" class="top-bar" style="border:1px solid #38bdf8">
+<div style="text-align:left">
+<div><b id="hmName" style="font-size:15px;color:#38bdf8">🦁 プレイヤー</b> <span id="hmLv" class="tag" style="background:#1e293b;color:#38bdf8">Lv.1</span> <span id="hmRk" class="tag">駆け出し</span></div>
+<div id="hmBio" style="font-size:11px;color:#94a3b8;margin-top:2px">よろしくお願いします！</div>
+</div>
 <button onclick="openProf()" style="padding:6px 10px;font-size:12px;background:#38bdf8;margin:0">👤 プロフィール</button>
 </div>
 <div class="p">
@@ -96,21 +110,38 @@ button:disabled{opacity:.45;cursor:not-allowed}
 <button onclick="closeMgr()" style="background:#64748b;color:#fff">閉じる</button>
 </div></div>
 
-<div id="profModal" class="modal hd"><div class="m-card">
-<h2 style="margin:0 0 8px;font-size:18px;color:#facc15">👤 プロフィール</h2>
+<div id="profModal" class="modal hd"><div id="profCard" class="m-card">
+<h2 style="margin:0 0 8px;font-size:18px;color:#facc15">👤 プレイヤープロフィール</h2>
 <div>
 <select id="pAv" style="font-size:18px;padding:5px"><option>🦁</option><option>🦊</option><option>🐼</option><option>🐯</option><option>🐲</option><option>🦉</option><option>🚀</option><option>👑</option><option>⚡</option><option>🎓</option><option>🐱</option><option>🐶</option></select>
-<input id="pNm" placeholder="名前(8文字)" maxlength="8" style="width:140px">
+<input id="pNm" placeholder="名前(8文字)" maxlength="8" style="width:130px">
 </div>
-<input id="pBioIn" placeholder="ひとこと(20文字)" maxlength="20" style="width:90%">
+<input id="pBioIn" placeholder="ひとこと(20文字)" maxlength="20" style="width:92%">
+<div style="margin:6px 0;font-size:12px;color:#cbd5e1">
+称号：<select id="pTitle" style="max-width:160px"></select>
+色：<select id="pCol"><option value="#38bdf8">ブルー</option><option value="#facc15">ゴールド</option><option value="#4ade80">エメラルド</option><option value="#f472b6">ピンク</option><option value="#a78bfa">パープル</option></select>
+</div>
+<div class="lv-wrap">
+<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:bold"><span id="stLv" style="color:#facc15">Lv.1</span><span id="stExp" style="color:#94a3b8">次のLvまで 100 pt</span></div>
+<div class="lv-bar"><div id="stLvBar" class="lv-fill" style="width:0%"></div></div>
+</div>
 <div class="stat-g">
-<div class="stat-c">対戦成績<b id="stWL">0勝 0敗</b></div>
+<div class="stat-c">対人戦績<b id="stWL">0勝 0敗</b></div>
 <div class="stat-c">勝率<b id="stRt">0%</b></div>
 <div class="stat-c">連勝（最高）<b id="stStr">0 (0)</b></div>
 <div class="stat-c">累計スコア<b id="stPt">0 pt</b></div>
 </div>
-<div style="font-size:12px;color:#cbd5e1;margin-bottom:8px" id="stNext"></div>
-<button onclick="saveProfModal()" style="background:#4ade80">保存</button>
+<div class="lv-wrap">
+<div style="font-size:12px;font-weight:bold;color:#cbd5e1;margin-bottom:4px">📊 教科別 正解数</div>
+<div class="sub-row"><span style="width:48px">📘英語</span><div class="sub-bar"><div id="sbE" class="sub-fill" style="width:0%;background:#38bdf8"></div></div><b id="scE" style="width:42px;text-align:right">0問</b></div>
+<div class="sub-row"><span style="width:48px">📐数学</span><div class="sub-bar"><div id="sbM" class="sub-fill" style="width:0%;background:#facc15"></div></div><b id="scM" style="width:42px;text-align:right">0問</b></div>
+<div class="sub-row"><span style="width:48px">🏯日本史</span><div class="sub-bar"><div id="sbH" class="sub-fill" style="width:0%;background:#f472b6"></div></div><b id="scH" style="width:42px;text-align:right">0問</b></div>
+</div>
+<div class="lv-wrap">
+<div style="font-size:12px;font-weight:bold;color:#cbd5e1">🏅 実績メダル（達成で点灯）</div>
+<div id="bdgList" class="bdg-grid"></div>
+</div>
+<button onclick="saveProfModal()" style="background:#4ade80">保存して閉じる</button>
 <button onclick="closeProf()" style="background:#64748b;color:#fff">閉じる</button>
 </div></div>
 
@@ -368,14 +399,88 @@ function updCourseInfo(){
   $("wTot").textContent=(info[v]||"")+" ／ 総収録："+ALL_D.length+"問";
 }
 updCourseInfo();
-function getPr(){try{var d=JSON.parse(localStorage.getItem("t18_pr")||"{}");return{av:d.av||"🦁",nm:d.nm||"プレイヤー",bio:d.bio||"よろしくお願いします！",w:d.w||0,l:d.l||0,st:d.st||0,mx:d.mx||0,pt:d.pt||0}}catch(e){return{av:"🦁",nm:"プレイヤー",bio:"よろしくお願いします！",w:0,l:0,st:0,mx:0,pt:0}}}
-function getRank(w){return w>=30?"単語神":w>=20?"単語王":w>=10?"達人":w>=5?"熟練者":w>=1?"初段":"駆け出し"}
-function ldProf(){var p=getPr();$("hmName").textContent=p.av+" "+p.nm;$("hmRk").textContent=getRank(p.w);$("hmBio").textContent=p.bio}
+function getPr(){
+  try{
+    var d=JSON.parse(localStorage.getItem("t18_pr")||"{}");
+    return{
+      av:d.av||"🦁",nm:d.nm||"プレイヤー",bio:d.bio||"よろしくお願いします！",
+      w:d.w||0,l:d.l||0,st:d.st||0,mx:d.mx||0,pt:d.pt||0,
+      cl:d.cl||"#38bdf8",tt:d.tt||"",
+      eOk:d.eOk||0,mOk:d.mOk||0,hOk:d.hOk||0
+    };
+  }catch(e){
+    return{av:"🦁",nm:"プレイヤー",bio:"よろしくお願いします！",w:0,l:0,st:0,mx:0,pt:0,cl:"#38bdf8",tt:"",eOk:0,mOk:0,hOk:0};
+  }
+}
+function getUnlocks(p){
+  var list=new Array("駆け出し");
+  if(p.w>=1)list.push("初段");
+  if(p.w>=5)list.push("熟練者");
+  if(p.w>=10)list.push("達人");
+  if(p.w>=20)list.push("知識王");
+  if(p.w>=30)list.push("クイズ神");
+  if(p.mx>=3)list.push("連勝街道");
+  if(p.eOk>=30)list.push("英語マスター");
+  if(p.mOk>=20)list.push("数学の魔術師");
+  if(p.hOk>=20)list.push("歴史博士");
+  return list;
+}
+function ldProf(){
+  var p=getPr(),lvNum=Math.floor(p.pt/100)+1,ul=getUnlocks(p);
+  var curTitle=(p.tt&&ul.indexOf(p.tt)>=0)?p.tt:ul.at(-1);
+  $("hmName").textContent=p.av+" "+p.nm;
+  $("hmName").style.color=p.cl;
+  $("topBar").style.borderColor=p.cl;
+  $("hmLv").textContent="Lv."+lvNum;
+  $("hmRk").textContent=curTitle;
+  $("hmRk").style.color=p.cl;
+  $("hmBio").textContent=p.bio;
+}
 ldProf();
-function openProf(){var p=getPr();$("pAv").value=p.av;$("pNm").value=p.nm;$("pBioIn").value=p.bio;$("stWL").textContent=p.w+"勝 "+p.l+"敗";var tot=p.w+p.l;$("stRt").textContent=(tot?Math.round(p.w/tot*100):0)+"%";$("stStr").textContent=p.st+"連勝 ("+p.mx+")";$("stPt").textContent=p.pt+" pt";var nx=p.w<1?1-p.w:p.w<5?5-p.w:p.w<10?10-p.w:p.w<20?20-p.w:p.w<30?30-p.w:0;$("stNext").textContent=nx?("次の称号まであと "+nx+" 勝！"):"最高称号「単語神」に到達！";$("profModal").classList.remove("hd")}
+function openProf(){
+  var p=getPr(),lvNum=Math.floor(p.pt/100)+1,rem=100-(p.pt%100),ul=getUnlocks(p);
+  var curTitle=(p.tt&&ul.indexOf(p.tt)>=0)?p.tt:ul.at(-1);
+  $("pAv").value=p.av;$("pNm").value=p.nm;$("pBioIn").value=p.bio;$("pCol").value=p.cl;
+  $("profCard").style.borderColor=p.cl;
+  $("pTitle").innerHTML=ul.map(function(t){return"<option value='"+t+"'"+(t===curTitle?" selected":"")+">"+t+"</option>"}).join("");
+  $("stLv").textContent="Lv."+lvNum+"（"+curTitle+"）";
+  $("stExp").textContent="次のLvまであと "+rem+" pt";
+  $("stLvBar").style.width=(p.pt%100)+"%";
+  $("stWL").textContent=p.w+"勝 "+p.l+"敗";
+  var tot=p.w+p.l;
+  $("stRt").textContent=(tot?Math.round(p.w/tot*100):0)+"%";
+  $("stStr").textContent=p.st+"連勝 (最高"+p.mx+")";
+  $("stPt").textContent=p.pt+" pt";
+  var mxSub=Math.max(10,p.eOk,p.mOk,p.hOk);
+  $("scE").textContent=p.eOk+"問";$("sbE").style.width=Math.round(p.eOk/mxSub*100)+"%";
+  $("scM").textContent=p.mOk+"問";$("sbM").style.width=Math.round(p.mOk/mxSub*100)+"%";
+  $("scH").textContent=p.hOk+"問";$("sbH").style.width=Math.round(p.hOk/mxSub*100)+"%";
+  var bdgs=new Array(
+    {ic:"⚔️",nm:"初勝利",ok:p.w>=1},
+    {ic:"🔥",nm:"3連勝",ok:p.mx>=3},
+    {ic:"💎",nm:"累計500pt",ok:p.pt>=500},
+    {ic:"📘",nm:"英語30問",ok:p.eOk>=30},
+    {ic:"📐",nm:"数学20問",ok:p.mOk>=20},
+    {ic:"🏯",nm:"日本史20問",ok:p.hOk>=20}
+  );
+  $("bdgList").innerHTML=bdgs.map(function(b){
+    return"<div class='bdg"+(b.ok?" on":"")+"'><span>"+b.ic+"</span>"+b.nm+"</div>";
+  }).join("");
+  $("profModal").classList.remove("hd");
+}
 function closeProf(){$("profModal").classList.add("hd")}
-function saveProfModal(){var p=getPr();p.av=$("pAv").value;p.nm=$("pNm").value.trim()||"プレイヤー";p.bio=$("pBioIn").value.trim()||"よろしくお願いします！";localStorage.setItem("t18_pr",JSON.stringify(p));ldProf();closeProf();se("st");lg("プロフィールを保存しました！")}
-function myTag(){var p=getPr();return p.av+p.nm}
+function saveProfModal(){
+  var p=getPr();
+  p.av=$("pAv").value;p.nm=$("pNm").value.trim()||"プレイヤー";
+  p.bio=$("pBioIn").value.trim()||"よろしくお願いします！";
+  p.tt=$("pTitle").value;p.cl=$("pCol").value;
+  localStorage.setItem("t18_pr",JSON.stringify(p));
+  ldProf();closeProf();se("st");lg("プロフィールを保存しました！");
+}
+function myTag(){
+  var p=getPr(),ul=getUnlocks(p),t=(p.tt&&ul.indexOf(p.tt)>=0)?p.tt:ul.at(-1);
+  return p.av+p.nm+"["+t+"]";
+}
 function getSaved(){try{return JSON.parse(localStorage.getItem("t18_wr")||"[]")}catch(e){return[]}}
 function setSaved(a){try{localStorage.setItem("t18_wr",JSON.stringify(a));updRev()}catch(e){}}
 function updRev(){var a=getSaved();$("reviewCount").textContent="長期保存中の苦手単語: "+a.length+"語";$("bReview").disabled=$("bMgr").disabled=!a.length}
@@ -533,6 +638,7 @@ function sh(){
         var bn=Math.max(0,Math.round(((LM-(Date.now()-qT))/LM)*10));
         var pt=10+bn;
         mS+=pt;
+        var pr=getPr();if(MA.indexOf(q.raw)>=0)pr.mOk++;else if(HA.indexOf(q.raw)>=0)pr.hOk++;else pr.eOk++;localStorage.setItem("t18_pr",JSON.stringify(pr));
         $("s1").textContent=mS;
         $("gl").innerHTML="⭕ 正解！(+"+pt+"点 / 速度+"+bn+")<br><span style='color:#4ade80;font-size:19px'>"+q.j+"</span>";
         $("gl").style.color="#38bdf8";
